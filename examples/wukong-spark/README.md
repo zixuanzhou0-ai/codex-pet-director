@@ -21,6 +21,14 @@ The sprite sheet follows the official Codex pet layout: 9 actions x 8 frames.
 
 ![Wukong Spark waving](../../assets/examples/wukong-spark/waving.gif)
 
+## Golden Power-Up
+
+The sprite sheet also includes a temporary golden-hair power-up state.
+
+![Wukong Spark golden power-up](../../assets/examples/wukong-spark/golden-power-up.png)
+
+![Wukong Spark golden power-up animation](../../assets/examples/wukong-spark/golden-power-up.gif)
+
 ## Pet Metadata
 
 ```json
@@ -36,5 +44,5 @@ The sprite sheet follows the official Codex pet layout: 9 actions x 8 frames.
 
 - A finished pet is small and portable.
 - Codex reads `pet.json` and `spritesheet.webp`.
-- The director workflow should help users lock the character first, then produce the 9 official action rows.
+- The director workflow should help users lock the character first, then produce the 9 official action rows and any special frames inside those rows.
 - README screenshots can use generated preview assets, while the example folder keeps the real production file.
