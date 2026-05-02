@@ -105,6 +105,7 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 
 - 检查用户是否具备 Codex pet 使用环境。
 - 用面向小白的问题做高定制采访，中途可以切换语言。
+- 用户说出明星、公众人物、动漫角色、游戏角色或其它知名角色时，先联网查清外观和版本，再生成确认图。
 - 每个关键板块后生成 2-4 张确认图，让用户选择或混合偏好。
 - 记录 `pet_brief.json`，避免每轮重新发明角色。
 - 明确使用 Codex 官方 pet 固定格式：9 个动作、8 列、9 行 spritesheet。
@@ -121,6 +122,8 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - 有哪些东西一定要保留，哪些一定不要？
 
 如果用户有参考图，可以直接发给 Codex；如果没有，也可以先生成几种方向让用户选。每一轮都会先总结，再进入下一轮，关键阶段会给 2-4 张确认图。
+
+如果用户只说“我想要像某个明星 / 动漫角色 / 游戏角色”，它会先联网查这个人物或角色的外观，整理成“参考角色识别卡”，让用户确认版本和关键特征后再出图。
 
 ### 多语言切换
 
@@ -144,6 +147,8 @@ Help me create a custom Codex desktop pet.
 用户对话
   ↓
 codex-pet-director：语言、采访、确认图、角色锁定
+  ↓
+reference_research：联网确认明星、公众人物或知名角色的外观和版本
   ↓
 pet_brief.json：保存用户选择和 9 个动作设定
   ↓

@@ -19,6 +19,19 @@
     "reference_images": [],
     "reference_likeness": "无参考图，按文字方向生成。"
   },
+  "reference_research": {
+    "enabled": false,
+    "query": "",
+    "entity_type": "",
+    "chosen_version": "",
+    "sources_summary": [],
+    "source_links": [],
+    "visual_traits": [],
+    "desktop_pet_traits": [],
+    "must_keep": [],
+    "avoid_confusion": [],
+    "user_confirmed": false
+  },
   "form": {
     "type": "半身小伙伴",
     "notes": "重点放在表情、屏幕眼睛、耳朵、肩部和小道具动作。"

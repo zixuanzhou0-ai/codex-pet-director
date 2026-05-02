@@ -39,7 +39,38 @@ After the answer, summarize:
 我先理解成：你想要一个……，大概像……。
 ```
 
-Generate 2-4 character direction images if enough visual detail exists.
+If the user names a known person or character, run the reference research step before generating character direction images. Otherwise, generate 2-4 character direction images if enough visual detail exists.
+
+## Block 1.5: 参考角色识别
+
+Use this block only when the user names a celebrity, public figure, anime/game/film character, mascot, or other known figure.
+
+Say:
+
+```text
+我先查一下这个人物/角色长什么样，避免凭记忆做错。
+查完我会总结几个关键外观点，你确认以后我再出图。
+```
+
+Then follow `reference-research.md`.
+
+After browsing, summarize:
+
+```text
+我查到的关键外观是：
+1. ...
+2. ...
+3. ...
+
+适合桌宠保留的是：
+1. ...
+2. ...
+3. ...
+
+这个版本对吗？有没有哪个地方不是你要的？
+```
+
+Only generate confirmation images after the user confirms the researched version and key traits.
 
 ## Block 2: 它是什么形态
 

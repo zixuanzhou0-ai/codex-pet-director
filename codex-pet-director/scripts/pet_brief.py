@@ -117,6 +117,19 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
             "reference_images": [],
             "reference_likeness": "",
         },
+        "reference_research": {
+            "enabled": False,
+            "query": "",
+            "entity_type": "",
+            "chosen_version": "",
+            "sources_summary": [],
+            "source_links": [],
+            "visual_traits": [],
+            "desktop_pet_traits": [],
+            "must_keep": [],
+            "avoid_confusion": [],
+            "user_confirmed": False,
+        },
         "form": {
             "type": "",
             "notes": "",
@@ -254,6 +267,19 @@ def missing_for_stage(brief: dict[str, Any], stage: str) -> list[str]:
         for action in ACTION_FRAMES:
             required.append(f"actions.{action}.user_answer")
 
+    reference_research = brief.get("reference_research", {})
+    if isinstance(reference_research, dict) and reference_research.get("enabled"):
+        required.extend(
+            [
+                "reference_research.query",
+                "reference_research.entity_type",
+                "reference_research.visual_traits",
+                "reference_research.desktop_pet_traits",
+            ]
+        )
+        if stage in {"locked", "final"}:
+            required.append("reference_research.user_confirmed")
+
     missing: list[str] = []
     for key in required:
         value = get_path(brief, key)
@@ -315,6 +341,7 @@ def command_template(args: argparse.Namespace) -> int:
         brief = {
             "meta": deepcopy(brief["meta"]),
             "identity": deepcopy(brief["identity"]),
+            "reference_research": deepcopy(brief["reference_research"]),
             "form": deepcopy(brief["form"]),
             "style": deepcopy(brief["style"]),
             "personality": deepcopy(brief["personality"]),

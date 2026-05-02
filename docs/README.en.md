@@ -62,6 +62,7 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 
 - Checks whether the local Codex environment can use custom pets.
 - Interviews beginners in small, plain-language blocks.
+- When the user names a celebrity, public figure, anime character, game character, or other known character, researches the appearance and version online before generating previews.
 - Lets the user switch language during the flow.
 - Generates 2-4 visual confirmation images at key stages.
 - Saves decisions in `pet_brief.json` so the character stays consistent.
@@ -81,6 +82,8 @@ The user only needs to answer simple questions:
 - What must be kept, and what must be avoided?
 
 If the user has a reference image, they can provide it. If not, the skill can generate several directions first. Each round summarizes the decision before moving on.
+
+If the user only says "make it like this celebrity / anime character / game character", the skill first researches the person or character online, turns the result into a reference card, and asks the user to confirm the version and key traits before generating images.
 
 ## Language Switching
 
@@ -104,6 +107,8 @@ The selected language is stored in `pet_brief.json` under `meta.language`, so la
 User conversation
   ↓
 codex-pet-director: language, interview, confirmation images, character locking
+  ↓
+reference_research: confirms named people or known characters online
   ↓
 pet_brief.json: stores user choices and the 9 action settings
   ↓

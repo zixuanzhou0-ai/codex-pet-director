@@ -1,6 +1,6 @@
 ---
 name: codex-pet-director
-description: Multilingual guide for creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user types /create-pet, create-pet, wants to start pet creation, wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, wants to switch the pet creation flow between Chinese, English, Japanese, Korean, Spanish, French, German, or Traditional Chinese, wants a customer-facing explanation of the pet workflow, or wants to prepare a pet brief before handing off to hatch-pet.
+description: Multilingual guide for creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user types /create-pet, create-pet, wants to start pet creation, wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, names a celebrity, public figure, anime character, game character, film character, mascot, or other known character as the pet reference, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, wants to switch the pet creation flow between Chinese, English, Japanese, Korean, Spanish, French, German, or Traditional Chinese, wants a customer-facing explanation of the pet workflow, or wants to prepare a pet brief before handing off to hatch-pet.
 ---
 
 # Codex Pet Director
@@ -40,6 +40,14 @@ Use `references/user-introduction.md` when the user is new, asks what this skill
 
 Use `references/architecture.md` when explaining the bottom architecture, why the workflow is designed this way, what `pet_brief.json` does, or why final production is delegated to `$hatch-pet`.
 
+## Reference Research
+
+Use `references/reference-research.md` when the user names a known person or character, such as a celebrity, public figure, anime character, game character, film character, mascot, brand character, or internet figure.
+
+If the user provides only a name and no clear reference image, browse the web before generating visual confirmation images. Do not rely on memory for the appearance. Search enough to identify the correct person, character, and version, then summarize the key visual traits in plain language and ask the user to confirm.
+
+If the name is ambiguous or has multiple versions, ask the user to choose the intended version before image generation.
+
 ## Required Flow
 
 ### 0. Check The Environment
@@ -71,6 +79,7 @@ python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.
 Default blocks:
 
 1. 它是谁
+1.5. 参考角色识别, only when the user names a known person or character
 2. 它是什么形态
 3. 它是什么风格
 4. 它是什么性格
@@ -79,6 +88,8 @@ Default blocks:
 7. 最终确认
 
 After each block, summarize what was decided in simple Chinese. For important visual blocks, generate 2-4 user-facing confirmation images and ask which direction they prefer. A user may answer by mixing choices, for example: `要 A 的脸 + B 的颜色 + C 的气质`.
+
+When reference research is triggered, complete it before generating character direction images. Record the research result in `pet_brief.json` under `reference_research`.
 
 ### 2. Maintain A Pet Brief
 
@@ -141,6 +152,7 @@ load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.
 ## Reference Files
 
 - `references/question-flow.md`: user interview blocks and simple wording.
+- `references/reference-research.md`: web research workflow for named people and characters.
 - `references/language-guide.md`: supported languages and switching rules.
 - `references/user-introduction.md`: detailed customer-facing explanation.
 - `references/architecture.md`: bottom architecture, component roles, and design rationale.
@@ -154,6 +166,7 @@ load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.
 - The flow starts with an environment check.
 - The user's language is inferred or confirmed, recorded in `pet_brief.json`, and can be switched without restarting.
 - The user is asked simple questions one block at a time.
+- Named people or characters are researched online before visual generation unless the user provides a sufficient reference image.
 - A `pet_brief.json` exists before final production.
 - The official Codex fixed format is respected.
 - The formal character image is locked before action generation.
