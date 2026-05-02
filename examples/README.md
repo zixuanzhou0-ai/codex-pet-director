@@ -5,7 +5,7 @@ These examples show both the planning stage and the final generated Codex pet pa
 ## Available Examples
 
 - [blue-robot-cat](blue-robot-cat): a small cyber-cute robot cat with screen-face expressions and clear action notes.
-- [wukong-spark](wukong-spark): the original Wukong Spark generated Codex desktop pet package with `pet.json`, `spritesheet.webp`, action preview, and one animation sample.
+- [wukong-spark](wukong-spark): a real generated Codex desktop pet package with `pet.json`, `spritesheet.webp`, full static frames, and row GIFs.
 
 ## How To Use An Example
 

@@ -13,13 +13,39 @@ The sprite sheet follows the official Codex pet layout: 9 actions x 8 frames.
 
 ![Wukong Spark preview](../../assets/examples/wukong-spark/preview.png)
 
-## Official Actions
+## Full Static Frames
 
-![Wukong Spark actions](../../assets/examples/wukong-spark/actions.png)
+The frame board below is copied from the real `spritesheet.webp` layout. It keeps the original 9 rows x 8 columns and does not rename the action rows.
 
-## Animation Sample
+![Wukong Spark full spritesheet frame board](../../assets/examples/wukong-spark/all-frames.png)
 
-![Wukong Spark waving](../../assets/examples/wukong-spark/waving.gif)
+## Row Animations
+
+These GIFs are generated row by row from the same sprite sheet. They preserve the original row order.
+
+<p>
+  <img src="../../assets/examples/wukong-spark/row-01.gif" width="120" alt="Wukong Spark row 1">
+  <img src="../../assets/examples/wukong-spark/row-02.gif" width="120" alt="Wukong Spark row 2">
+  <img src="../../assets/examples/wukong-spark/row-03.gif" width="120" alt="Wukong Spark row 3">
+  <img src="../../assets/examples/wukong-spark/row-04.gif" width="120" alt="Wukong Spark row 4">
+  <img src="../../assets/examples/wukong-spark/row-05.gif" width="120" alt="Wukong Spark row 5">
+  <img src="../../assets/examples/wukong-spark/row-06.gif" width="120" alt="Wukong Spark row 6">
+  <img src="../../assets/examples/wukong-spark/row-07.gif" width="120" alt="Wukong Spark row 7">
+  <img src="../../assets/examples/wukong-spark/row-08.gif" width="120" alt="Wukong Spark row 8">
+  <img src="../../assets/examples/wukong-spark/row-09.gif" width="120" alt="Wukong Spark row 9">
+</p>
+
+## Animation Showcase
+
+![Wukong Spark full animation showcase](../../assets/examples/wukong-spark/showcase.gif)
+
+## Golden Power-Up
+
+The sprite sheet also includes a temporary golden-hair power-up state.
+
+![Wukong Spark golden power-up](../../assets/examples/wukong-spark/golden-power-up.png)
+
+![Wukong Spark golden power-up animation](../../assets/examples/wukong-spark/golden-power-up.gif)
 
 ## Pet Metadata
 
@@ -36,5 +62,5 @@ The sprite sheet follows the official Codex pet layout: 9 actions x 8 frames.
 
 - A finished pet is small and portable.
 - Codex reads `pet.json` and `spritesheet.webp`.
-- The director workflow should help users lock the character first, then produce the 9 official action rows.
-- README screenshots can use generated preview assets, while the example folder keeps the real production file.
+- The director workflow should help users lock the character first, then produce the 9 official action rows and any special frames inside those rows.
+- README screenshots should show frames from the real production sprite sheet instead of hand-labeled action guesses.
