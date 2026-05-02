@@ -265,7 +265,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 真实案例：Wukong Spark
 
-`Wukong Spark` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作、每个动作 8 帧，其中还包含小悟空头发变成金色的爆气状态。
+`Wukong Spark` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作行、8 列帧位，其中还包含小悟空头发变成金色的爆气状态。
 
 <p align="center">
   <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
