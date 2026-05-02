@@ -1,14 +1,21 @@
 # Codex Pet Director
 
+<p align="center">
+  <a href="#简体中文">简体中文</a> ·
+  <a href="#english">English</a> ·
+  <a href="docs/README.zh-TW.md">繁體中文</a> ·
+  <a href="docs/README.ja.md">日本語</a> ·
+  <a href="docs/README.ko.md">한국어</a> ·
+  <a href="docs/README.es.md">Español</a> ·
+  <a href="docs/README.fr.md">Français</a> ·
+  <a href="docs/README.de.md">Deutsch</a>
+</p>
+
+## 简体中文
+
 `codex-pet-director` 是一个多语言 Codex 桌面宠物高定制向导 skill。它会先检查用户环境，再用简单问题一步步确认角色、形态、风格、外观、性格和 9 个官方动作，最后把锁定后的方案交给现有 `hatch-pet` 生成 Codex 可用的宠物包。
 
-## 一键安装
-
-默认仓库名按当前登录账号设置为 `zixuanzhou0-ai/codex-pet-director`。如果你最后在 GitHub 上用了别的仓库名，再把下面三处里的仓库名改掉：
-
-- `README.md`
-- `install.ps1`
-- `install.sh`
+### 一键安装
 
 Windows PowerShell:
 
@@ -22,31 +29,7 @@ macOS / Linux:
 curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
 ```
 
-## 本地安装
-
-如果用户是下载 zip 或 clone 仓库，可以在仓库根目录运行：
-
-Windows:
-
-```powershell
-.\install.ps1
-```
-
-macOS / Linux:
-
-```bash
-chmod +x ./install.sh
-./install.sh
-```
-
-安装器会把 `codex-pet-director` 复制到：
-
-- 设置了 `CODEX_HOME` 时：`$CODEX_HOME/skills/codex-pet-director`
-- 默认情况：`~/.codex/skills/codex-pet-director`
-
-安装后如果 Codex 没有立刻识别 skill，重启 Codex。
-
-## 这个 skill 做什么
+### 这个 skill 做什么
 
 - 检查用户是否具备 Codex pet 使用环境。
 - 支持中文、繁體中文、English、日本語、한국어、Español、Français、Deutsch。
@@ -56,7 +39,7 @@ chmod +x ./install.sh
 - 明确使用 Codex 官方 pet 固定格式：9 个动作、8 列、9 行 spritesheet。
 - 最终正式生产阶段调用已有 `hatch-pet`，不重写底层 spritesheet 逻辑。
 
-## 给用户看的介绍
+### 给用户看的介绍
 
 这个工具适合想做“自己的 Codex 桌面宠物”的人。用户不需要懂图片格式、动作帧或安装目录，只要回答几个简单问题：
 
@@ -68,7 +51,7 @@ chmod +x ./install.sh
 
 如果用户有参考图，可以直接发给 Codex；如果没有，也可以先生成几种方向让用户选。每一轮都会先总结，再进入下一轮，关键阶段会给 2-4 张确认图。
 
-## 多语言切换
+### 多语言切换
 
 安装后可以直接用任意支持语言开始，例如：
 
@@ -82,15 +65,9 @@ Help me create a custom Codex desktop pet.
 切换到英文
 ```
 
-或：
-
-```text
-日本語に切り替えて
-```
-
 语言选择会记录在 `pet_brief.json` 的 `meta.language` 字段里，后续问题、总结、确认卡片都会跟随这个语言。
 
-## 底层架构
+### 底层架构
 
 ```text
 用户对话
@@ -106,7 +83,7 @@ hatch-pet：正式生成 pet.json + spritesheet.webp
 Codex pets 目录：Codex 识别并加载宠物
 ```
 
-## 为什么这样设计
+### 为什么这样设计
 
 这个 skill 不直接重写宠物生成器，而是把“用户定制”和“正式生产”分开。
 
@@ -117,7 +94,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 这样后续更容易维护：如果 Codex 的宠物底层格式变化，主要改生产层；如果用户访谈、语言、风格菜单要升级，则主要改这个 director skill。
 
-## 依赖
+### 依赖
 
 完整生成宠物包需要用户本机已经能使用：
 
@@ -128,7 +105,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 如果缺少目录，安装器会尝试安全创建。它不会修改 Codex app 本体。
 
-## 使用方式
+### 使用方式
 
 安装后，在 Codex 里直接说类似：
 
@@ -142,7 +119,118 @@ Codex pets 目录：Codex 识别并加载宠物
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
 ```
 
-## 仓库结构
+## English
+
+`codex-pet-director` is a multilingual Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, records the final direction in `pet_brief.json`, and then hands the locked brief to `hatch-pet` to produce a Codex-ready pet package.
+
+### One-Click Install
+
+Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+```
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
+```
+
+### What It Does
+
+- Checks whether the local Codex environment can use custom pets.
+- Supports Simplified Chinese, Traditional Chinese, English, Japanese, Korean, Spanish, French, and German.
+- Interviews beginners in small, plain-language blocks.
+- Lets the user switch language during the flow.
+- Generates 2-4 visual confirmation images at key stages.
+- Saves decisions in `pet_brief.json` so the character stays consistent.
+- Respects the official Codex pet format: 9 actions, 8 columns, 9 rows.
+- Uses the existing `hatch-pet` skill for final package generation instead of rebuilding the spritesheet pipeline.
+
+### User-Friendly Explanation
+
+This tool is for anyone who wants a personal Codex desktop pet without learning image formats, animation frames, or install folders.
+
+The user only needs to answer simple questions:
+
+- What should it look like?
+- What personality should it have?
+- How should it move when idle, waiting, working, or failing?
+- Which preview image do you prefer?
+- What must be kept, and what must be avoided?
+
+If the user has a reference image, they can provide it. If not, the skill can generate several directions first. Each round summarizes the decision before moving on.
+
+### Language Switching
+
+After installation, users can start in any supported language:
+
+```text
+Help me create a custom Codex desktop pet.
+```
+
+They can also switch during the process:
+
+```text
+Switch to English.
+```
+
+The selected language is stored in `pet_brief.json` under `meta.language`, so later questions, summaries, and confirmation cards follow the same language.
+
+### Architecture
+
+```text
+User conversation
+  ↓
+codex-pet-director: language, interview, confirmation images, character locking
+  ↓
+pet_brief.json: stores user choices and the 9 action settings
+  ↓
+imagegen: creates visual confirmation images
+  ↓
+hatch-pet: produces pet.json + spritesheet.webp
+  ↓
+Codex pets folder: Codex detects and loads the pet
+```
+
+### Why This Design
+
+This skill separates creative direction from final production.
+
+- The director flow turns a vague idea into a stable character.
+- `pet_brief.json` locks identity, colors, silhouette, props, and action choices.
+- Confirmation images help beginners choose visually instead of writing perfect prompts.
+- `hatch-pet` remains responsible for the official spritesheet, `pet.json`, and QA.
+
+This keeps the system maintainable. If Codex changes the pet production format later, the production layer can change without rewriting the whole interview and multilingual guidance layer.
+
+### Requirements
+
+Full pet generation requires:
+
+- Codex desktop pet support
+- Python 3
+- The `hatch-pet` skill
+- Available image generation
+
+The installer safely creates missing local folders when possible. It does not modify the Codex app itself.
+
+### Usage
+
+After installation, ask Codex:
+
+```text
+Help me create a custom Codex desktop pet.
+```
+
+or:
+
+```text
+I have a reference image. Turn it into an official Codex desktop pet.
+```
+
+## Repository Structure
 
 ```text
 .
@@ -151,12 +239,13 @@ Codex pets 目录：Codex 识别并加载宠物
 │   ├── agents/
 │   ├── references/
 │   └── scripts/
+├── docs/
 ├── install.ps1
 ├── install.sh
 └── README.md
 ```
 
-## 发布前检查
+## Release Check
 
 ```powershell
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\codex-pet-director
