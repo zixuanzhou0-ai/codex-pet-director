@@ -65,7 +65,7 @@ The package is already prepared with:
 
 For a beginner-friendly release:
 
-1. Create a tag, such as `v0.4.9`.
+1. Create a tag, such as `v0.5.0`.
 2. Create a GitHub Release from that tag.
 3. Tell Windows users to download the source ZIP and double-click `install.cmd`.
 4. Tell Codex users to run the GitHub project installer so both `codex-pet-director` and `create-pet` are installed.
@@ -73,7 +73,7 @@ For a beginner-friendly release:
 Release title:
 
 ```text
-Codex Pet Director v0.4.9
+Codex Pet Director v0.5.0
 ```
 
 Short release description:

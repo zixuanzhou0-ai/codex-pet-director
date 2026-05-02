@@ -1,6 +1,6 @@
 {
-  "id": "wukong-spark",
-  "displayName": "Wukong Spark",
-  "description": "A tiny original chibi martial-arts desktop pet with spiky black hair, orange training outfit, monkey tail, bouncing waves, and a temporary golden power-up animation.",
+  "id": "wukong-spark-v3",
+  "displayName": "Wukong Spark V3",
+  "description": "A sharper Wukong Spark example with stronger motion accents and transformed Super Saiyan-style eyes in the golden power-up frames.",
   "spritesheetPath": "spritesheet.webp"
 }

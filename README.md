@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/preview.png" alt="Wukong Spark Codex desktop pet example" width="760">
+  <img src="assets/examples/wukong-spark/preview.png" alt="Wukong Spark V3 Codex desktop pet example" width="760">
 </p>
 
 ## 快速入口
@@ -263,34 +263,34 @@ Codex pets 目录：Codex 识别并加载宠物
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
 ```
 
-### 真实案例：Wukong Spark
+### 真实案例：Wukong Spark V3
 
-`Wukong Spark` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作行、8 列帧位，其中还包含小悟空头发变成金色的爆气状态。
+`Wukong Spark V3` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作行、8 列帧位。V3 在 2V2 的动作增强基础上继续强化了金发爆气状态：普通状态保留圆眼，金发状态改成更锐利的斜眼和青绿色战斗眼神。
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
+  <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark V3 full animation showcase" width="280">
 </p>
 
 下面的图全部来自 `examples/wukong-spark/spritesheet.webp`，按原始帧直接展示，不重新给动作编英文名字。
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/golden-power-up.png" alt="Wukong Spark golden power-up state" width="620">
+  <img src="assets/examples/wukong-spark/golden-power-up.png" alt="Wukong Spark V3 golden power-up state" width="620">
 </p>
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/all-frames.png" alt="Wukong Spark full spritesheet frame board" width="760">
+  <img src="assets/examples/wukong-spark/all-frames.png" alt="Wukong Spark V3 full spritesheet frame board" width="760">
 </p>
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/row-01.gif" alt="Wukong Spark row 1 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-02.gif" alt="Wukong Spark row 2 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-03.gif" alt="Wukong Spark row 3 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-04.gif" alt="Wukong Spark row 4 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-05.gif" alt="Wukong Spark row 5 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-06.gif" alt="Wukong Spark row 6 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-07.gif" alt="Wukong Spark row 7 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-08.gif" alt="Wukong Spark row 8 animation" width="120">
-  <img src="assets/examples/wukong-spark/row-09.gif" alt="Wukong Spark row 9 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-01.gif" alt="Wukong Spark V3 row 1 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-02.gif" alt="Wukong Spark V3 row 2 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-03.gif" alt="Wukong Spark V3 row 3 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-04.gif" alt="Wukong Spark V3 row 4 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-05.gif" alt="Wukong Spark V3 row 5 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-06.gif" alt="Wukong Spark V3 row 6 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-07.gif" alt="Wukong Spark V3 row 7 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-08.gif" alt="Wukong Spark V3 row 8 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-09.gif" alt="Wukong Spark V3 row 9 animation" width="120">
 </p>
 
 查看完整案例：[examples/wukong-spark](examples/wukong-spark)。这个案例展示了最终用户拿到的真实文件结构：`pet.json` + `spritesheet.webp`。
