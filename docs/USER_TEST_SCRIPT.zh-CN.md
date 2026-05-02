@@ -28,6 +28,7 @@
 
 ```powershell
 Test-Path "$env:USERPROFILE\.codex\skills\codex-pet-director"
+Test-Path "$env:USERPROFILE\.agents\skills\codex-pet-director"
 ```
 
 如果已经安装过，真实新用户测试会不够纯。可以换一台机器测试，或者手动把旧目录临时改名备份。
@@ -65,6 +66,7 @@ https://github.com/zixuanzhou0-ai/codex-pet-director
 
 ```text
 C:\Users\<用户名>\.codex\skills\codex-pet-director
+C:\Users\<用户名>\.agents\skills\codex-pet-director
 ```
 
 ### 3. 重启 Codex
@@ -126,6 +128,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 
 - 从 GitHub 拉取 package。
 - 安装到本机 Codex skills 目录。
+- 同步镜像到 Agents skills 目录，方便 Skill 搜索页发现。
 - 输出下一步 `/create-pet`。
 
 ## 启动后的测试对话

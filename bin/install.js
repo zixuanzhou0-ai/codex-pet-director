@@ -20,6 +20,8 @@ function parseArgs(argv) {
   const options = {
     dryRun: false,
     installRoot: process.env.CODEX_PET_DIRECTOR_INSTALL_ROOT || "",
+    agentsInstallRoot: process.env.CODEX_PET_DIRECTOR_AGENTS_INSTALL_ROOT || "",
+    skipAgentsMirror: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -32,6 +34,14 @@ function parseArgs(argv) {
         throw new Error("--install-root requires a value");
       }
       options.installRoot = argv[i];
+    } else if (arg === "--agents-install-root") {
+      i += 1;
+      if (!argv[i]) {
+        throw new Error("--agents-install-root requires a value");
+      }
+      options.agentsInstallRoot = argv[i];
+    } else if (arg === "--skip-agents-mirror") {
+      options.skipAgentsMirror = true;
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }
@@ -45,6 +55,22 @@ function defaultInstallRoot() {
     return path.join(process.env.CODEX_HOME, "skills");
   }
   return path.join(os.homedir(), ".codex", "skills");
+}
+
+function defaultAgentsInstallRoot() {
+  if (process.env.AGENTS_HOME) {
+    return path.join(process.env.AGENTS_HOME, "skills");
+  }
+  return path.join(os.homedir(), ".agents", "skills");
+}
+
+function assertInside(target, parent) {
+  const fullTarget = path.resolve(target);
+  const fullParent = path.resolve(parent);
+  const relative = path.relative(fullParent, fullTarget);
+  if (relative === "" || relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw new Error(`Refusing to write outside expected parent: ${fullTarget}`);
+  }
 }
 
 function copyDirectory(source, destination) {
@@ -103,29 +129,55 @@ function runEnvironmentCheck(installedSkill) {
   }
 }
 
+function installSkillCopy(source, installRoot, label, dryRun) {
+  const destination = path.join(installRoot, skillName);
+  log(`${label} target: ${destination}`);
+
+  if (dryRun) {
+    return destination;
+  }
+
+  assertInside(destination, installRoot);
+  fs.mkdirSync(installRoot, { recursive: true });
+  fs.rmSync(destination, { recursive: true, force: true });
+  copyDirectory(source, destination);
+  return destination;
+}
+
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const repositoryRoot = path.resolve(__dirname, "..");
   const source = path.join(repositoryRoot, skillName);
   const installRoot = path.resolve(options.installRoot || defaultInstallRoot());
+  const agentsInstallRoot = path.resolve(options.agentsInstallRoot || defaultAgentsInstallRoot());
   const destination = path.join(installRoot, skillName);
+  const shouldMirrorToAgents = !options.skipAgentsMirror && installRoot !== agentsInstallRoot;
 
   if (!fs.existsSync(path.join(source, "SKILL.md"))) {
     throw new Error(`Missing skill source: ${source}`);
   }
 
   log(`Source: ${source}`);
-  log(`Install target: ${destination}`);
+  log(`Codex skill root: ${installRoot}`);
+  if (shouldMirrorToAgents) {
+    log(`Agents skill mirror root: ${agentsInstallRoot}`);
+  }
 
   if (options.dryRun) {
+    installSkillCopy(source, installRoot, "Codex skill", true);
+    if (shouldMirrorToAgents) {
+      installSkillCopy(source, agentsInstallRoot, "Agents skill mirror", true);
+    }
     log("Dry run only. No files were copied.");
     return;
   }
 
-  fs.mkdirSync(installRoot, { recursive: true });
-  fs.rmSync(destination, { recursive: true, force: true });
-  copyDirectory(source, destination);
-  log(`Installed ${skillName}`);
+  installSkillCopy(source, installRoot, "Codex skill", false);
+  log(`Installed ${skillName} to Codex skills`);
+  if (shouldMirrorToAgents) {
+    installSkillCopy(source, agentsInstallRoot, "Agents skill mirror", false);
+    log(`Mirrored ${skillName} to Agents skills for skill search discovery`);
+  }
   runEnvironmentCheck(destination);
   log("Done. Restart Codex if the skill list has not refreshed yet.");
   printNextStep();

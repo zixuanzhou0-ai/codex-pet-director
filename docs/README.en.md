@@ -30,6 +30,8 @@ Developers or terminal users can use `npx`:
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
+The installer writes both to the Codex skills directory and to the Agents skills mirror, so the model can load the skill and the Skill search page can discover it.
+
 Recommended Windows PowerShell command:
 
 ```powershell

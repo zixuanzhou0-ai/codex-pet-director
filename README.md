@@ -37,6 +37,8 @@
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
+安装器会同时写入 Codex skills 目录和 Agents skills 镜像目录。这样模型上下文能加载它，Codex/Agents 的 Skill 搜索页也能发现它。
+
 Windows 用户也可以复制这一行到 PowerShell：
 
 ```powershell
@@ -99,7 +101,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 - `C:\Users\<你>\plugins\codex-pet-director`
 - `C:\Users\<你>\.agents\plugins\marketplace.json`
+- `C:\Users\<你>\.agents\skills\codex-pet-director`
 - `C:\Users\<你>\.codex\config.toml`
+- `C:\Users\<你>\.codex\skills\codex-pet-director`
 
 脚本会先备份 `config.toml`，不会修改 Codex app 本体。当前 Codex 桌面端不会读取第三方插件命令到斜杠菜单里，所以安装后仍然用普通消息 `/create-pet` 启动。
 

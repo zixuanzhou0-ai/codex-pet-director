@@ -2,6 +2,8 @@ param(
     [string]$Repo = "zixuanzhou0-ai/codex-pet-director",
     [string]$Branch = "main",
     [string]$InstallRoot = "",
+    [string]$AgentsInstallRoot = "",
+    [switch]$SkipAgentsMirror,
     [switch]$DryRun
 )
 
@@ -24,6 +26,39 @@ function Get-DefaultInstallRoot {
         return (Join-Path $env:CODEX_HOME "skills")
     }
     return (Join-Path (Join-Path $HOME ".codex") "skills")
+}
+
+function Get-DefaultAgentsInstallRoot {
+    if ($env:AGENTS_HOME) {
+        return (Join-Path $env:AGENTS_HOME "skills")
+    }
+    return (Join-Path (Join-Path $HOME ".agents") "skills")
+}
+
+function Get-NormalizedPath {
+    param([string]$Path)
+
+    $trimChars = [char[]]@(
+        [System.IO.Path]::DirectorySeparatorChar,
+        [System.IO.Path]::AltDirectorySeparatorChar
+    )
+    return [System.IO.Path]::GetFullPath($Path).TrimEnd($trimChars)
+}
+
+function Assert-Inside {
+    param(
+        [string]$Path,
+        [string]$Parent
+    )
+
+    $fullPath = [System.IO.Path]::GetFullPath($Path)
+    $fullParent = [System.IO.Path]::GetFullPath($Parent)
+    if (-not $fullParent.EndsWith([System.IO.Path]::DirectorySeparatorChar)) {
+        $fullParent = $fullParent + [System.IO.Path]::DirectorySeparatorChar
+    }
+    if (-not $fullPath.StartsWith($fullParent, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to write outside expected parent. Path: $fullPath Parent: $fullParent"
+    }
 }
 
 function Get-LocalSkillSource {
@@ -110,8 +145,36 @@ function Invoke-EnvironmentCheck {
     Write-Warning "Python was not found, so the environment check was skipped."
 }
 
+function Install-SkillCopy {
+    param(
+        [string]$Source,
+        [string]$Root,
+        [string]$Label
+    )
+
+    $destination = Join-Path $Root $SkillName
+    Write-Step "$Label target: $destination"
+
+    if ($DryRun) {
+        return $destination
+    }
+
+    Assert-Inside -Path $destination -Parent $Root
+    New-Item -ItemType Directory -Path $Root -Force | Out-Null
+
+    if (Test-Path -LiteralPath $destination) {
+        Remove-Item -LiteralPath $destination -Recurse -Force
+    }
+
+    Copy-Item -LiteralPath $Source -Destination $destination -Recurse
+    return $destination
+}
+
 if ([string]::IsNullOrWhiteSpace($InstallRoot)) {
     $InstallRoot = Get-DefaultInstallRoot
+}
+if ([string]::IsNullOrWhiteSpace($AgentsInstallRoot)) {
+    $AgentsInstallRoot = Get-DefaultAgentsInstallRoot
 }
 
 $source = Get-LocalSkillSource
@@ -119,24 +182,33 @@ if (-not $source) {
     $source = Get-RemoteSkillSource -RepoSlug $Repo -RepoBranch $Branch
 }
 
-$destination = Join-Path $InstallRoot $SkillName
+$installRootPath = Get-NormalizedPath -Path $InstallRoot
+$agentsRootPath = Get-NormalizedPath -Path $AgentsInstallRoot
+$shouldMirrorToAgents = (-not $SkipAgentsMirror) -and
+    (-not [string]::Equals($installRootPath, $agentsRootPath, [System.StringComparison]::OrdinalIgnoreCase))
 
 Write-Step "Source: $source"
-Write-Step "Install target: $destination"
+Write-Step "Codex skill root: $InstallRoot"
+if ($shouldMirrorToAgents) {
+    Write-Step "Agents skill mirror root: $AgentsInstallRoot"
+}
 
 if ($DryRun) {
+    Install-SkillCopy -Source $source -Root $InstallRoot -Label "Codex skill" | Out-Null
+    if ($shouldMirrorToAgents) {
+        Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
+    }
     Write-Step "Dry run only. No files were copied."
     exit 0
 }
 
-New-Item -ItemType Directory -Path $InstallRoot -Force | Out-Null
+$destination = Install-SkillCopy -Source $source -Root $InstallRoot -Label "Codex skill"
+Write-Step "Installed $SkillName to Codex skills"
 
-if (Test-Path -LiteralPath $destination) {
-    Remove-Item -LiteralPath $destination -Recurse -Force
+if ($shouldMirrorToAgents) {
+    Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
+    Write-Step "Mirrored $SkillName to Agents skills for skill search discovery"
 }
-
-Copy-Item -LiteralPath $source -Destination $destination -Recurse
-Write-Step "Installed $SkillName"
 
 Invoke-EnvironmentCheck -InstalledSkill $destination
 

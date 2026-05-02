@@ -4,6 +4,8 @@ param(
     [string]$PluginRoot = "",
     [string]$MarketplaceRoot = "",
     [string]$CodexHome = "",
+    [string]$AgentsSkillRoot = "",
+    [switch]$SkipAgentsSkillMirror,
     [switch]$SkipConfig,
     [switch]$DryRun
 )
@@ -264,6 +266,9 @@ if ([string]::IsNullOrWhiteSpace($MarketplaceRoot)) {
 if ([string]::IsNullOrWhiteSpace($PluginRoot)) {
     $PluginRoot = Join-Path (Join-Path $MarketplaceRoot "plugins") $PluginName
 }
+if ([string]::IsNullOrWhiteSpace($AgentsSkillRoot)) {
+    $AgentsSkillRoot = Join-Path (Join-Path $MarketplaceRoot ".agents") "skills"
+}
 if ([string]::IsNullOrWhiteSpace($CodexHome)) {
     if ($env:CODEX_HOME) {
         $CodexHome = $env:CODEX_HOME
@@ -276,15 +281,20 @@ $PluginParent = Join-Path $MarketplaceRoot "plugins"
 $MarketplacePath = Join-Path (Join-Path $MarketplaceRoot ".agents") "plugins\marketplace.json"
 $ConfigPath = Join-Path $CodexHome "config.toml"
 $InstalledSkillRoot = Join-Path (Join-Path $CodexHome "skills") $PluginName
+$AgentsInstalledSkillRoot = Join-Path $AgentsSkillRoot $PluginName
 
 Assert-Inside -Path $PluginRoot -Parent $PluginParent
 Assert-Inside -Path $MarketplacePath -Parent $MarketplaceRoot
 Assert-Inside -Path $ConfigPath -Parent $CodexHome
+Assert-Inside -Path $AgentsInstalledSkillRoot -Parent $AgentsSkillRoot
 
 Write-Step "Repo source: $RepoRoot"
 Write-Step "Plugin target: $PluginRoot"
 Write-Step "Marketplace: $MarketplacePath"
 Write-Step "Codex config: $ConfigPath"
+if (-not $SkipAgentsSkillMirror) {
+    Write-Step "Agents skill mirror: $AgentsInstalledSkillRoot"
+}
 
 if ($DryRun) {
     Write-Step "Dry run only. No files were changed."
@@ -305,11 +315,19 @@ Write-JsonFile -Path (Join-Path $PluginRoot ".codex-plugin\plugin.json") -Value 
 New-Item -ItemType Directory -Path (Split-Path -Parent $InstalledSkillRoot) -Force | Out-Null
 Copy-CleanDirectory -Source $SkillSource -Destination $InstalledSkillRoot -AllowedParent (Join-Path $CodexHome "skills")
 
+if (-not $SkipAgentsSkillMirror) {
+    New-Item -ItemType Directory -Path $AgentsSkillRoot -Force | Out-Null
+    Copy-CleanDirectory -Source $SkillSource -Destination $AgentsInstalledSkillRoot -AllowedParent $AgentsSkillRoot
+}
+
 Update-MarketplaceJson -Path $MarketplacePath
 if (-not $SkipConfig) {
     Update-CodexConfig -ConfigPath $ConfigPath -SourceRoot $MarketplaceRoot
 }
 
 Write-Step "Installed local plugin package metadata."
+if (-not $SkipAgentsSkillMirror) {
+    Write-Step "Mirrored $PluginName to Agents skills for skill search discovery."
+}
 Write-Step "Current Codex desktop builds do not expose third-party plugin commands in the slash menu."
 Write-Step "Restart Codex if needed, then send /create-pet as a normal chat message to start the flow."
