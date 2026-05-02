@@ -268,8 +268,10 @@ Codex pets 目录：Codex 识别并加载宠物
 `Wukong Spark` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作、每个动作 8 帧，其中还包含小悟空头发变成金色的爆气状态。
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/waving.gif" alt="Wukong Spark waving animation" width="160">
+  <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
 </p>
+
+这张动图串起了普通待机、金发爆气、奔跑、跳跃和挥手，让用户能直接看到它不是单张图片，而是一套可运行的桌面宠物动作。
 
 <p align="center">
   <img src="assets/examples/wukong-spark/golden-power-up.png" alt="Wukong Spark golden power-up state" width="620">

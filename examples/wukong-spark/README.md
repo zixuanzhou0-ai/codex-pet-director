@@ -17,9 +17,11 @@ The sprite sheet follows the official Codex pet layout: 9 actions x 8 frames.
 
 ![Wukong Spark actions](../../assets/examples/wukong-spark/actions.png)
 
-## Animation Sample
+## Animation Showcase
 
-![Wukong Spark waving](../../assets/examples/wukong-spark/waving.gif)
+![Wukong Spark full animation showcase](../../assets/examples/wukong-spark/showcase.gif)
+
+This GIF combines normal idle, golden power-up, running, jumping, and waving frames from the real sprite sheet.
 
 ## Golden Power-Up
 

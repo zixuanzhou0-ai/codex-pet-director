@@ -179,7 +179,7 @@ I have a reference image. Turn it into an official Codex desktop pet.
 
 ## Example
 
-See [../examples/wukong-spark](../examples/wukong-spark) for a real generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load, including a golden-hair power-up state.
+See [../examples/wukong-spark](../examples/wukong-spark) for a real generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load, including a golden-hair power-up state and a full animation showcase.
 
 See [../examples/blue-robot-cat](../examples/blue-robot-cat) for a complete sample brief, preview card, and action prompt notes.
 
