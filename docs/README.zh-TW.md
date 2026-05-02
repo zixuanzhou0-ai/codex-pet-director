@@ -21,7 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ## 它能做什麼
 
 - 檢查 Codex 是否能使用自訂 pet。
-- 支援繁體中文、簡體中文、English、日本語、한국어、Español、Français、Deutsch。
 - 用新手也能懂的問題做角色訪談。
 - 中途可以切換語言。
 - 在關鍵階段生成 2-4 張確認圖。

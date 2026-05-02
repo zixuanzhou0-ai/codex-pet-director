@@ -32,7 +32,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ### 这个 skill 做什么
 
 - 检查用户是否具备 Codex pet 使用环境。
-- 支持中文、繁體中文、English、日本語、한국어、Español、Français、Deutsch。
 - 用面向小白的问题做高定制采访，中途可以切换语言。
 - 每个关键板块后生成 2-4 张确认图，让用户选择或混合偏好。
 - 记录 `pet_brief.json`，避免每轮重新发明角色。
@@ -140,7 +139,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ### What It Does
 
 - Checks whether the local Codex environment can use custom pets.
-- Supports Simplified Chinese, Traditional Chinese, English, Japanese, Korean, Spanish, French, and German.
 - Interviews beginners in small, plain-language blocks.
 - Lets the user switch language during the flow.
 - Generates 2-4 visual confirmation images at key stages.

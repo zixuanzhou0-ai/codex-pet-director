@@ -21,7 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ## 주요 기능
 
 - Codex에서 커스텀 pet을 사용할 수 있는지 확인합니다.
-- 한국어, 中文, English, 日本語, Español, Français, Deutsch를 지원합니다.
 - 초보자도 이해하기 쉬운 질문으로 캐릭터를 설계합니다.
 - 진행 중 언어를 바꿀 수 있습니다.
 - 중요한 단계마다 2-4장의 확인 이미지를 생성합니다.

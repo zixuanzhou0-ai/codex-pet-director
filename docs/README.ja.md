@@ -21,7 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ## できること
 
 - Codex がカスタム pet を使える環境か確認します。
-- 日本語、中文、English、한국어、Español、Français、Deutsch に対応します。
 - 初心者向けの短い質問でペットの方向性を決めます。
 - 途中で言語を切り替えられます。
 - 重要な段階で 2-4 枚の確認画像を生成します。

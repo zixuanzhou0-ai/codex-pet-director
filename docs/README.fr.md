@@ -21,7 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 ## Fonctionnalités
 
 - Vérifie si Codex peut utiliser des pets personnalisés.
-- Prend en charge Français, 中文, English, 日本語, 한국어, Español et Deutsch.
 - Pose des questions simples, adaptées aux débutants.
 - Permet de changer de langue pendant le processus.
 - Génère 2-4 images de confirmation aux étapes clés.
