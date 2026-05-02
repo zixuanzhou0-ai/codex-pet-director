@@ -179,7 +179,7 @@ I have a reference image. Turn it into an official Codex desktop pet.
 
 ## Example
 
-See [../examples/wukong-spark](../examples/wukong-spark) for the Wukong Spark V3 generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load, plus a full static frame board and row-by-row GIFs generated directly from the sprite sheet.
+See [../examples/wukong-spark](../examples/wukong-spark) for the Wukong Spark 2V2 generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load, plus a full static frame board and row-by-row GIFs generated directly from the sprite sheet.
 
 See [../examples/blue-robot-cat](../examples/blue-robot-cat) for a complete sample brief, preview card, and action prompt notes.
 

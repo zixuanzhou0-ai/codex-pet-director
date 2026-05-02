@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Install the codex-pet-director Codex skill and optional local plugin entrypoint.",
   "bin": {
     "codex-pet-director": "bin/install.js",

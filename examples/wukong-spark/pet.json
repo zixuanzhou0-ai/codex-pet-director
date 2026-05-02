@@ -1,6 +1,6 @@
 {
-  "id": "wukong-spark-v3",
-  "displayName": "Wukong Spark V3",
-  "description": "A sharper Wukong Spark example with stronger motion accents and transformed Super Saiyan-style eyes in the golden power-up frames.",
+  "id": "wukong-spark-2v2",
+  "displayName": "Wukong Spark 2V2",
+  "description": "A sharper Wukong Spark variant with stronger run motion, clearer reaction accents, and an extended golden power-up hold.",
   "spritesheetPath": "spritesheet.webp"
 }
