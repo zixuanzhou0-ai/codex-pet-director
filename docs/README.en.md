@@ -179,6 +179,8 @@ I have a reference image. Turn it into an official Codex desktop pet.
 
 ## Example
 
+See [../examples/wukong-spark](../examples/wukong-spark) for a real generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load.
+
 See [../examples/blue-robot-cat](../examples/blue-robot-cat) for a complete sample brief, preview card, and action prompt notes.
 
-The example is not a final generated pet. It shows how a rough idea becomes a structured brief before final production.
+The Wukong example shows the finished output. The blue robot cat example shows how a rough idea becomes a structured brief before final production.

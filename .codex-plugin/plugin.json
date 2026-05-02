@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Create official custom Codex desktop pets with a beginner-friendly director flow and /create-pet entrypoint.",
   "author": {
     "name": "zixuanzhou0-ai",
@@ -33,6 +33,9 @@
       "我有一张参考图，帮我做成 Codex 官方桌面宠物。"
     ],
     "brandColor": "#F25A2B",
-    "screenshots": []
+    "screenshots": [
+      "assets/examples/wukong-spark/preview.png",
+      "assets/examples/wukong-spark/actions.png"
+    ]
   }
 }

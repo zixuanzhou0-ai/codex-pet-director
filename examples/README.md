@@ -1,12 +1,11 @@
 # Examples
 
-These examples show how a user idea becomes a structured `pet_brief.json` before final generation.
-
-They are not final generated Codex pets. They are reference briefs for testing, documentation, and user education.
+These examples show both the planning stage and the final generated Codex pet package.
 
 ## Available Examples
 
 - [blue-robot-cat](blue-robot-cat): a small cyber-cute robot cat with screen-face expressions and clear action notes.
+- [wukong-spark](wukong-spark): a real generated Codex desktop pet package with `pet.json` and `spritesheet.webp`.
 
 ## How To Use An Example
 
