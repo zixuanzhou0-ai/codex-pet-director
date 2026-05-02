@@ -1,0 +1,21 @@
+.codex_app_asar_extract/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local generated briefs and pet outputs
+pet_brief.json
+*.brief.json
+generated/
+output/
+dist/
+tmp/
+temp/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

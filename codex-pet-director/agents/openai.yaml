@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Pet Director"
+  short_description: "Guide users through official custom Codex desktop pet creation."
+  default_prompt: "帮我定制一个能在 Codex 里直接使用的桌面宠物。"
