@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "meta": {
+    "created_at": "2026-05-02T12:00:00+00:00",
+    "updated_at": "2026-05-02T12:00:00+00:00",
+    "language": "zh-CN",
+    "language_name": "简体中文",
+    "fallback_language": "zh-CN",
+    "target": "official-codex-pet",
+    "user_intro_seen": true
+  },
+  "environment": {
+    "status": "example-only",
+    "notes": "This sample brief is for documentation and testing."
+  },
+  "identity": {
+    "name": "BitCat",
+    "concept": "蓝色机器人猫，像一个陪用户写代码的小助手。",
+    "reference_images": [],
+    "reference_likeness": "无参考图，按文字方向生成。"
+  },
+  "form": {
+    "type": "半身小伙伴",
+    "notes": "重点放在表情、屏幕眼睛、耳朵、肩部和小道具动作。"
+  },
+  "style": {
+    "selected": [
+      "可爱软萌",
+      "酷酷赛博"
+    ],
+    "avoid_styles": [
+      "太写实",
+      "太复杂",
+      "恐怖"
+    ],
+    "notes": "干净 Q 版吉祥物，圆润轮廓，清晰描边，轻微赛博细节。"
+  },
+  "personality": {
+    "traits": [
+      "聪明",
+      "安静",
+      "偶尔吐槽"
+    ],
+    "role": "写代码时陪伴用户的小助手",
+    "reaction_intensity": "中等，失败时明显但不夸张。"
+  },
+  "appearance": {
+    "main_colors": [
+      "electric blue",
+      "white",
+      "graphite gray"
+    ],
+    "must_have": [
+      "screen-face eyes",
+      "small cat ears",
+      "tiny code badge",
+      "compact silhouette"
+    ],
+    "avoid": [
+      "scary face",
+      "heavy armor",
+      "realistic fur",
+      "long text on body"
+    ],
+    "visual_locks": [
+      "same screen-face eyes",
+      "same electric blue shell",
+      "same small cat ears",
+      "same chest code badge",
+      "same compact half-body shape"
+    ]
+  },
+  "usage": {
+    "main_scenario": "陪用户在 Codex 里写代码、等结果、看 review。",
+    "desktop_feeling": "安静、聪明、可爱，有一点科技感。"
+  },
+  "confirmations": {
+    "direction_choice": "A 的脸 + B 的颜色 + C 的气质",
+    "formal_character_image": "locked-example-character-image",
+    "canonical_base": "locked blue robot cat half-body assistant",
+    "key_action_preview": "idle, failed, review preview approved",
+    "final_card_confirmed": true
+  },
+  "actions": {
+    "idle": {
+      "frames": 6,
+      "user_answer": "平时慢慢眨眼，胸口有一点蓝光呼吸。",
+      "summary": "慢眨眼、轻微呼吸、耳朵轻动。",
+      "prompt_notes": "1 neutral, 2 blink, 3 chest glow, 4 ears twitch, 5 tiny breathing bob, 6 neutral."
+    },
+    "running": {
+      "frames": 6,
+      "user_answer": "Codex 工作时像在快速扫描代码。",
+      "summary": "屏幕眼睛左右扫描，徽章微亮。",
+      "prompt_notes": "1 focus, 2 eyes scan left, 3 eyes scan right, 4 badge glow, 5 quick nod, 6 focus loop."
+    },
+    "waiting": {
+      "frames": 6,
+      "user_answer": "等待用户回复时歪头看用户，轻轻敲爪子。",
+      "summary": "歪头、看向用户、轻敲爪。",
+      "prompt_notes": "1 neutral, 2 look at user, 3 head tilt, 4 tiny paw tap, 5 hold, 6 neutral."
+    },
+    "failed": {
+      "frames": 8,
+      "user_answer": "失败时屏幕 glitch，耳朵耷拉，然后弱弱重启。",
+      "summary": "卡住、闪屏、耳朵下垂、重启。",
+      "prompt_notes": "1 freeze, 2 eyes glitch, 3 ears droop, 4 slump, 5 warning flicker, 6 restart blink, 7 stabilize, 8 tired pose."
+    },
+    "review": {
+      "frames": 6,
+      "user_answer": "有结果要看时靠近一点，露出严格检查的眼神。",
+      "summary": "前倾、扫描、严格点头。",
+      "prompt_notes": "1 lean in, 2 scan eyes, 3 badge glow, 4 narrow eyes, 5 approving nod, 6 focus."
+    },
+    "jumping": {
+      "frames": 5,
+      "user_answer": "鼠标靠近时惊讶地弹一下。",
+      "summary": "小幅弹起，眼睛变大。",
+      "prompt_notes": "1 neutral, 2 eyes widen, 3 pop upward, 4 ears perk, 5 settle."
+    },
+    "waving": {
+      "frames": 4,
+      "user_answer": "打招呼时举起一只爪子，屏幕闪一个小表情。",
+      "summary": "举爪招手，屏幕笑眼。",
+      "prompt_notes": "1 raise paw, 2 wave out, 3 smile eyes flash, 4 return."
+    },
+    "running-right": {
+      "frames": 8,
+      "user_answer": "向右移动时像小推进器一样滑过去。",
+      "summary": "向右滑动，爪子和耳朵有轻微惯性。",
+      "prompt_notes": "1 ready, 2 lean right, 3 booster glow, 4 slide, 5 slide, 6 ears trail, 7 slow, 8 settle."
+    },
+    "running-left": {
+      "frames": 8,
+      "user_answer": "向左移动时和向右一样，但保持角色不要变形。",
+      "summary": "向左滑动，尽量镜像但保留锁定外观。",
+      "prompt_notes": "1 ready, 2 lean left, 3 booster glow, 4 slide, 5 slide, 6 ears trail, 7 slow, 8 settle."
+    }
+  },
+  "notes": [
+    "Example brief for documentation.",
+    "Do not add extra official actions beyond the 9 Codex states."
+  ]
+}

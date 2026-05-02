@@ -11,6 +11,38 @@
   <a href="docs/README.de.md">Deutsch</a>
 </p>
 
+<p align="center">
+  <img src="assets/quickstart.svg" alt="Codex Pet Director quick start" width="760">
+</p>
+
+## 快速入口 / Quick Start
+
+最适合新手的方式：把这句话直接发给 Codex，让 Codex 自己安装。
+
+```text
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+安装完成后重启 Codex，然后输入：
+
+```text
+/create-pet
+```
+
+如果你的 Codex 版本支持插件 slash command，`/create-pet` 可以作为命令入口出现；如果没有显示命令菜单，也可以把 `/create-pet` 当普通消息发送。
+
+终端用户可以直接运行：
+
+```bash
+npx --yes github:zixuanzhou0-ai/codex-pet-director
+```
+
+Windows 用户也可以复制这一行到 PowerShell：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+```
+
 ## 简体中文
 
 `codex-pet-director` 是一个多语言 Codex 桌面宠物高定制向导 skill。它会先检查用户环境，再用简单问题一步步确认角色、形态、风格、外观、性格和 9 个官方动作，最后把锁定后的方案交给现有 `hatch-pet` 生成 Codex 可用的宠物包。
@@ -19,19 +51,23 @@
 
 启动入口就是 `/create-pet`。如果你的 Codex 当前没有显示斜杠菜单，也没关系，把 `/create-pet` 当普通消息发出去即可。
 
-第一步，把下面这句话直接发给 Codex：
+**方式 A：让 Codex 自己安装。**
+
+把下面这句话直接发给 Codex：
 
 ```text
 请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
 ```
 
-第二步，安装完成后重启 Codex，然后把下面这句话发给 Codex：
+安装完成后重启 Codex，然后把下面这句话发给 Codex：
 
 ```text
 /create-pet
 ```
 
-开发者也可以用 `npx`：
+**方式 B：用终端安装。**
+
+开发者或熟悉终端的用户可以用 `npx`：
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -54,6 +90,16 @@ macOS / Linux:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
 ```
+
+### 30 秒上手
+
+1. 安装这个 skill。
+2. 重启 Codex。
+3. 输入 `/create-pet`。
+4. 回答它是谁、是什么形态、是什么风格、长什么样。
+5. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
+6. 确认 9 个官方动作。
+7. 让 `hatch-pet` 生成 `pet.json` 和 `spritesheet.webp`。
 
 ### 这个 skill 做什么
 
@@ -130,6 +176,18 @@ Codex pets 目录：Codex 识别并加载宠物
 
 如果缺少目录，安装器会尝试安全创建。它不会修改 Codex app 本体。
 
+### 安装后自检
+
+输入 `/create-pet` 后，它会先检查：
+
+- 你的系统是 Windows、macOS 还是 Linux。
+- Codex 的 `skills` 和 `pets` 目录是否存在。
+- `pets` 目录是否能写入。
+- `hatch-pet` 是否已经安装。
+- Codex 桌面端是否有 pet 功能线索。
+
+如果有问题，它会直接告诉你缺什么；如果只是缺少安全目录，安装器会自动创建。
+
 ### 使用方式
 
 安装后，在 Codex 里直接输入：
@@ -144,6 +202,12 @@ Codex pets 目录：Codex 识别并加载宠物
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
 ```
 
+### 示例
+
+仓库里有一个完整示例：[examples/blue-robot-cat](examples/blue-robot-cat)。它展示了 `pet_brief.json`、用户确认卡片和动作提示词大概长什么样。
+
+这个示例不是最终生成图，而是告诉用户：从一句想法到正式生产之前，中间会被整理成什么结构。
+
 ## English
 
 `codex-pet-director` is a multilingual Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, records the final direction in `pet_brief.json`, and then hands the locked brief to `hatch-pet` to produce a Codex-ready pet package.
@@ -152,19 +216,23 @@ Codex pets 目录：Codex 识别并加载宠物
 
 The start entry is `/create-pet`. If your Codex build does not show a slash-command menu, send `/create-pet` as a normal chat message.
 
-Step 1: paste this directly into Codex:
+**Option A: ask Codex to install it.**
+
+Paste this directly into Codex:
 
 ```text
 Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
 ```
 
-Step 2: after installation, restart Codex and paste this:
+After installation, restart Codex and paste this:
 
 ```text
 /create-pet
 ```
 
-Developers can also use `npx`:
+**Option B: install from a terminal.**
+
+Developers or terminal users can use `npx`:
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -187,6 +255,16 @@ macOS / Linux:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
 ```
+
+### 30-Second Start
+
+1. Install the skill.
+2. Restart Codex.
+3. Type `/create-pet`.
+4. Answer who it is, what form it has, what style it should use, and what it looks like.
+5. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
+6. Confirm the 9 official actions.
+7. Let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
 
 ### What It Does
 
@@ -266,6 +344,18 @@ Full pet generation requires:
 
 The installer safely creates missing local folders when possible. It does not modify the Codex app itself.
 
+### Post-Install Check
+
+When the user types `/create-pet`, the skill checks:
+
+- whether the machine is Windows, macOS, or Linux
+- whether Codex `skills` and `pets` folders exist
+- whether the `pets` folder is writable
+- whether `hatch-pet` is installed
+- whether there is evidence of Codex desktop pet support
+
+If something is missing, it explains the missing piece. If only safe local folders are missing, the installer creates them.
+
 ### Usage
 
 After installation, type this in Codex:
@@ -280,6 +370,12 @@ If your Codex build does not have a slash-command menu, send it as normal text. 
 I have a reference image. Turn it into an official Codex desktop pet.
 ```
 
+### Example
+
+See [examples/blue-robot-cat](examples/blue-robot-cat) for a complete sample brief, preview card, and action prompt notes.
+
+The example is not a final generated pet. It shows how a rough idea becomes a structured brief before final production.
+
 ## Repository Structure
 
 ```text
@@ -293,6 +389,10 @@ I have a reference image. Turn it into an official Codex desktop pet.
 │   └── create-pet.md
 ├── .codex-plugin/
 │   └── plugin.json
+├── assets/
+│   └── quickstart.svg
+├── examples/
+│   └── blue-robot-cat/
 ├── docs/
 ├── bin/
 ├── install.cmd

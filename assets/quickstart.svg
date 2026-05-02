@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Pet Director quick start</title>
+  <desc id="desc">Install the skill, type /create-pet, answer simple questions, choose previews, and generate the Codex pet package.</desc>
+  <rect width="960" height="300" fill="#F8FAFC"/>
+  <rect x="24" y="24" width="912" height="252" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>
+  <text x="56" y="70" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">Codex Pet Director</text>
+  <text x="56" y="103" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="16">One guided flow from idea to official Codex desktop pet</text>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="56" y="142" width="144" height="82" rx="8" fill="#ECFEFF" stroke="#06B6D4"/>
+    <text x="82" y="174" fill="#0E7490" font-size="15" font-weight="700">1. Install</text>
+    <text x="82" y="198" fill="#164E63" font-size="13">skill-installer</text>
+    <text x="82" y="216" fill="#164E63" font-size="13">or npx</text>
+    <path d="M214 183h46" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+    <path d="M252 175l10 8-10 8" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="276" y="142" width="144" height="82" rx="8" fill="#F0FDF4" stroke="#22C55E"/>
+    <text x="302" y="174" fill="#15803D" font-size="15" font-weight="700">2. Start</text>
+    <text x="302" y="201" fill="#14532D" font-size="18" font-weight="700">/create-pet</text>
+    <path d="M434 183h46" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+    <path d="M472 175l10 8-10 8" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="496" y="142" width="144" height="82" rx="8" fill="#FEFCE8" stroke="#EAB308"/>
+    <text x="522" y="174" fill="#A16207" font-size="15" font-weight="700">3. Answer</text>
+    <text x="522" y="198" fill="#713F12" font-size="13">identity, form, style</text>
+    <text x="522" y="216" fill="#713F12" font-size="13">actions, dislikes</text>
+    <path d="M654 183h46" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+    <path d="M692 175l10 8-10 8" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="716" y="142" width="144" height="82" rx="8" fill="#FFF1F2" stroke="#FB7185"/>
+    <text x="742" y="174" fill="#BE123C" font-size="15" font-weight="700">4. Generate</text>
+    <text x="742" y="198" fill="#881337" font-size="13">pet.json</text>
+    <text x="742" y="216" fill="#881337" font-size="13">spritesheet.webp</text>
+  </g>
+  <text x="56" y="254" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="14">If slash commands are unavailable, send /create-pet as a normal chat message.</text>
+</svg>

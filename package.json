@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Install the codex-pet-director Codex skill with the /create-pet entrypoint.",
   "bin": {
     "codex-pet-director": "bin/install.js",
@@ -9,10 +9,12 @@
   "files": [
     "bin/install.js",
     ".codex-plugin/plugin.json",
+    "assets/**/*",
     "commands/**/*",
     "codex-pet-director/**/*",
     "!codex-pet-director/**/__pycache__/**",
     "!codex-pet-director/**/*.pyc",
+    "examples/**/*",
     "install.cmd",
     "install.ps1",
     "install.sh",
