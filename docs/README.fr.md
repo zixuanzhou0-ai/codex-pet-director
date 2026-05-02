@@ -1,4 +1,4 @@
-# Codex Pet Director
+﻿# Codex Pet Director
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · Français · [Deutsch](README.de.md)
 
@@ -9,7 +9,7 @@
 Le point de départ est `/create-pet`. Si votre version de Codex n'affiche pas de menu de commandes avec `/`, envoyez `/create-pet` comme un message normal.
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 Après l'installation, redémarrez Codex puis demandez :

@@ -84,8 +84,16 @@ script_dir() {
 find_local_source() {
   local dir
   dir="$(script_dir)"
+  if [ -f "$dir/skills/$SKILL_NAME/SKILL.md" ]; then
+    printf '%s\n' "$dir/skills/$SKILL_NAME"
+    return 0
+  fi
   if [ -f "$dir/$SKILL_NAME/SKILL.md" ]; then
     printf '%s\n' "$dir/$SKILL_NAME"
+    return 0
+  fi
+  if [ -f "$(pwd)/skills/$SKILL_NAME/SKILL.md" ]; then
+    printf '%s\n' "$(pwd)/skills/$SKILL_NAME"
     return 0
   fi
   if [ -f "$(pwd)/$SKILL_NAME/SKILL.md" ]; then
@@ -117,13 +125,23 @@ download_source() {
   fi
 
   tar -xzf "$tarball" -C "$tmp"
-  skill_md="$(find "$tmp" -type f -path "*/$SKILL_NAME/SKILL.md" -print -quit)"
+  skill_md="$(find "$tmp" -type f -path "*/skills/$SKILL_NAME/SKILL.md" -print -quit)"
+  if [ -z "$skill_md" ]; then
+    skill_md="$(find "$tmp" -type f -path "*/$SKILL_NAME/SKILL.md" -print -quit)"
+  fi
   if [ -z "$skill_md" ]; then
     echo "Could not find $SKILL_NAME/SKILL.md in the downloaded archive." >&2
     exit 1
   fi
 
   dirname "$skill_md"
+}
+
+source_skill_path() {
+  case "${1%/}" in
+    */skills/$SKILL_NAME) printf 'skills/%s/SKILL.md\n' "$SKILL_NAME" ;;
+    *) printf '%s/SKILL.md\n' "$SKILL_NAME" ;;
+  esac
 }
 
 run_environment_check() {
@@ -144,6 +162,86 @@ run_environment_check() {
   else
     step "Python was not found, so the environment check was skipped."
   fi
+}
+
+update_skill_lock() {
+  local installed="$1"
+  local skill_path="$2"
+
+  if [ ! -f "$installed/SKILL.md" ]; then
+    step "Agents skill lock skipped because the Agents mirror was not installed."
+    return 0
+  fi
+
+  local python_bin=""
+  if command -v python3 >/dev/null 2>&1; then
+    python_bin="python3"
+  elif command -v python >/dev/null 2>&1; then
+    python_bin="python"
+  else
+    step "Python was not found, so the Agents skill lock was skipped."
+    return 0
+  fi
+
+  CODEX_PET_DIRECTOR_LOCK_ROOT="$AGENTS_INSTALL_ROOT" \
+  CODEX_PET_DIRECTOR_INSTALLED_SKILL="$installed" \
+  CODEX_PET_DIRECTOR_REPO_SLUG="$REPO" \
+  CODEX_PET_DIRECTOR_SKILL_PATH="$skill_path" \
+  "$python_bin" - <<'PY'
+import datetime
+import hashlib
+import json
+import os
+
+agents_root = os.environ["CODEX_PET_DIRECTOR_LOCK_ROOT"]
+installed = os.environ["CODEX_PET_DIRECTOR_INSTALLED_SKILL"]
+repo = os.environ["CODEX_PET_DIRECTOR_REPO_SLUG"]
+skill_path = os.environ["CODEX_PET_DIRECTOR_SKILL_PATH"]
+
+def folder_hash(root):
+    digest = hashlib.sha1()
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames.sort()
+        for filename in sorted(filenames):
+            path = os.path.join(dirpath, filename)
+            relative = os.path.relpath(path, root).replace(os.sep, "/")
+            digest.update((relative + "\n").encode("utf-8"))
+            with open(path, "rb") as handle:
+                digest.update(handle.read())
+            digest.update(b"\n")
+    return digest.hexdigest()
+
+agents_home = os.path.dirname(os.path.abspath(agents_root))
+lock_path = os.path.join(agents_home, ".skill-lock.json")
+if os.path.exists(lock_path):
+    with open(lock_path, "r", encoding="utf-8") as handle:
+        lock = json.load(handle)
+else:
+    lock = {"version": 3, "skills": {}}
+
+lock.setdefault("version", 3)
+if not isinstance(lock.get("skills"), dict):
+    lock["skills"] = {}
+
+existing = lock["skills"].get("codex-pet-director", {})
+now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+lock["skills"]["codex-pet-director"] = {
+    "source": repo,
+    "sourceType": "github",
+    "sourceUrl": f"https://github.com/{repo}.git",
+    "skillPath": skill_path,
+    "skillFolderHash": folder_hash(installed),
+    "installedAt": existing.get("installedAt", now),
+    "updatedAt": now,
+}
+
+os.makedirs(os.path.dirname(lock_path), exist_ok=True)
+with open(lock_path, "w", encoding="utf-8") as handle:
+    json.dump(lock, handle, ensure_ascii=False, indent=2)
+    handle.write("\n")
+
+print(f"[codex-pet-director] Updated Agents skill lock: {lock_path}")
+PY
 }
 
 install_skill_copy() {
@@ -187,6 +285,9 @@ if [ "$DRY_RUN" -eq 1 ]; then
   if [ "$SHOULD_MIRROR_TO_AGENTS" -eq 1 ]; then
     install_skill_copy "$SOURCE" "$AGENTS_INSTALL_ROOT" "Agents skill mirror"
   fi
+  if [ "$SKIP_AGENTS_MIRROR" -eq 0 ]; then
+    step "Would update Agents skill lock under $AGENTS_INSTALL_ROOT"
+  fi
   step "Dry run only. No files were copied."
   exit 0
 fi
@@ -196,6 +297,9 @@ step "Installed $SKILL_NAME to Codex skills"
 if [ "$SHOULD_MIRROR_TO_AGENTS" -eq 1 ]; then
   install_skill_copy "$SOURCE" "$AGENTS_INSTALL_ROOT" "Agents skill mirror"
   step "Mirrored $SKILL_NAME to Agents skills for skill search discovery"
+fi
+if [ "$SKIP_AGENTS_MIRROR" -eq 0 ]; then
+  update_skill_lock "$AGENTS_INSTALL_ROOT/$SKILL_NAME" "$(source_skill_path "$SOURCE")"
 fi
 run_environment_check "$DESTINATION"
 step "Done. Restart Codex if the skill list has not refreshed yet."

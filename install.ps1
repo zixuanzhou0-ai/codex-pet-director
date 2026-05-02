@@ -72,6 +72,11 @@ function Get-LocalSkillSource {
     $roots += (Get-Location).Path
 
     foreach ($root in ($roots | Select-Object -Unique)) {
+        $candidate = Join-Path (Join-Path $root "skills") $SkillName
+        if (Test-Path -LiteralPath (Join-Path $candidate "SKILL.md")) {
+            return (Resolve-Path -LiteralPath $candidate).Path
+        }
+
         $candidate = Join-Path $root $SkillName
         if (Test-Path -LiteralPath (Join-Path $candidate "SKILL.md")) {
             return (Resolve-Path -LiteralPath $candidate).Path
@@ -101,15 +106,31 @@ function Get-RemoteSkillSource {
 
     Expand-Archive -Path $zipPath -DestinationPath $tempRoot -Force
 
-    $skill = Get-ChildItem -Path $tempRoot -Directory -Recurse -Filter $SkillName |
-        Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md") } |
+    $canonicalSkill = Get-ChildItem -Path $tempRoot -File -Recurse -Filter "SKILL.md" |
+        Where-Object { ($_.FullName -replace "/", "\") -like "*\skills\$SkillName\SKILL.md" } |
         Select-Object -First 1
 
-    if (-not $skill) {
+    if (-not $canonicalSkill) {
+        $canonicalSkill = Get-ChildItem -Path $tempRoot -File -Recurse -Filter "SKILL.md" |
+            Where-Object { ($_.FullName -replace "/", "\") -like "*\$SkillName\SKILL.md" } |
+            Select-Object -First 1
+    }
+
+    if (-not $canonicalSkill) {
         throw "Could not find $SkillName/SKILL.md in the downloaded archive."
     }
 
-    return $skill.FullName
+    return (Split-Path -Parent $canonicalSkill.FullName)
+}
+
+function Get-SkillSourcePath {
+    param([string]$Source)
+
+    $normalized = ([System.IO.Path]::GetFullPath($Source) -replace "/", "\")
+    if ($normalized -like "*\skills\$SkillName") {
+        return "skills/$SkillName/SKILL.md"
+    }
+    return "$SkillName/SKILL.md"
 }
 
 function Invoke-EnvironmentCheck {
@@ -143,6 +164,101 @@ function Invoke-EnvironmentCheck {
     }
 
     Write-Warning "Python was not found, so the environment check was skipped."
+}
+
+function Read-JsonFile {
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return $null
+    }
+    $raw = Get-Content -Raw -LiteralPath $Path
+    if ([string]::IsNullOrWhiteSpace($raw)) {
+        return $null
+    }
+    return $raw | ConvertFrom-Json
+}
+
+function Write-JsonFile {
+    param(
+        [string]$Path,
+        [object]$Value
+    )
+    $json = $Value | ConvertTo-Json -Depth 20
+    New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
+    Set-Content -LiteralPath $Path -Value $json -Encoding UTF8
+}
+
+function Get-SkillFolderHash {
+    param([string]$Path)
+
+    $sha1 = [System.Security.Cryptography.SHA1]::Create()
+    $stream = New-Object System.IO.MemoryStream
+    $root = [System.IO.Path]::GetFullPath($Path)
+    $trimChars = [char[]]@("\", "/")
+
+    foreach ($file in (Get-ChildItem -LiteralPath $Path -Recurse -File | Sort-Object FullName)) {
+        $relative = [System.IO.Path]::GetFullPath($file.FullName).Substring($root.Length).TrimStart($trimChars) -replace "\\", "/"
+        $nameBytes = [System.Text.Encoding]::UTF8.GetBytes($relative + "`n")
+        $stream.Write($nameBytes, 0, $nameBytes.Length)
+        $fileBytes = [System.IO.File]::ReadAllBytes($file.FullName)
+        $stream.Write($fileBytes, 0, $fileBytes.Length)
+        $stream.WriteByte(10)
+    }
+
+    $hashBytes = $sha1.ComputeHash($stream.ToArray())
+    $stream.Dispose()
+    $sha1.Dispose()
+    return -join ($hashBytes | ForEach-Object { $_.ToString("x2") })
+}
+
+function Update-AgentsSkillLock {
+    param(
+        [string]$AgentsInstallRoot,
+        [string]$InstalledSkill,
+        [string]$SourcePath
+    )
+
+    if (-not (Test-Path -LiteralPath (Join-Path $InstalledSkill "SKILL.md"))) {
+        Write-Step "Agents skill lock skipped because the Agents mirror was not installed."
+        return
+    }
+
+    $agentsHome = Split-Path -Parent ([System.IO.Path]::GetFullPath($AgentsInstallRoot))
+    $lockPath = Join-Path $agentsHome ".skill-lock.json"
+    $lock = Read-JsonFile -Path $lockPath
+    if (-not $lock) {
+        $lock = [pscustomobject]@{
+            version = 3
+            skills = [pscustomobject]@{}
+        }
+    }
+    if (-not $lock.PSObject.Properties["version"]) {
+        $lock | Add-Member -NotePropertyName version -NotePropertyValue 3
+    }
+    if (-not $lock.PSObject.Properties["skills"] -or -not $lock.skills) {
+        $lock | Add-Member -Force -NotePropertyName skills -NotePropertyValue ([pscustomobject]@{})
+    }
+
+    $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    $installedAt = $now
+    $existing = $lock.skills.PSObject.Properties[$SkillName]
+    if ($existing -and $existing.Value -and $existing.Value.PSObject.Properties["installedAt"]) {
+        $installedAt = $existing.Value.installedAt
+    }
+
+    $entry = [pscustomobject]@{
+        source = $Repo
+        sourceType = "github"
+        sourceUrl = "https://github.com/$Repo.git"
+        skillPath = $SourcePath
+        skillFolderHash = (Get-SkillFolderHash -Path $InstalledSkill)
+        installedAt = $installedAt
+        updatedAt = $now
+    }
+
+    $lock.skills | Add-Member -Force -NotePropertyName $SkillName -NotePropertyValue $entry
+    Write-JsonFile -Path $lockPath -Value $lock
+    Write-Step "Updated Agents skill lock: $lockPath"
 }
 
 function Install-SkillCopy {
@@ -198,6 +314,9 @@ if ($DryRun) {
     if ($shouldMirrorToAgents) {
         Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
     }
+    if (-not $SkipAgentsMirror) {
+        Write-Step "Would update Agents skill lock under $AgentsInstallRoot"
+    }
     Write-Step "Dry run only. No files were copied."
     exit 0
 }
@@ -208,6 +327,11 @@ Write-Step "Installed $SkillName to Codex skills"
 if ($shouldMirrorToAgents) {
     Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
     Write-Step "Mirrored $SkillName to Agents skills for skill search discovery"
+}
+
+$agentsDestination = Join-Path $AgentsInstallRoot $SkillName
+if (-not $SkipAgentsMirror) {
+    Update-AgentsSkillLock -AgentsInstallRoot $AgentsInstallRoot -InstalledSkill $agentsDestination -SourcePath (Get-SkillSourcePath -Source $source)
 }
 
 Invoke-EnvironmentCheck -InstalledSkill $destination

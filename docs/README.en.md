@@ -1,4 +1,4 @@
-# Codex Pet Director
+﻿# Codex Pet Director
 
 [简体中文](../README.md#简体中文) · English · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
@@ -13,7 +13,7 @@ The start entry is `/create-pet`. If your Codex build does not show a slash-comm
 Paste this directly into Codex:
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 After installation, restart Codex and paste this:
@@ -24,13 +24,19 @@ After installation, restart Codex and paste this:
 
 **Option B: install from a terminal.**
 
-Developers or terminal users can use `npx`:
+If your environment has the Skills CLI, use the standard GitHub skill install form:
+
+```bash
+npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+```
+
+Developers or terminal users can also use this repository's installer:
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-The installer writes both to the Codex skills directory and to the Agents skills mirror, so the model can load the skill and the Skill search page can discover it.
+The installer writes to the Codex skills directory, the Agents skills mirror, and `.agents/.skill-lock.json`, so the model can load the skill and skill managers can identify its source and update path.
 
 Recommended Windows PowerShell command:
 

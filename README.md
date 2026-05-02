@@ -20,7 +20,7 @@
 最适合新手的方式：把这句话直接发给 Codex，让 Codex 自己安装。
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 安装完成后重启 Codex，然后把这句话当普通消息发给 Codex：
@@ -31,13 +31,19 @@
 
 注意：当前 Codex 桌面端的斜杠菜单只显示内置命令，不会把第三方 skill 自动变成可搜索的 slash command。这里的 `/create-pet` 是一个聊天触发词，不需要出现在斜杠菜单里。
 
-终端用户可以直接运行：
+如果你的环境有 Skills CLI，可以用成熟 skill 常见的 GitHub 安装方式：
+
+```bash
+npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+```
+
+也可以直接运行这个项目自带的一键安装器：
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-安装器会同时写入 Codex skills 目录和 Agents skills 镜像目录。这样模型上下文能加载它，Codex/Agents 的 Skill 搜索页也能发现它。
+安装器会同时写入 Codex skills 目录、Agents skills 镜像目录和 `.agents/.skill-lock.json`。这样模型上下文能加载它，Codex/Agents 的 Skill 搜索页和管理器也更容易发现、识别来源和更新路径。
 
 Windows 用户也可以复制这一行到 PowerShell：
 
@@ -66,7 +72,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 把下面这句话直接发给 Codex：
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 安装完成后重启 Codex，然后把下面这句话当普通消息发给 Codex：
@@ -77,7 +83,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 **方式 B：用终端安装。**
 
-开发者或熟悉终端的用户可以用 `npx`：
+如果你的环境有 Skills CLI，推荐用更标准的 GitHub skill 安装方式：
+
+```bash
+npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+```
+
+开发者或熟悉终端的用户也可以用本项目自带安装器：
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -102,6 +114,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 - `C:\Users\<你>\plugins\codex-pet-director`
 - `C:\Users\<你>\.agents\plugins\marketplace.json`
 - `C:\Users\<你>\.agents\skills\codex-pet-director`
+- `C:\Users\<你>\.agents\.skill-lock.json`
 - `C:\Users\<你>\.codex\config.toml`
 - `C:\Users\<你>\.codex\skills\codex-pet-director`
 
@@ -249,7 +262,13 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ```text
 .
-├── codex-pet-director/
+├── skills/
+│   └── codex-pet-director/       # 标准 GitHub/Skills CLI 源路径
+│       ├── SKILL.md
+│       ├── agents/
+│       ├── references/
+│       └── scripts/
+├── codex-pet-director/           # 兼容旧安装链接
 │   ├── SKILL.md
 │   ├── agents/
 │   ├── references/
@@ -278,6 +297,7 @@ Codex pets 目录：Codex 识别并加载宠物
 ## Release Check
 
 ```powershell
+python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\codex-pet-director
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\codex-pet-director
 python .\codex-pet-director\scripts\check_pet_environment.py --json
 python .\codex-pet-director\scripts\pet_brief.py languages

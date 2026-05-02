@@ -3,18 +3,25 @@
 This repository currently supports three install paths:
 
 1. Codex-native install through `skill-installer`
-2. GitHub-backed `npx`
-3. Windows `install.cmd` / PowerShell install
+2. Skills CLI install from GitHub
+3. GitHub-backed project installer through `npx`
+4. Windows `install.cmd` / PowerShell install
 
 ## Current User Install Commands
 
 Codex chat:
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
-GitHub `npx`:
+Skills CLI:
+
+```bash
+npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+```
+
+GitHub project installer:
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -46,6 +53,7 @@ The package is already prepared with:
 
 - `bin/install.js`
 - skill files
+- standard `skills/codex-pet-director/SKILL.md` layout
 - command metadata
 - plugin manifest
 - examples
@@ -56,7 +64,7 @@ The package is already prepared with:
 
 For a beginner-friendly release:
 
-1. Create a tag, such as `v0.4.0`.
+1. Create a tag, such as `v0.4.4`.
 2. Create a GitHub Release from that tag.
 3. Tell Windows users to download the source ZIP and double-click `install.cmd`.
 4. Tell Codex users to use `skill-installer` with the repository URL.
@@ -64,11 +72,11 @@ For a beginner-friendly release:
 Release title:
 
 ```text
-Codex Pet Director v0.4.0
+Codex Pet Director v0.4.4
 ```
 
 Short release description:
 
 ```text
-Adds named person and known character reference research before preview image generation.
+Adds standard GitHub skill layout and skill-lock registration for better discovery.
 ```

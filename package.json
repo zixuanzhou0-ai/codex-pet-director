@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Install the codex-pet-director Codex skill and optional local plugin entrypoint.",
   "bin": {
     "codex-pet-director": "bin/install.js",
@@ -14,6 +14,9 @@
     "codex-pet-director/**/*",
     "!codex-pet-director/**/__pycache__/**",
     "!codex-pet-director/**/*.pyc",
+    "skills/**/*",
+    "!skills/**/__pycache__/**",
+    "!skills/**/*.pyc",
     "examples/**/*",
     "install.cmd",
     "install-plugin.ps1",

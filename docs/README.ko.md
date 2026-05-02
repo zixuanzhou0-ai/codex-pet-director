@@ -1,4 +1,4 @@
-# Codex Pet Director
+﻿# Codex Pet Director
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · 한국어 · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
@@ -9,7 +9,7 @@
 시작 명령은 `/create-pet`입니다. Codex에 슬래시 명령 메뉴가 보이지 않아도 `/create-pet`을 일반 메시지로 보내면 됩니다.
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 설치 후 Codex를 다시 시작하고 이렇게 말하세요:

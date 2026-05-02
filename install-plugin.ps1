@@ -78,11 +78,108 @@ function Test-RepoRoot {
     if ([string]::IsNullOrWhiteSpace($Path) -or -not (Test-Path -LiteralPath $Path)) {
         return $false
     }
+    $hasSkill = (
+        (Test-Path -LiteralPath (Join-Path $Path "skills\$PluginName\SKILL.md")) -or
+        (Test-Path -LiteralPath (Join-Path $Path "$PluginName\SKILL.md"))
+    )
     return (
-        (Test-Path -LiteralPath (Join-Path $Path "$PluginName\SKILL.md")) -and
+        $hasSkill -and
         (Test-Path -LiteralPath (Join-Path $Path "commands\create-pet.md")) -and
         (Test-Path -LiteralPath (Join-Path $Path ".codex-plugin\plugin.json"))
     )
+}
+
+function Get-SkillSourceRoot {
+    param([string]$RepoRoot)
+
+    $canonical = Join-Path (Join-Path $RepoRoot "skills") $PluginName
+    if (Test-Path -LiteralPath (Join-Path $canonical "SKILL.md")) {
+        return $canonical
+    }
+    return (Join-Path $RepoRoot $PluginName)
+}
+
+function Get-SkillSourcePath {
+    param([string]$Source)
+
+    $normalized = ([System.IO.Path]::GetFullPath($Source) -replace "/", "\")
+    if ($normalized -like "*\skills\$PluginName") {
+        return "skills/$PluginName/SKILL.md"
+    }
+    return "$PluginName/SKILL.md"
+}
+
+function Get-SkillFolderHash {
+    param([string]$Path)
+
+    $sha1 = [System.Security.Cryptography.SHA1]::Create()
+    $stream = New-Object System.IO.MemoryStream
+    $root = [System.IO.Path]::GetFullPath($Path)
+    $trimChars = [char[]]@("\", "/")
+
+    foreach ($file in (Get-ChildItem -LiteralPath $Path -Recurse -File | Sort-Object FullName)) {
+        $relative = [System.IO.Path]::GetFullPath($file.FullName).Substring($root.Length).TrimStart($trimChars) -replace "\\", "/"
+        $nameBytes = [System.Text.Encoding]::UTF8.GetBytes($relative + "`n")
+        $stream.Write($nameBytes, 0, $nameBytes.Length)
+        $fileBytes = [System.IO.File]::ReadAllBytes($file.FullName)
+        $stream.Write($fileBytes, 0, $fileBytes.Length)
+        $stream.WriteByte(10)
+    }
+
+    $hashBytes = $sha1.ComputeHash($stream.ToArray())
+    $stream.Dispose()
+    $sha1.Dispose()
+    return -join ($hashBytes | ForEach-Object { $_.ToString("x2") })
+}
+
+function Update-AgentsSkillLock {
+    param(
+        [string]$AgentsSkillRoot,
+        [string]$InstalledSkill,
+        [string]$SourcePath
+    )
+
+    if (-not (Test-Path -LiteralPath (Join-Path $InstalledSkill "SKILL.md"))) {
+        Write-Step "Agents skill lock skipped because the Agents mirror was not installed."
+        return
+    }
+
+    $agentsHome = Split-Path -Parent ([System.IO.Path]::GetFullPath($AgentsSkillRoot))
+    $lockPath = Join-Path $agentsHome ".skill-lock.json"
+    $lock = Read-JsonFile -Path $lockPath
+    if (-not $lock) {
+        $lock = [pscustomobject]@{
+            version = 3
+            skills = [pscustomobject]@{}
+        }
+    }
+    if (-not $lock.PSObject.Properties["version"]) {
+        $lock | Add-Member -NotePropertyName version -NotePropertyValue 3
+    }
+    if (-not $lock.PSObject.Properties["skills"] -or -not $lock.skills) {
+        $lock | Add-Member -Force -NotePropertyName skills -NotePropertyValue ([pscustomobject]@{})
+    }
+
+    $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    $installedAt = $now
+    $existing = $lock.skills.PSObject.Properties[$PluginName]
+    if ($existing -and $existing.Value -and $existing.Value.PSObject.Properties["installedAt"]) {
+        $installedAt = $existing.Value.installedAt
+    }
+
+    $entry = [pscustomobject]@{
+        source = $Repo
+        sourceType = "github"
+        sourceUrl = "https://github.com/$Repo.git"
+        skillPath = $SourcePath
+        skillFolderHash = (Get-SkillFolderHash -Path $InstalledSkill)
+        installedAt = $installedAt
+        updatedAt = $now
+    }
+
+    $lock.skills | Add-Member -Force -NotePropertyName $PluginName -NotePropertyValue $entry
+    Write-JsonFile -Path $lockPath -Value $lock
+    Write-Step "Updated Agents skill lock: $lockPath"
 }
 
 function Get-RemoteRepoRoot {
@@ -246,7 +343,7 @@ enabled = true
 }
 
 $RepoRoot = Resolve-RepoRoot
-$SkillSource = Join-Path $RepoRoot $PluginName
+$SkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot
 $CommandsSource = Join-Path $RepoRoot "commands"
 $ManifestSource = Join-Path $RepoRoot ".codex-plugin\plugin.json"
 
@@ -318,6 +415,7 @@ Copy-CleanDirectory -Source $SkillSource -Destination $InstalledSkillRoot -Allow
 if (-not $SkipAgentsSkillMirror) {
     New-Item -ItemType Directory -Path $AgentsSkillRoot -Force | Out-Null
     Copy-CleanDirectory -Source $SkillSource -Destination $AgentsInstalledSkillRoot -AllowedParent $AgentsSkillRoot
+    Update-AgentsSkillLock -AgentsSkillRoot $AgentsSkillRoot -InstalledSkill $AgentsInstalledSkillRoot -SourcePath (Get-SkillSourcePath -Source $SkillSource)
 }
 
 Update-MarketplaceJson -Path $MarketplacePath

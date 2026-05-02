@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Create official custom Codex desktop pets with a beginner-friendly director flow and /create-pet entrypoint.",
   "author": {
     "name": "zixuanzhou0-ai",
@@ -15,7 +15,7 @@
     "pet",
     "slash-command"
   ],
-  "skills": "./",
+  "skills": "./skills/",
   "interface": {
     "displayName": "Codex Pet Director",
     "shortDescription": "Create official custom Codex desktop pets.",

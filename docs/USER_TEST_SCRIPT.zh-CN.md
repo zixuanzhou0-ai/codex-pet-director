@@ -56,7 +56,7 @@ https://github.com/zixuanzhou0-ai/codex-pet-director
 复制这句话，发给 Codex：
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 期望结果：
@@ -114,7 +114,24 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 /create-pet
 ```
 
-## 路线 C：npx 用户
+## 路线 C：Skills CLI 用户
+
+这是更接近成熟 skill 生态的一种安装方式。
+
+运行：
+
+```bash
+npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+```
+
+期望结果：
+
+- 从 GitHub 的 `skills/codex-pet-director` 路径安装。
+- 写入本机 Agents skills 目录。
+- 写入或更新 `.agents/.skill-lock.json`。
+- Codex 能在后续会话中发现这个 skill。
+
+## 路线 D：项目自带 npx 安装器
 
 这是给开发者或熟悉终端的用户。
 
@@ -128,7 +145,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 
 - 从 GitHub 拉取 package。
 - 安装到本机 Codex skills 目录。
-- 同步镜像到 Agents skills 目录，方便 Skill 搜索页发现。
+- 同步镜像到 Agents skills 目录，并更新 `.agents/.skill-lock.json`，方便 Skill 搜索页和管理器发现。
 - 输出下一步 `/create-pet`。
 
 ## 启动后的测试对话
@@ -185,7 +202,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 测试日期：
 测试系统：
 Codex 是否重启：
-安装路线：A / B / C
+安装路线：A / B / C / D
 是否安装成功：
 /create-pet 是否启动：
 环境检查是否出现：

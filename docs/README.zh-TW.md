@@ -1,4 +1,4 @@
-# Codex Pet Director
+﻿# Codex Pet Director
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · 繁體中文 · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
@@ -9,7 +9,7 @@
 啟動入口是 `/create-pet`。如果你的 Codex 沒有顯示斜線命令選單，也可以把 `/create-pet` 當普通訊息發出去。
 
 ```text
-請使用 skill-installer 安裝這個 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+請使用 skill-installer 安裝這個 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
 ```
 
 安裝完成後重啟 Codex，然後直接說：
