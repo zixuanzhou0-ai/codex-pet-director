@@ -39,7 +39,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 /create-pet
 ```
 
-如果斜杠菜单展开，选择 `create-pet` 这个 skill 入口；如果菜单没有展开，直接把 `/create-pet` 当普通消息发出去也能启动。
+如果斜杠菜单展开，选择 `create-pet` 这个 skill 入口；如果菜单没有展开，直接把 `/create-pet` 当普通消息发出去也能启动。启动后它会先问你要 `新建宠物`、`继续已有` 还是 `查看已有`，不会直接续跑旧草稿或开始生产。
 
 如果你的环境有 Skills CLI，也可以用 GitHub skill 安装方式。注意要装两个 skill：主流程和桌面端入口。
 
@@ -152,10 +152,11 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 1. 安装这个 skill。
 2. 重启 Codex。
 3. 在斜杠菜单里搜索并选择 `create-pet`，或直接发送 `/create-pet`。
-4. 回答它是谁、是什么形态、是什么风格、长什么样。
-5. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
-6. 确认 9 个官方动作。
-7. 让 `hatch-pet` 生成 `pet.json` 和 `spritesheet.webp`。
+4. 选择 `新建宠物`、`继续已有` 或 `查看已有`。
+5. 回答它是谁、是什么形态、是什么风格、长什么样。
+6. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
+7. 确认 9 个官方动作。
+8. 最后确认正式生产，再让 `hatch-pet` 生成 `pet.json` 和 `spritesheet.webp`。
 
 ### 这个 skill 做什么
 
@@ -239,7 +240,9 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 安装后自检
 
-选择 `create-pet` 或发送 `/create-pet` 后，它会先检查：
+选择 `create-pet` 或发送 `/create-pet` 后，它会先让你选择新建、继续或查看。选择新建或继续后，它会检查：
+
+在正式检查和制作前，如果当前目录已有 `pet_brief.json`，它会先问你是继续这个草稿、查看这个草稿，还是新建一个宠物。这样不会把旧项目误当成新项目继续跑。
 
 - 你的系统是 Windows、macOS 还是 Linux。
 - Codex 的 `skills` 和 `pets` 目录是否存在。

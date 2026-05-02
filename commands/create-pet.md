@@ -4,7 +4,7 @@ description: Start the Codex Pet Director flow to create an official custom Code
 
 # /create-pet
 
-Start the beginner-friendly Codex desktop pet creation flow.
+Open the beginner-friendly Codex desktop pet launcher. A bare `/create-pet` should ask whether the user wants to create a new pet, continue an existing draft, or inspect an existing draft before any production work starts.
 
 ## Arguments
 
@@ -15,16 +15,19 @@ Start the beginner-friendly Codex desktop pet creation flow.
 ## Workflow
 
 1. Use `$codex-pet-director`.
-2. Run the pet environment check before asking design questions.
-3. If the environment can host Codex pets, continue with the seven-block interview.
-4. If the environment is missing safe local folders, create only those folders with the skill's environment script.
-5. If Codex pet support or `$hatch-pet` is missing, explain the limitation and offer to continue with concept design only.
-6. Ask one beginner-friendly block at a time: identity, form, style, personality, appearance, actions, final confirmation.
-7. If the user names a celebrity, public figure, anime/game/film character, mascot, or other known figure, research the reference online before image generation.
-8. Generate 2-4 user-facing confirmation images at key visual stages.
-9. Record decisions in `pet_brief.json`.
-10. After the formal character image is confirmed, keep identity locked and only vary action poses.
-11. Hand the final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
+2. If the user only sends `/create-pet`, ask them to choose `新建宠物`, `继续已有`, or `查看已有`.
+3. If the current folder has `pet_brief.json`, mention it, but do not resume or overwrite it silently.
+4. Run the pet environment check after the user chooses `新建宠物` or `继续已有`.
+5. If the environment can host Codex pets, continue with the seven-block interview.
+6. If the environment is missing safe local folders, create only those folders with the skill's environment script.
+7. If Codex pet support or `$hatch-pet` is missing, explain the limitation and offer to continue with concept design only.
+8. Ask one beginner-friendly block at a time: identity, form, style, personality, appearance, actions, final confirmation.
+9. If the user names a celebrity, public figure, anime/game/film character, mascot, or other known figure, research the reference online before image generation.
+10. Generate 2-4 user-facing confirmation images at key visual stages.
+11. Record decisions in `pet_brief.json`.
+12. After the formal character image is confirmed, keep identity locked and only vary action poses.
+13. Ask for explicit final production confirmation before loading `$hatch-pet`.
+14. Hand the final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
 
 ## Guardrails
 
@@ -32,5 +35,7 @@ Start the beginner-friendly Codex desktop pet creation flow.
 - Do not promise extra official actions, extra frames, keyboard control, controller control, or unlimited random actions.
 - Keep the user-facing language simple.
 - Treat confirmation images as previews, not final production sprites.
+- Do not start production just because the user selected the slash entry.
+- Do not silently continue a previous `pet_brief.json`.
 - Do not rely on memory for named people or known fictional characters when no clear reference image is provided.
 - For a half-body, head-only, screen-face, floating object, or mascot pet, adapt action descriptions through bouncing, drifting, tilting, sliding, expression changes, prop motion, or screen effects.

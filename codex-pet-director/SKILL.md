@@ -15,7 +15,14 @@ Keep the user-facing conversation in plain Chinese by default, or in the user's 
 
 ## Start Command
 
-Treat `/create-pet` as the formal start signal for this skill. If the user's message is `/create-pet`, `create-pet`, or "开始创建宠物", start the full creation flow immediately from the environment check. Do not ask the user to repeat the command or explain skill names.
+Treat `/create-pet` as the formal entry signal for this skill, not as permission to begin production. If the user's message is only `/create-pet`, `create-pet`, or "开始创建宠物", open a safe launcher first:
+
+1. Say this is Codex Pet Director for creating official Codex desktop pets.
+2. If the current folder contains `pet_brief.json`, say an existing draft was found.
+3. Ask the user to choose `新建宠物`, `继续已有`, or `查看已有`.
+4. Wait for the user's choice before running the full environment check, writing a brief, generating images, loading `$hatch-pet`, or continuing an existing draft.
+
+If the user includes a clear design request in the same message, such as `/create-pet 做一只蓝色机器人猫`, treat that as choosing `新建宠物` and start the full creation flow from the environment check.
 
 If Codex receives `/create-pet` as plain text rather than a native slash command, handle it exactly the same way.
 
@@ -54,7 +61,7 @@ If the name is ambiguous or has multiple versions, ask the user to choose the in
 
 ### 0. Check The Environment
 
-Start every full pet creation request by checking whether the local Codex environment can host a custom pet:
+After the user chooses `新建宠物` or `继续已有`, start the full pet creation request by checking whether the local Codex environment can host a custom pet:
 
 ```bash
 python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_pet_environment.py"
@@ -106,6 +113,8 @@ python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.
 
 Use the brief as the source of truth for all prompts, confirmation summaries, and final handoff. Once the user confirms the formal character image, lock the identity: keep the same face, colors, body type, props, and core silhouette for all actions.
 
+If a `pet_brief.json` already exists in the working folder, never overwrite it or resume it silently. First summarize what it appears to contain, then ask whether the user wants to `继续已有`, `新建宠物`, or `查看已有`. If they choose `新建宠物`, create a fresh brief only after confirming the target path.
+
 ### 3. Generate Confirmation Images
 
 For visual confirmation images, use `$imagegen`. Load the image generation skill before generating images:
@@ -149,7 +158,7 @@ When the user has confirmed:
 - key actions
 - final pet card
 
-load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.md` to convert the pet brief into `hatch-pet` inputs. The `hatch-pet` skill owns base generation, row generation, atlas assembly, QA, preview videos, `pet.json`, and `spritesheet.webp`.
+ask for one final production confirmation in plain language. Only after the user clearly agrees, load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.md` to convert the pet brief into `hatch-pet` inputs. The `hatch-pet` skill owns base generation, row generation, atlas assembly, QA, preview videos, `pet.json`, and `spritesheet.webp`.
 
 ## Reference Files
 
@@ -165,12 +174,15 @@ load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.
 
 ## Acceptance Criteria
 
-- The flow starts with an environment check.
+- A bare `/create-pet` starts with a mode choice, not automatic production.
+- Existing `pet_brief.json` files are never resumed or overwritten silently.
+- The full creation flow starts with an environment check after the user chooses `新建宠物` or `继续已有`.
 - The user's language is inferred or confirmed, recorded in `pet_brief.json`, and can be switched without restarting.
 - The user is asked simple questions one block at a time.
 - Named people or characters are researched online before visual generation unless the user provides a sufficient reference image.
 - A `pet_brief.json` exists before final production.
 - The official Codex fixed format is respected.
 - The formal character image is locked before action generation.
+- `$hatch-pet` is loaded only after explicit final production confirmation.
 - Final production is delegated to `$hatch-pet`.
 - The final installed pet contains `pet.json` and `spritesheet.webp` under `${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/`.
