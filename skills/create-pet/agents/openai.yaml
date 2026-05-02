@@ -1,0 +1,4 @@
+interface:
+  display_name: "create-pet"
+  short_description: "Start custom Codex pet creation."
+  default_prompt: "/create-pet"

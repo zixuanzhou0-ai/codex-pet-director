@@ -6,10 +6,11 @@
 
 ## 一鍵安裝
 
-啟動入口是 `/create-pet`。如果你的 Codex 沒有顯示斜線命令選單，也可以把 `/create-pet` 當普通訊息發出去。
+啟動入口是在斜線選單裡搜尋 `create-pet`。你也可以把 `/create-pet` 當普通訊息發出去。
 
 ```text
-請使用 skill-installer 安裝這個 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+請執行這個安裝命令，幫我安裝 Codex Pet Director：
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 安裝完成後重啟 Codex，然後直接說：
@@ -60,7 +61,7 @@ Codex pets 目錄：Codex 識別並載入寵物
 
 ## 使用方式
 
-安裝後，在 Codex 裡直接輸入：
+安裝後，在 Codex 斜線選單裡搜尋並選擇 `create-pet`。也可以直接發送：
 
 ```text
 /create-pet

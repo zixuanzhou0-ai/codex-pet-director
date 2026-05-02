@@ -6,10 +6,11 @@
 
 ## ワンクリックインストール
 
-開始入口は `/create-pet` です。Codex にスラッシュコマンドメニューが表示されない場合でも、`/create-pet` を通常のメッセージとして送れば使えます。
+開始入口はスラッシュメニューの Skills にある `create-pet` です。`/create-pet` を通常のメッセージとして送っても使えます。
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+Run this install command for me:
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 インストール後に Codex を再起動し、次のように依頼します：
@@ -60,7 +61,7 @@ Codex pets フォルダ：Codex がペットを読み込む
 
 ## 使い方
 
-インストール後、Codex にこう入力します：
+インストール後はスラッシュメニューで `create-pet` を検索します。通常メッセージとして送ることもできます：
 
 ```text
 /create-pet

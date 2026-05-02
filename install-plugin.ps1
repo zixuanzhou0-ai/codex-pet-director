@@ -13,6 +13,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $PluginName = "codex-pet-director"
+$AliasSkillName = "create-pet"
 $MarketplaceName = "local-codex-pet-director"
 
 function Write-Step {
@@ -82,31 +83,41 @@ function Test-RepoRoot {
         (Test-Path -LiteralPath (Join-Path $Path "skills\$PluginName\SKILL.md")) -or
         (Test-Path -LiteralPath (Join-Path $Path "$PluginName\SKILL.md"))
     )
+    $hasAliasSkill = (
+        (Test-Path -LiteralPath (Join-Path $Path "skills\$AliasSkillName\SKILL.md")) -or
+        (Test-Path -LiteralPath (Join-Path $Path "$AliasSkillName\SKILL.md"))
+    )
     return (
-        $hasSkill -and
+        $hasSkill -and $hasAliasSkill -and
         (Test-Path -LiteralPath (Join-Path $Path "commands\create-pet.md")) -and
         (Test-Path -LiteralPath (Join-Path $Path ".codex-plugin\plugin.json"))
     )
 }
 
 function Get-SkillSourceRoot {
-    param([string]$RepoRoot)
+    param(
+        [string]$RepoRoot,
+        [string]$Name = $PluginName
+    )
 
-    $canonical = Join-Path (Join-Path $RepoRoot "skills") $PluginName
+    $canonical = Join-Path (Join-Path $RepoRoot "skills") $Name
     if (Test-Path -LiteralPath (Join-Path $canonical "SKILL.md")) {
         return $canonical
     }
-    return (Join-Path $RepoRoot $PluginName)
+    return (Join-Path $RepoRoot $Name)
 }
 
 function Get-SkillSourcePath {
-    param([string]$Source)
+    param(
+        [string]$Source,
+        [string]$Name = $PluginName
+    )
 
     $normalized = ([System.IO.Path]::GetFullPath($Source) -replace "/", "\")
-    if ($normalized -like "*\skills\$PluginName") {
-        return "skills/$PluginName/SKILL.md"
+    if ($normalized -like "*\skills\$Name") {
+        return "skills/$Name/SKILL.md"
     }
-    return "$PluginName/SKILL.md"
+    return "$Name/SKILL.md"
 }
 
 function Get-SkillFolderHash {
@@ -136,7 +147,8 @@ function Update-AgentsSkillLock {
     param(
         [string]$AgentsSkillRoot,
         [string]$InstalledSkill,
-        [string]$SourcePath
+        [string]$SourcePath,
+        [string]$Name = $PluginName
     )
 
     if (-not (Test-Path -LiteralPath (Join-Path $InstalledSkill "SKILL.md"))) {
@@ -162,7 +174,7 @@ function Update-AgentsSkillLock {
 
     $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
     $installedAt = $now
-    $existing = $lock.skills.PSObject.Properties[$PluginName]
+    $existing = $lock.skills.PSObject.Properties[$Name]
     if ($existing -and $existing.Value -and $existing.Value.PSObject.Properties["installedAt"]) {
         $installedAt = $existing.Value.installedAt
     }
@@ -177,7 +189,7 @@ function Update-AgentsSkillLock {
         updatedAt = $now
     }
 
-    $lock.skills | Add-Member -Force -NotePropertyName $PluginName -NotePropertyValue $entry
+    $lock.skills | Add-Member -Force -NotePropertyName $Name -NotePropertyValue $entry
     Write-JsonFile -Path $lockPath -Value $lock
     Write-Step "Updated Agents skill lock: $lockPath"
 }
@@ -343,12 +355,16 @@ enabled = true
 }
 
 $RepoRoot = Resolve-RepoRoot
-$SkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot
+$SkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot -Name $PluginName
+$AliasSkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot -Name $AliasSkillName
 $CommandsSource = Join-Path $RepoRoot "commands"
 $ManifestSource = Join-Path $RepoRoot ".codex-plugin\plugin.json"
 
 if (-not (Test-Path -LiteralPath (Join-Path $SkillSource "SKILL.md"))) {
     throw "Could not find $PluginName/SKILL.md under $RepoRoot"
+}
+if (-not (Test-Path -LiteralPath (Join-Path $AliasSkillSource "SKILL.md"))) {
+    throw "Could not find $AliasSkillName/SKILL.md under $RepoRoot"
 }
 if (-not (Test-Path -LiteralPath (Join-Path $CommandsSource "create-pet.md"))) {
     throw "Could not find commands/create-pet.md under $RepoRoot"
@@ -378,12 +394,15 @@ $PluginParent = Join-Path $MarketplaceRoot "plugins"
 $MarketplacePath = Join-Path (Join-Path $MarketplaceRoot ".agents") "plugins\marketplace.json"
 $ConfigPath = Join-Path $CodexHome "config.toml"
 $InstalledSkillRoot = Join-Path (Join-Path $CodexHome "skills") $PluginName
+$InstalledAliasSkillRoot = Join-Path (Join-Path $CodexHome "skills") $AliasSkillName
 $AgentsInstalledSkillRoot = Join-Path $AgentsSkillRoot $PluginName
+$AgentsInstalledAliasSkillRoot = Join-Path $AgentsSkillRoot $AliasSkillName
 
 Assert-Inside -Path $PluginRoot -Parent $PluginParent
 Assert-Inside -Path $MarketplacePath -Parent $MarketplaceRoot
 Assert-Inside -Path $ConfigPath -Parent $CodexHome
 Assert-Inside -Path $AgentsInstalledSkillRoot -Parent $AgentsSkillRoot
+Assert-Inside -Path $AgentsInstalledAliasSkillRoot -Parent $AgentsSkillRoot
 
 Write-Step "Repo source: $RepoRoot"
 Write-Step "Plugin target: $PluginRoot"
@@ -401,6 +420,7 @@ if ($DryRun) {
 New-Item -ItemType Directory -Path $PluginRoot -Force | Out-Null
 
 Copy-CleanDirectory -Source $SkillSource -Destination (Join-Path (Join-Path $PluginRoot "skills") $PluginName) -AllowedParent $PluginRoot
+Copy-CleanDirectory -Source $AliasSkillSource -Destination (Join-Path (Join-Path $PluginRoot "skills") $AliasSkillName) -AllowedParent $PluginRoot
 Copy-CleanDirectory -Source $CommandsSource -Destination (Join-Path $PluginRoot "commands") -AllowedParent $PluginRoot
 
 New-Item -ItemType Directory -Path (Join-Path $PluginRoot ".codex-plugin") -Force | Out-Null
@@ -411,11 +431,14 @@ Write-JsonFile -Path (Join-Path $PluginRoot ".codex-plugin\plugin.json") -Value 
 
 New-Item -ItemType Directory -Path (Split-Path -Parent $InstalledSkillRoot) -Force | Out-Null
 Copy-CleanDirectory -Source $SkillSource -Destination $InstalledSkillRoot -AllowedParent (Join-Path $CodexHome "skills")
+Copy-CleanDirectory -Source $AliasSkillSource -Destination $InstalledAliasSkillRoot -AllowedParent (Join-Path $CodexHome "skills")
 
 if (-not $SkipAgentsSkillMirror) {
     New-Item -ItemType Directory -Path $AgentsSkillRoot -Force | Out-Null
     Copy-CleanDirectory -Source $SkillSource -Destination $AgentsInstalledSkillRoot -AllowedParent $AgentsSkillRoot
-    Update-AgentsSkillLock -AgentsSkillRoot $AgentsSkillRoot -InstalledSkill $AgentsInstalledSkillRoot -SourcePath (Get-SkillSourcePath -Source $SkillSource)
+    Copy-CleanDirectory -Source $AliasSkillSource -Destination $AgentsInstalledAliasSkillRoot -AllowedParent $AgentsSkillRoot
+    Update-AgentsSkillLock -AgentsSkillRoot $AgentsSkillRoot -InstalledSkill $AgentsInstalledSkillRoot -SourcePath (Get-SkillSourcePath -Source $SkillSource -Name $PluginName) -Name $PluginName
+    Update-AgentsSkillLock -AgentsSkillRoot $AgentsSkillRoot -InstalledSkill $AgentsInstalledAliasSkillRoot -SourcePath (Get-SkillSourcePath -Source $AliasSkillSource -Name $AliasSkillName) -Name $AliasSkillName
 }
 
 Update-MarketplaceJson -Path $MarketplacePath
@@ -425,7 +448,6 @@ if (-not $SkipConfig) {
 
 Write-Step "Installed local plugin package metadata."
 if (-not $SkipAgentsSkillMirror) {
-    Write-Step "Mirrored $PluginName to Agents skills for skill search discovery."
+    Write-Step "Mirrored $PluginName and $AliasSkillName to Agents skills for skill search discovery."
 }
-Write-Step "Current Codex desktop builds do not expose third-party plugin commands in the slash menu."
-Write-Step "Restart Codex if needed, then send /create-pet as a normal chat message to start the flow."
+Write-Step "Restart Codex if needed, then search create-pet in the slash menu or paste /create-pet as a normal message."

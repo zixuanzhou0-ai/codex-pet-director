@@ -9,11 +9,11 @@
 ```text
 打开 GitHub 仓库
   ↓
-按 README 安装 skill
+按 README 运行一键安装器
   ↓
 重启 Codex
   ↓
-输入 /create-pet
+选择 create-pet 或输入 /create-pet
   ↓
 看到环境检查
   ↓
@@ -28,7 +28,9 @@
 
 ```powershell
 Test-Path "$env:USERPROFILE\.codex\skills\codex-pet-director"
+Test-Path "$env:USERPROFILE\.codex\skills\create-pet"
 Test-Path "$env:USERPROFILE\.agents\skills\codex-pet-director"
+Test-Path "$env:USERPROFILE\.agents\skills\create-pet"
 ```
 
 如果已经安装过，真实新用户测试会不够纯。可以换一台机器测试，或者手动把旧目录临时改名备份。
@@ -56,17 +58,20 @@ https://github.com/zixuanzhou0-ai/codex-pet-director
 复制这句话，发给 Codex：
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+请运行这个安装命令，帮我安装 Codex Pet Director：
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 期望结果：
 
-- Codex 使用 `skill-installer` 从 GitHub 安装。
+- Codex 运行 GitHub 项目安装器。
 - 安装目标应该是类似：
 
 ```text
 C:\Users\<用户名>\.codex\skills\codex-pet-director
+C:\Users\<用户名>\.codex\skills\create-pet
 C:\Users\<用户名>\.agents\skills\codex-pet-director
+C:\Users\<用户名>\.agents\skills\create-pet
 ```
 
 ### 3. 重启 Codex
@@ -80,13 +85,19 @@ C:\Users\<用户名>\.agents\skills\codex-pet-director
 
 ### 4. 启动
 
-在 Codex 里输入：
+在 Codex 的斜杠菜单里搜索并选择：
+
+```text
+create-pet
+```
+
+也可以直接发送：
 
 ```text
 /create-pet
 ```
 
-如果没有弹出斜杠命令菜单，也直接把它当普通消息发送。
+如果手动输入完整 `/create-pet` 时显示“无命令”，也直接把它当普通消息发送。第三方 skill 入口需要从菜单里选择才会变成菜单项。
 
 期望结果：
 
@@ -122,14 +133,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 ```bash
 npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent codex -g -y --copy
 ```
 
 期望结果：
 
-- 从 GitHub 的 `skills/codex-pet-director` 路径安装。
+- 从 GitHub 的 `skills/codex-pet-director` 和 `skills/create-pet` 路径安装。
 - 写入本机 Agents skills 目录。
 - 写入或更新 `.agents/.skill-lock.json`。
-- Codex 能在后续会话中发现这个 skill。
+- Codex 能在后续会话中发现主 skill 和 `create-pet` 入口。
 
 ## 路线 D：项目自带 npx 安装器
 
@@ -144,7 +156,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 期望结果：
 
 - 从 GitHub 拉取 package。
-- 安装到本机 Codex skills 目录。
+- 安装到本机 Codex skills 目录，包括 `codex-pet-director` 和 `create-pet`。
 - 同步镜像到 Agents skills 目录，并更新 `.agents/.skill-lock.json`，方便 Skill 搜索页和管理器发现。
 - 输出下一步 `/create-pet`。
 
@@ -188,7 +200,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 
 - 用户能从 README 找到安装方法。
 - 用户不需要理解 `SKILL.md`、`pet_brief.json`、spritesheet。
-- 安装后输入 `/create-pet` 能启动。
+- 安装后选择 `create-pet` 或输入 `/create-pet` 能启动。
 - 启动后第一步是环境检查。
 - 问题是小白能懂的中文。
 - 它不会承诺无限动作、额外帧数、键盘控制或手柄控制。
@@ -204,7 +216,8 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 Codex 是否重启：
 安装路线：A / B / C / D
 是否安装成功：
-/create-pet 是否启动：
+create-pet 是否能在斜杠菜单搜索到：
+/create-pet 普通消息是否启动：
 环境检查是否出现：
 第一轮问题是否清楚：
 用户卡住的位置：

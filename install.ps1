@@ -10,6 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $SkillName = "codex-pet-director"
+$AliasSkillName = "create-pet"
 
 function Write-Step {
     param([string]$Message)
@@ -17,7 +18,7 @@ function Write-Step {
 }
 
 function Write-NextStep {
-    Write-Step "Next step: restart Codex if needed, then paste this into Codex:"
+    Write-Step "Next step: restart Codex if needed, then search create-pet in the slash menu or paste this into Codex:"
     Write-Host "/create-pet"
 }
 
@@ -62,6 +63,8 @@ function Assert-Inside {
 }
 
 function Get-LocalSkillSource {
+    param([string]$Name = $SkillName)
+
     $roots = @()
     if ($PSScriptRoot) {
         $roots += $PSScriptRoot
@@ -72,12 +75,12 @@ function Get-LocalSkillSource {
     $roots += (Get-Location).Path
 
     foreach ($root in ($roots | Select-Object -Unique)) {
-        $candidate = Join-Path (Join-Path $root "skills") $SkillName
+        $candidate = Join-Path (Join-Path $root "skills") $Name
         if (Test-Path -LiteralPath (Join-Path $candidate "SKILL.md")) {
             return (Resolve-Path -LiteralPath $candidate).Path
         }
 
-        $candidate = Join-Path $root $SkillName
+        $candidate = Join-Path $root $Name
         if (Test-Path -LiteralPath (Join-Path $candidate "SKILL.md")) {
             return (Resolve-Path -LiteralPath $candidate).Path
         }
@@ -89,7 +92,8 @@ function Get-LocalSkillSource {
 function Get-RemoteSkillSource {
     param(
         [string]$RepoSlug,
-        [string]$RepoBranch
+        [string]$RepoBranch,
+        [string]$Name = $SkillName
     )
 
     if ([string]::IsNullOrWhiteSpace($RepoSlug) -or $RepoSlug -like "YOUR_GITHUB_USER/*") {
@@ -107,30 +111,33 @@ function Get-RemoteSkillSource {
     Expand-Archive -Path $zipPath -DestinationPath $tempRoot -Force
 
     $canonicalSkill = Get-ChildItem -Path $tempRoot -File -Recurse -Filter "SKILL.md" |
-        Where-Object { ($_.FullName -replace "/", "\") -like "*\skills\$SkillName\SKILL.md" } |
+        Where-Object { ($_.FullName -replace "/", "\") -like "*\skills\$Name\SKILL.md" } |
         Select-Object -First 1
 
     if (-not $canonicalSkill) {
         $canonicalSkill = Get-ChildItem -Path $tempRoot -File -Recurse -Filter "SKILL.md" |
-            Where-Object { ($_.FullName -replace "/", "\") -like "*\$SkillName\SKILL.md" } |
+            Where-Object { ($_.FullName -replace "/", "\") -like "*\$Name\SKILL.md" } |
             Select-Object -First 1
     }
 
     if (-not $canonicalSkill) {
-        throw "Could not find $SkillName/SKILL.md in the downloaded archive."
+        throw "Could not find $Name/SKILL.md in the downloaded archive."
     }
 
     return (Split-Path -Parent $canonicalSkill.FullName)
 }
 
 function Get-SkillSourcePath {
-    param([string]$Source)
+    param(
+        [string]$Source,
+        [string]$Name = $SkillName
+    )
 
     $normalized = ([System.IO.Path]::GetFullPath($Source) -replace "/", "\")
-    if ($normalized -like "*\skills\$SkillName") {
-        return "skills/$SkillName/SKILL.md"
+    if ($normalized -like "*\skills\$Name") {
+        return "skills/$Name/SKILL.md"
     }
-    return "$SkillName/SKILL.md"
+    return "$Name/SKILL.md"
 }
 
 function Invoke-EnvironmentCheck {
@@ -215,7 +222,8 @@ function Update-AgentsSkillLock {
     param(
         [string]$AgentsInstallRoot,
         [string]$InstalledSkill,
-        [string]$SourcePath
+        [string]$SourcePath,
+        [string]$Name = $SkillName
     )
 
     if (-not (Test-Path -LiteralPath (Join-Path $InstalledSkill "SKILL.md"))) {
@@ -241,7 +249,7 @@ function Update-AgentsSkillLock {
 
     $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
     $installedAt = $now
-    $existing = $lock.skills.PSObject.Properties[$SkillName]
+    $existing = $lock.skills.PSObject.Properties[$Name]
     if ($existing -and $existing.Value -and $existing.Value.PSObject.Properties["installedAt"]) {
         $installedAt = $existing.Value.installedAt
     }
@@ -256,7 +264,7 @@ function Update-AgentsSkillLock {
         updatedAt = $now
     }
 
-    $lock.skills | Add-Member -Force -NotePropertyName $SkillName -NotePropertyValue $entry
+    $lock.skills | Add-Member -Force -NotePropertyName $Name -NotePropertyValue $entry
     Write-JsonFile -Path $lockPath -Value $lock
     Write-Step "Updated Agents skill lock: $lockPath"
 }
@@ -265,10 +273,11 @@ function Install-SkillCopy {
     param(
         [string]$Source,
         [string]$Root,
-        [string]$Label
+        [string]$Label,
+        [string]$Name = $SkillName
     )
 
-    $destination = Join-Path $Root $SkillName
+    $destination = Join-Path $Root $Name
     Write-Step "$Label target: $destination"
 
     if ($DryRun) {
@@ -293,9 +302,14 @@ if ([string]::IsNullOrWhiteSpace($AgentsInstallRoot)) {
     $AgentsInstallRoot = Get-DefaultAgentsInstallRoot
 }
 
-$source = Get-LocalSkillSource
+$source = Get-LocalSkillSource -Name $SkillName
 if (-not $source) {
-    $source = Get-RemoteSkillSource -RepoSlug $Repo -RepoBranch $Branch
+    $source = Get-RemoteSkillSource -RepoSlug $Repo -RepoBranch $Branch -Name $SkillName
+}
+
+$aliasSource = Get-LocalSkillSource -Name $AliasSkillName
+if (-not $aliasSource) {
+    $aliasSource = Get-RemoteSkillSource -RepoSlug $Repo -RepoBranch $Branch -Name $AliasSkillName
 }
 
 $installRootPath = Get-NormalizedPath -Path $InstallRoot
@@ -311,8 +325,10 @@ if ($shouldMirrorToAgents) {
 
 if ($DryRun) {
     Install-SkillCopy -Source $source -Root $InstallRoot -Label "Codex skill" | Out-Null
+    Install-SkillCopy -Source $aliasSource -Root $InstallRoot -Label "Codex slash alias skill" -Name $AliasSkillName | Out-Null
     if ($shouldMirrorToAgents) {
         Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
+        Install-SkillCopy -Source $aliasSource -Root $AgentsInstallRoot -Label "Agents slash alias mirror" -Name $AliasSkillName | Out-Null
     }
     if (-not $SkipAgentsMirror) {
         Write-Step "Would update Agents skill lock under $AgentsInstallRoot"
@@ -323,15 +339,20 @@ if ($DryRun) {
 
 $destination = Install-SkillCopy -Source $source -Root $InstallRoot -Label "Codex skill"
 Write-Step "Installed $SkillName to Codex skills"
+$aliasDestination = Install-SkillCopy -Source $aliasSource -Root $InstallRoot -Label "Codex slash alias skill" -Name $AliasSkillName
+Write-Step "Installed $AliasSkillName slash entry to Codex skills"
 
 if ($shouldMirrorToAgents) {
     Install-SkillCopy -Source $source -Root $AgentsInstallRoot -Label "Agents skill mirror" | Out-Null
+    Install-SkillCopy -Source $aliasSource -Root $AgentsInstallRoot -Label "Agents slash alias mirror" -Name $AliasSkillName | Out-Null
     Write-Step "Mirrored $SkillName to Agents skills for skill search discovery"
 }
 
 $agentsDestination = Join-Path $AgentsInstallRoot $SkillName
+$aliasAgentsDestination = Join-Path $AgentsInstallRoot $AliasSkillName
 if (-not $SkipAgentsMirror) {
-    Update-AgentsSkillLock -AgentsInstallRoot $AgentsInstallRoot -InstalledSkill $agentsDestination -SourcePath (Get-SkillSourcePath -Source $source)
+    Update-AgentsSkillLock -AgentsInstallRoot $AgentsInstallRoot -InstalledSkill $agentsDestination -SourcePath (Get-SkillSourcePath -Source $source -Name $SkillName) -Name $SkillName
+    Update-AgentsSkillLock -AgentsInstallRoot $AgentsInstallRoot -InstalledSkill $aliasAgentsDestination -SourcePath (Get-SkillSourcePath -Source $aliasSource -Name $AliasSkillName) -Name $AliasSkillName
 }
 
 Invoke-EnvironmentCheck -InstalledSkill $destination

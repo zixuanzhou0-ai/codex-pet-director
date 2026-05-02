@@ -6,10 +6,11 @@
 
 ## Installation en une commande
 
-Le point de départ est `/create-pet`. Si votre version de Codex n'affiche pas de menu de commandes avec `/`, envoyez `/create-pet` comme un message normal.
+Le point de départ est `create-pet` dans le groupe Skills du menu `/`. Vous pouvez aussi envoyer `/create-pet` comme un message normal.
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+Run this install command for me:
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 Après l'installation, redémarrez Codex puis demandez :
@@ -60,7 +61,7 @@ Dossier pets de Codex : Codex détecte et charge le pet
 
 ## Utilisation
 
-Après l'installation, saisissez ceci dans Codex :
+Après l'installation, cherchez `create-pet` dans le menu `/`. Vous pouvez aussi envoyer :
 
 ```text
 /create-pet

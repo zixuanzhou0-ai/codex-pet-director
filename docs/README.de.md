@@ -6,10 +6,11 @@
 
 ## Installation mit einem Befehl
 
-Der Startbefehl ist `/create-pet`. Wenn deine Codex-Version kein Slash-Command-Menü zeigt, sende `/create-pet` einfach als normale Nachricht.
+Der Einstieg ist `create-pet` im Skills-Bereich des Slash-Menüs. Du kannst auch `/create-pet` als normale Nachricht senden.
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+Run this install command for me:
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 Starte Codex nach der Installation neu und schreibe dann:
@@ -60,7 +61,7 @@ Codex pets Ordner: Codex erkennt und lädt das Pet
 
 ## Nutzung
 
-Nach der Installation gib in Codex ein:
+Nach der Installation suche `create-pet` im Slash-Menü. Du kannst auch senden:
 
 ```text
 /create-pet

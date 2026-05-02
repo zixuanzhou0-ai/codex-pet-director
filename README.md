@@ -17,27 +17,29 @@
 
 ## 快速入口
 
-最适合新手的方式：把这句话直接发给 Codex，让 Codex 自己安装。
+最适合新手的方式：把这句话直接发给 Codex，让 Codex 自己运行一键安装器。
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+请运行这个安装命令，帮我安装 Codex Pet Director：
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-安装完成后重启 Codex，然后把这句话当普通消息发给 Codex：
+安装完成后重启 Codex，然后在输入框里打：
 
 ```text
 /create-pet
 ```
 
-注意：当前 Codex 桌面端的斜杠菜单只显示内置命令，不会把第三方 skill 自动变成可搜索的 slash command。这里的 `/create-pet` 是一个聊天触发词，不需要出现在斜杠菜单里。
+如果斜杠菜单展开，选择 `create-pet` 这个 skill 入口；如果菜单没有展开，直接把 `/create-pet` 当普通消息发出去也能启动。
 
-如果你的环境有 Skills CLI，可以用成熟 skill 常见的 GitHub 安装方式：
+如果你的环境有 Skills CLI，也可以用 GitHub skill 安装方式。注意要装两个 skill：主流程和桌面端入口。
 
 ```bash
 npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent codex -g -y --copy
 ```
 
-也可以直接运行这个项目自带的一键安装器：
+更推荐直接运行这个项目自带的一键安装器：
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -57,7 +59,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
 ```
 
-这会创建本机插件包、注册本地 marketplace，并启用 `codex-pet-director` 插件元数据。但它不能强制当前 Codex 桌面端在斜杠菜单里显示第三方命令。正式使用仍然是直接发送 `/create-pet`。
+这会创建本机插件包、注册本地 marketplace，并同时安装 `codex-pet-director` 主 skill 和 `create-pet` 斜杠菜单入口 skill。
 
 ## 简体中文
 
@@ -65,17 +67,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 ### 一键安装
 
-启动入口就是 `/create-pet`。它是聊天触发词，不是当前 Codex 内置斜杠菜单命令。直接把 `/create-pet` 当普通消息发出去即可。
+启动入口就是 `/create-pet`。新版安装器会额外安装一个名为 `create-pet` 的入口 skill，让 Codex 桌面端可以在斜杠菜单的 Skills 分组里搜到它。
 
 **方式 A：让 Codex 自己安装。**
 
 把下面这句话直接发给 Codex：
 
 ```text
-请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+请运行这个安装命令，帮我安装 Codex Pet Director：
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-安装完成后重启 Codex，然后把下面这句话当普通消息发给 Codex：
+安装完成后重启 Codex，然后在输入框里打：
 
 ```text
 /create-pet
@@ -83,10 +86,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 **方式 B：用终端安装。**
 
-如果你的环境有 Skills CLI，推荐用更标准的 GitHub skill 安装方式：
+如果你的环境有 Skills CLI，也可以用标准 GitHub skill 安装方式。这里必须安装两个 skill，否则桌面端只会看到主流程，不一定会看到 `create-pet` 入口。
 
 ```bash
 npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent codex -g -y --copy
 ```
 
 开发者或熟悉终端的用户也可以用本项目自带安装器：
@@ -114,11 +118,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 - `C:\Users\<你>\plugins\codex-pet-director`
 - `C:\Users\<你>\.agents\plugins\marketplace.json`
 - `C:\Users\<你>\.agents\skills\codex-pet-director`
+- `C:\Users\<你>\.agents\skills\create-pet`
 - `C:\Users\<你>\.agents\.skill-lock.json`
 - `C:\Users\<你>\.codex\config.toml`
 - `C:\Users\<你>\.codex\skills\codex-pet-director`
+- `C:\Users\<你>\.codex\skills\create-pet`
 
-脚本会先备份 `config.toml`，不会修改 Codex app 本体。当前 Codex 桌面端不会读取第三方插件命令到斜杠菜单里，所以安装后仍然用普通消息 `/create-pet` 启动。
+脚本会先备份 `config.toml`，不会修改 Codex app 本体。安装后可以在斜杠菜单里搜索 `create-pet`，它会出现在 Skills 分组里。手动输入完整 `/create-pet` 时，Codex 可能仍显示“无命令”，这是因为第三方 skill 入口需要从菜单里选择；直接把 `/create-pet` 当普通消息发送也能启动。
 
 如果你是下载 ZIP 或 clone 仓库，也可以直接双击：
 
@@ -136,7 +142,7 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 
 1. 安装这个 skill。
 2. 重启 Codex。
-3. 把 `/create-pet` 当普通消息发给 Codex。
+3. 在斜杠菜单里搜索并选择 `create-pet`，或直接发送 `/create-pet`。
 4. 回答它是谁、是什么形态、是什么风格、长什么样。
 5. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
 6. 确认 9 个官方动作。
@@ -224,7 +230,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 安装后自检
 
-输入 `/create-pet` 后，它会先检查：
+选择 `create-pet` 或发送 `/create-pet` 后，它会先检查：
 
 - 你的系统是 Windows、macOS 还是 Linux。
 - Codex 的 `skills` 和 `pets` 目录是否存在。
@@ -242,7 +248,7 @@ Codex pets 目录：Codex 识别并加载宠物
 /create-pet
 ```
 
-不需要在斜杠菜单里搜索它。也可以直接说：
+也可以直接说：
 
 ```text
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
@@ -263,11 +269,14 @@ Codex pets 目录：Codex 识别并加载宠物
 ```text
 .
 ├── skills/
-│   └── codex-pet-director/       # 标准 GitHub/Skills CLI 源路径
+│   ├── codex-pet-director/       # 主流程 skill
+│   │   ├── SKILL.md
+│   │   ├── agents/
+│   │   ├── references/
+│   │   └── scripts/
+│   └── create-pet/               # Codex 桌面端斜杠菜单入口 skill
 │       ├── SKILL.md
-│       ├── agents/
-│       ├── references/
-│       └── scripts/
+│       └── agents/
 ├── codex-pet-director/           # 兼容旧安装链接
 │   ├── SKILL.md
 │   ├── agents/
@@ -298,8 +307,11 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ```powershell
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\codex-pet-director
+python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\create-pet
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\codex-pet-director
 python .\codex-pet-director\scripts\check_pet_environment.py --json
 python .\codex-pet-director\scripts\pet_brief.py languages
 python .\codex-pet-director\scripts\pet_brief.py --help
+npx --yes skills list --agent codex -g
+codex debug prompt-input "/create-pet"
 ```

@@ -7,6 +7,7 @@ const os = require("os");
 const path = require("path");
 
 const skillName = "codex-pet-director";
+const aliasSkillName = "create-pet";
 const repositorySlug = "zixuanzhou0-ai/codex-pet-director";
 
 function log(message) {
@@ -14,7 +15,7 @@ function log(message) {
 }
 
 function printNextStep() {
-  log("Next step: restart Codex if needed, then paste this into Codex:");
+  log("Next step: restart Codex if needed, then search create-pet in the slash menu or paste this into Codex:");
   console.log("/create-pet");
 }
 
@@ -88,13 +89,13 @@ function copyDirectory(source, destination) {
   }
 }
 
-function resolveSkillSource(repositoryRoot) {
-  const canonical = path.join(repositoryRoot, "skills", skillName);
+function resolveSkillSource(repositoryRoot, name = skillName) {
+  const canonical = path.join(repositoryRoot, "skills", name);
   if (fs.existsSync(path.join(canonical, "SKILL.md"))) {
     return canonical;
   }
 
-  const legacy = path.join(repositoryRoot, skillName);
+  const legacy = path.join(repositoryRoot, name);
   if (fs.existsSync(path.join(legacy, "SKILL.md"))) {
     return legacy;
   }
@@ -102,12 +103,12 @@ function resolveSkillSource(repositoryRoot) {
   throw new Error(`Missing skill source under ${repositoryRoot}`);
 }
 
-function sourceSkillPath(source) {
+function sourceSkillPath(source, name = skillName) {
   const normalized = path.resolve(source).split(path.sep).join("/");
-  if (normalized.endsWith(`/skills/${skillName}`)) {
-    return `skills/${skillName}/SKILL.md`;
+  if (normalized.endsWith(`/skills/${name}`)) {
+    return `skills/${name}/SKILL.md`;
   }
-  return `${skillName}/SKILL.md`;
+  return `${name}/SKILL.md`;
 }
 
 function listFilesRecursive(root) {
@@ -151,7 +152,7 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
-function updateAgentsSkillLock(agentsInstallRoot, installedSkill, skillPath) {
+function updateAgentsSkillLock(agentsInstallRoot, installedSkill, skillPath, name = skillName) {
   if (!fs.existsSync(path.join(installedSkill, "SKILL.md"))) {
     log("Agents skill lock skipped because the Agents mirror was not installed.");
     return;
@@ -168,8 +169,8 @@ function updateAgentsSkillLock(agentsInstallRoot, installedSkill, skillPath) {
   }
 
   const now = new Date().toISOString();
-  const existing = lock.skills[skillName] || {};
-  lock.skills[skillName] = {
+  const existing = lock.skills[name] || {};
+  lock.skills[name] = {
     source: repositorySlug,
     sourceType: "github",
     sourceUrl: `https://github.com/${repositorySlug}.git`,
@@ -226,8 +227,8 @@ function runEnvironmentCheck(installedSkill) {
   }
 }
 
-function installSkillCopy(source, installRoot, label, dryRun) {
-  const destination = path.join(installRoot, skillName);
+function installSkillCopy(source, installRoot, label, dryRun, name = skillName) {
+  const destination = path.join(installRoot, name);
   log(`${label} target: ${destination}`);
 
   if (dryRun) {
@@ -244,11 +245,13 @@ function installSkillCopy(source, installRoot, label, dryRun) {
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const repositoryRoot = path.resolve(__dirname, "..");
-  const source = resolveSkillSource(repositoryRoot);
+  const source = resolveSkillSource(repositoryRoot, skillName);
+  const aliasSource = resolveSkillSource(repositoryRoot, aliasSkillName);
   const installRoot = path.resolve(options.installRoot || defaultInstallRoot());
   const agentsInstallRoot = path.resolve(options.agentsInstallRoot || defaultAgentsInstallRoot());
   const destination = path.join(installRoot, skillName);
   const agentsDestination = path.join(agentsInstallRoot, skillName);
+  const aliasAgentsDestination = path.join(agentsInstallRoot, aliasSkillName);
   const shouldMirrorToAgents = !options.skipAgentsMirror && installRoot !== agentsInstallRoot;
 
   log(`Source: ${source}`);
@@ -259,8 +262,10 @@ function main() {
 
   if (options.dryRun) {
     installSkillCopy(source, installRoot, "Codex skill", true);
+    installSkillCopy(aliasSource, installRoot, "Codex slash alias skill", true, aliasSkillName);
     if (shouldMirrorToAgents) {
       installSkillCopy(source, agentsInstallRoot, "Agents skill mirror", true);
+      installSkillCopy(aliasSource, agentsInstallRoot, "Agents slash alias mirror", true, aliasSkillName);
     }
     if (!options.skipAgentsMirror) {
       log(`Would update Agents skill lock under ${agentsInstallRoot}`);
@@ -271,12 +276,16 @@ function main() {
 
   installSkillCopy(source, installRoot, "Codex skill", false);
   log(`Installed ${skillName} to Codex skills`);
+  installSkillCopy(aliasSource, installRoot, "Codex slash alias skill", false, aliasSkillName);
+  log(`Installed ${aliasSkillName} slash entry to Codex skills`);
   if (shouldMirrorToAgents) {
     installSkillCopy(source, agentsInstallRoot, "Agents skill mirror", false);
+    installSkillCopy(aliasSource, agentsInstallRoot, "Agents slash alias mirror", false, aliasSkillName);
     log(`Mirrored ${skillName} to Agents skills for skill search discovery`);
   }
   if (!options.skipAgentsMirror) {
-    updateAgentsSkillLock(agentsInstallRoot, agentsDestination, sourceSkillPath(source));
+    updateAgentsSkillLock(agentsInstallRoot, agentsDestination, sourceSkillPath(source, skillName), skillName);
+    updateAgentsSkillLock(agentsInstallRoot, aliasAgentsDestination, sourceSkillPath(aliasSource, aliasSkillName), aliasSkillName);
   }
   runEnvironmentCheck(destination);
   log("Done. Restart Codex if the skill list has not refreshed yet.");

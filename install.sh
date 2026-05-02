@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SKILL_NAME="codex-pet-director"
+ALIAS_SKILL_NAME="create-pet"
 REPO="${CODEX_PET_DIRECTOR_REPO:-zixuanzhou0-ai/codex-pet-director}"
 BRANCH="${CODEX_PET_DIRECTOR_BRANCH:-main}"
 DRY_RUN=0
@@ -61,7 +62,7 @@ step() {
 }
 
 print_next_step() {
-  step "Next step: restart Codex if needed, then paste this into Codex:"
+  step "Next step: restart Codex if needed, then search create-pet in the slash menu or paste this into Codex:"
   printf '%s\n' "/create-pet"
 }
 
@@ -82,28 +83,30 @@ script_dir() {
 }
 
 find_local_source() {
+  local name="${1:-$SKILL_NAME}"
   local dir
   dir="$(script_dir)"
-  if [ -f "$dir/skills/$SKILL_NAME/SKILL.md" ]; then
-    printf '%s\n' "$dir/skills/$SKILL_NAME"
+  if [ -f "$dir/skills/$name/SKILL.md" ]; then
+    printf '%s\n' "$dir/skills/$name"
     return 0
   fi
-  if [ -f "$dir/$SKILL_NAME/SKILL.md" ]; then
-    printf '%s\n' "$dir/$SKILL_NAME"
+  if [ -f "$dir/$name/SKILL.md" ]; then
+    printf '%s\n' "$dir/$name"
     return 0
   fi
-  if [ -f "$(pwd)/skills/$SKILL_NAME/SKILL.md" ]; then
-    printf '%s\n' "$(pwd)/skills/$SKILL_NAME"
+  if [ -f "$(pwd)/skills/$name/SKILL.md" ]; then
+    printf '%s\n' "$(pwd)/skills/$name"
     return 0
   fi
-  if [ -f "$(pwd)/$SKILL_NAME/SKILL.md" ]; then
-    printf '%s\n' "$(pwd)/$SKILL_NAME"
+  if [ -f "$(pwd)/$name/SKILL.md" ]; then
+    printf '%s\n' "$(pwd)/$name"
     return 0
   fi
   return 1
 }
 
 download_source() {
+  local name="${1:-$SKILL_NAME}"
   if [ -z "$REPO" ] || [ "$REPO" = "YOUR_GITHUB_USER/codex-pet-director" ]; then
     echo "Set the real GitHub repo first. Replace YOUR_GITHUB_USER/codex-pet-director in install.sh, or run with --repo owner/repo." >&2
     exit 1
@@ -125,12 +128,12 @@ download_source() {
   fi
 
   tar -xzf "$tarball" -C "$tmp"
-  skill_md="$(find "$tmp" -type f -path "*/skills/$SKILL_NAME/SKILL.md" -print -quit)"
+  skill_md="$(find "$tmp" -type f -path "*/skills/$name/SKILL.md" -print -quit)"
   if [ -z "$skill_md" ]; then
-    skill_md="$(find "$tmp" -type f -path "*/$SKILL_NAME/SKILL.md" -print -quit)"
+    skill_md="$(find "$tmp" -type f -path "*/$name/SKILL.md" -print -quit)"
   fi
   if [ -z "$skill_md" ]; then
-    echo "Could not find $SKILL_NAME/SKILL.md in the downloaded archive." >&2
+    echo "Could not find $name/SKILL.md in the downloaded archive." >&2
     exit 1
   fi
 
@@ -138,9 +141,11 @@ download_source() {
 }
 
 source_skill_path() {
-  case "${1%/}" in
-    */skills/$SKILL_NAME) printf 'skills/%s/SKILL.md\n' "$SKILL_NAME" ;;
-    *) printf '%s/SKILL.md\n' "$SKILL_NAME" ;;
+  local source="${1%/}"
+  local name="${2:-$SKILL_NAME}"
+  case "$source" in
+    */skills/$name) printf 'skills/%s/SKILL.md\n' "$name" ;;
+    *) printf '%s/SKILL.md\n' "$name" ;;
   esac
 }
 
@@ -167,6 +172,7 @@ run_environment_check() {
 update_skill_lock() {
   local installed="$1"
   local skill_path="$2"
+  local name="${3:-$SKILL_NAME}"
 
   if [ ! -f "$installed/SKILL.md" ]; then
     step "Agents skill lock skipped because the Agents mirror was not installed."
@@ -187,6 +193,7 @@ update_skill_lock() {
   CODEX_PET_DIRECTOR_INSTALLED_SKILL="$installed" \
   CODEX_PET_DIRECTOR_REPO_SLUG="$REPO" \
   CODEX_PET_DIRECTOR_SKILL_PATH="$skill_path" \
+  CODEX_PET_DIRECTOR_LOCK_SKILL_NAME="$name" \
   "$python_bin" - <<'PY'
 import datetime
 import hashlib
@@ -197,6 +204,7 @@ agents_root = os.environ["CODEX_PET_DIRECTOR_LOCK_ROOT"]
 installed = os.environ["CODEX_PET_DIRECTOR_INSTALLED_SKILL"]
 repo = os.environ["CODEX_PET_DIRECTOR_REPO_SLUG"]
 skill_path = os.environ["CODEX_PET_DIRECTOR_SKILL_PATH"]
+skill_name = os.environ["CODEX_PET_DIRECTOR_LOCK_SKILL_NAME"]
 
 def folder_hash(root):
     digest = hashlib.sha1()
@@ -223,9 +231,9 @@ lock.setdefault("version", 3)
 if not isinstance(lock.get("skills"), dict):
     lock["skills"] = {}
 
-existing = lock["skills"].get("codex-pet-director", {})
+existing = lock["skills"].get(skill_name, {})
 now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
-lock["skills"]["codex-pet-director"] = {
+lock["skills"][skill_name] = {
     "source": repo,
     "sourceType": "github",
     "sourceUrl": f"https://github.com/{repo}.git",
@@ -248,7 +256,8 @@ install_skill_copy() {
   local source="$1"
   local root="$2"
   local label="$3"
-  local destination="$root/$SKILL_NAME"
+  local name="${4:-$SKILL_NAME}"
+  local destination="$root/$name"
 
   step "$label target: $destination"
   if [ "$DRY_RUN" -eq 1 ]; then
@@ -260,10 +269,16 @@ install_skill_copy() {
   cp -R "$source" "$destination"
 }
 
-if SOURCE="$(find_local_source)"; then
+if SOURCE="$(find_local_source "$SKILL_NAME")"; then
   :
 else
-  SOURCE="$(download_source)"
+  SOURCE="$(download_source "$SKILL_NAME")"
+fi
+
+if ALIAS_SOURCE="$(find_local_source "$ALIAS_SKILL_NAME")"; then
+  :
+else
+  ALIAS_SOURCE="$(download_source "$ALIAS_SKILL_NAME")"
 fi
 
 DESTINATION="$INSTALL_ROOT/$SKILL_NAME"
@@ -282,8 +297,10 @@ fi
 
 if [ "$DRY_RUN" -eq 1 ]; then
   install_skill_copy "$SOURCE" "$INSTALL_ROOT" "Codex skill"
+  install_skill_copy "$ALIAS_SOURCE" "$INSTALL_ROOT" "Codex slash alias skill" "$ALIAS_SKILL_NAME"
   if [ "$SHOULD_MIRROR_TO_AGENTS" -eq 1 ]; then
     install_skill_copy "$SOURCE" "$AGENTS_INSTALL_ROOT" "Agents skill mirror"
+    install_skill_copy "$ALIAS_SOURCE" "$AGENTS_INSTALL_ROOT" "Agents slash alias mirror" "$ALIAS_SKILL_NAME"
   fi
   if [ "$SKIP_AGENTS_MIRROR" -eq 0 ]; then
     step "Would update Agents skill lock under $AGENTS_INSTALL_ROOT"
@@ -294,12 +311,16 @@ fi
 
 install_skill_copy "$SOURCE" "$INSTALL_ROOT" "Codex skill"
 step "Installed $SKILL_NAME to Codex skills"
+install_skill_copy "$ALIAS_SOURCE" "$INSTALL_ROOT" "Codex slash alias skill" "$ALIAS_SKILL_NAME"
+step "Installed $ALIAS_SKILL_NAME slash entry to Codex skills"
 if [ "$SHOULD_MIRROR_TO_AGENTS" -eq 1 ]; then
   install_skill_copy "$SOURCE" "$AGENTS_INSTALL_ROOT" "Agents skill mirror"
+  install_skill_copy "$ALIAS_SOURCE" "$AGENTS_INSTALL_ROOT" "Agents slash alias mirror" "$ALIAS_SKILL_NAME"
   step "Mirrored $SKILL_NAME to Agents skills for skill search discovery"
 fi
 if [ "$SKIP_AGENTS_MIRROR" -eq 0 ]; then
-  update_skill_lock "$AGENTS_INSTALL_ROOT/$SKILL_NAME" "$(source_skill_path "$SOURCE")"
+  update_skill_lock "$AGENTS_INSTALL_ROOT/$SKILL_NAME" "$(source_skill_path "$SOURCE" "$SKILL_NAME")" "$SKILL_NAME"
+  update_skill_lock "$AGENTS_INSTALL_ROOT/$ALIAS_SKILL_NAME" "$(source_skill_path "$ALIAS_SOURCE" "$ALIAS_SKILL_NAME")" "$ALIAS_SKILL_NAME"
 fi
 run_environment_check "$DESTINATION"
 step "Done. Restart Codex if the skill list has not refreshed yet."

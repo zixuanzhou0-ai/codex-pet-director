@@ -6,10 +6,11 @@
 
 ## 원클릭 설치
 
-시작 명령은 `/create-pet`입니다. Codex에 슬래시 명령 메뉴가 보이지 않아도 `/create-pet`을 일반 메시지로 보내면 됩니다.
+시작 항목은 슬래시 메뉴의 Skills 그룹에 있는 `create-pet`입니다. `/create-pet`을 일반 메시지로 보내도 됩니다.
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+Run this install command for me:
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 설치 후 Codex를 다시 시작하고 이렇게 말하세요:
@@ -60,7 +61,7 @@ Codex pets 폴더: Codex가 펫을 인식하고 로드
 
 ## 사용 방법
 
-설치 후 Codex에 이렇게 입력하세요:
+설치 후 슬래시 메뉴에서 `create-pet`을 검색하세요. 일반 메시지로 보낼 수도 있습니다:
 
 ```text
 /create-pet

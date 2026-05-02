@@ -6,14 +6,15 @@
 
 ## One-Click Install
 
-The start entry is `/create-pet`. If your Codex build does not show a slash-command menu, send `/create-pet` as a normal chat message.
+The start entry is `create-pet` in the Skills slash menu. You can also send `/create-pet` as a normal chat message.
 
 **Option A: ask Codex to install it.**
 
 Paste this directly into Codex:
 
 ```text
-Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/skills/codex-pet-director
+Run this install command for me:
+npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
 After installation, restart Codex and paste this:
@@ -24,13 +25,14 @@ After installation, restart Codex and paste this:
 
 **Option B: install from a terminal.**
 
-If your environment has the Skills CLI, use the standard GitHub skill install form:
+If your environment has the Skills CLI, install both skills. The first is the main director; the second is the Codex Desktop entry.
 
 ```bash
 npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --agent codex -g -y --copy
+npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent codex -g -y --copy
 ```
 
-Developers or terminal users can also use this repository's installer:
+The recommended terminal path is this repository's installer:
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -60,7 +62,7 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 
 1. Install the skill.
 2. Restart Codex.
-3. Type `/create-pet`.
+3. Search and select `create-pet` in the slash menu, or send `/create-pet`.
 4. Answer who it is, what form it has, what style it should use, and what it looks like.
 5. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
 6. Confirm the 9 official actions.
@@ -151,7 +153,7 @@ The installer safely creates missing local folders when possible. It does not mo
 
 ## Post-Install Check
 
-When the user types `/create-pet`, the skill checks:
+When the user selects `create-pet` or sends `/create-pet`, the skill checks:
 
 - whether the machine is Windows, macOS, or Linux
 - whether Codex `skills` and `pets` folders exist
@@ -163,13 +165,13 @@ If something is missing, it explains the missing piece. If only safe local folde
 
 ## Usage
 
-After installation, type this in Codex:
+After installation, search `create-pet` in the Codex slash menu. You can also send:
 
 ```text
 /create-pet
 ```
 
-If your Codex build does not have a slash-command menu, send it as normal text. You can also say:
+If manually typed `/create-pet` still shows "No commands", select `create-pet` from the Skills group instead, or send it as normal text. You can also say:
 
 ```text
 I have a reference image. Turn it into an official Codex desktop pet.
