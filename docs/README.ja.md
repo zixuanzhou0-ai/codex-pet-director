@@ -6,6 +6,18 @@
 
 ## ワンクリックインストール
 
+スラッシュコマンドは不要です。まず Codex に次の文をそのまま送ります：
+
+```text
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+インストール後に Codex を再起動し、次のように依頼します：
+
+```text
+Codex で使えるカスタムデスクトップペットを作ってください。
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -48,7 +60,7 @@ Codex pets フォルダ：Codex がペットを読み込む
 
 ## 使い方
 
-インストール後、Codex にこう依頼します：
+インストール後、`/` コマンドは不要です。Codex にこう依頼します：
 
 ```text
 Codex で使えるカスタムデスクトップペットを作ってください。

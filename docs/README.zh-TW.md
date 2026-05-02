@@ -6,6 +6,18 @@
 
 ## 一鍵安裝
 
+不需要斜線命令。把這句話直接發給 Codex：
+
+```text
+請使用 skill-installer 安裝這個 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+安裝完成後重啟 Codex，然後直接說：
+
+```text
+幫我定制一個能在 Codex 裡直接使用的桌面寵物。
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -48,7 +60,7 @@ Codex pets 目錄：Codex 識別並載入寵物
 
 ## 使用方式
 
-安裝後，在 Codex 裡說：
+安裝後，不需要輸入 `/` 命令。在 Codex 裡直接說：
 
 ```text
 幫我定制一個能在 Codex 裡直接使用的桌面寵物。

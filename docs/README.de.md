@@ -6,6 +6,18 @@
 
 ## Installation mit einem Befehl
 
+Ein `/`-Befehl ist nicht nötig. Sende zuerst diese Nachricht an Codex:
+
+```text
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+Starte Codex nach der Installation neu und schreibe dann:
+
+```text
+Hilf mir, ein individuelles Desktop-Pet für Codex zu erstellen.
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -48,7 +60,7 @@ Codex pets Ordner: Codex erkennt und lädt das Pet
 
 ## Nutzung
 
-Nach der Installation in Codex fragen:
+Nach der Installation ist kein `/`-Befehl nötig. Frage Codex einfach:
 
 ```text
 Hilf mir, ein individuelles Desktop-Pet für Codex zu erstellen.

@@ -43,6 +43,11 @@ step() {
   printf '[codex-pet-director] %s\n' "$1"
 }
 
+print_next_step() {
+  step "Next step: restart Codex if needed, then paste this into Codex:"
+  printf '%s\n' "Use codex-pet-director to help me create a custom Codex desktop pet."
+}
+
 script_dir() {
   local source="${BASH_SOURCE[0]:-$0}"
   local dir
@@ -138,3 +143,4 @@ cp -R "$SOURCE" "$DESTINATION"
 step "Installed $SKILL_NAME"
 run_environment_check "$DESTINATION"
 step "Done. Restart Codex if the skill list has not refreshed yet."
+print_next_step

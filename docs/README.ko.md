@@ -6,6 +6,18 @@
 
 ## 원클릭 설치
 
+슬래시 명령은 필요 없습니다. 먼저 Codex에 아래 문장을 그대로 보내세요:
+
+```text
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+설치 후 Codex를 다시 시작하고 이렇게 말하세요:
+
+```text
+Codex에서 바로 사용할 수 있는 커스텀 데스크톱 펫을 만들어줘.
+```
+
 Windows PowerShell:
 
 ```powershell
@@ -48,7 +60,7 @@ Codex pets 폴더: Codex가 펫을 인식하고 로드
 
 ## 사용 방법
 
-설치 후 Codex에 이렇게 말하세요:
+설치 후 `/` 명령은 필요 없습니다. Codex에 이렇게 말하세요:
 
 ```text
 Codex에서 바로 사용할 수 있는 커스텀 데스크톱 펫을 만들어줘.

@@ -11,6 +11,11 @@ function log(message) {
   console.log(`[codex-pet-director] ${message}`);
 }
 
+function printNextStep() {
+  log("Next step: restart Codex if needed, then paste this into Codex:");
+  console.log("Use codex-pet-director to help me create a custom Codex desktop pet.");
+}
+
 function parseArgs(argv) {
   const options = {
     dryRun: false,
@@ -123,6 +128,7 @@ function main() {
   log(`Installed ${skillName}`);
   runEnvironmentCheck(destination);
   log("Done. Restart Codex if the skill list has not refreshed yet.");
+  printNextStep();
 }
 
 try {

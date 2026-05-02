@@ -14,6 +14,11 @@ function Write-Step {
     Write-Host "[codex-pet-director] $Message"
 }
 
+function Write-NextStep {
+    Write-Step "Next step: restart Codex if needed, then paste this into Codex:"
+    Write-Host "Use codex-pet-director to help me create a custom Codex desktop pet."
+}
+
 function Get-DefaultInstallRoot {
     if ($env:CODEX_HOME) {
         return (Join-Path $env:CODEX_HOME "skills")
@@ -136,3 +141,4 @@ Write-Step "Installed $SkillName"
 Invoke-EnvironmentCheck -InstalledSkill $destination
 
 Write-Step "Done. Restart Codex if the skill list has not refreshed yet."
+Write-NextStep

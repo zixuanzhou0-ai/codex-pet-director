@@ -17,10 +17,18 @@
 
 ### 一键安装
 
-最简单的方式：把下面这句话直接发给 Codex：
+不需要斜杠命令，也不需要用户知道 skill 名称。安装和启动都可以用普通聊天句子完成。
+
+第一步，把下面这句话直接发给 Codex：
 
 ```text
 请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+第二步，安装完成后重启 Codex，然后把下面这句话发给 Codex：
+
+```text
+帮我定制一个能在 Codex 里直接使用的桌面宠物。
 ```
 
 开发者也可以用 `npx`：
@@ -124,7 +132,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 使用方式
 
-安装后，在 Codex 里直接说类似：
+安装后，不需要输入 `/` 命令。在 Codex 里直接说：
 
 ```text
 帮我定制一个能在 Codex 里直接使用的桌面宠物。
@@ -142,10 +150,18 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### One-Click Install
 
-The simplest way: paste this directly into Codex:
+No slash command is required, and users do not need to know the internal skill name. Installation and usage both work through normal chat messages.
+
+Step 1: paste this directly into Codex:
 
 ```text
 Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+Step 2: after installation, restart Codex and paste this:
+
+```text
+Help me create a custom Codex desktop pet.
 ```
 
 Developers can also use `npx`:
@@ -252,7 +268,7 @@ The installer safely creates missing local folders when possible. It does not mo
 
 ### Usage
 
-After installation, ask Codex:
+After installation, no `/` command is needed. Just ask Codex:
 
 ```text
 Help me create a custom Codex desktop pet.
