@@ -19,11 +19,15 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 /create-pet
 ```
 
+시작하면 먼저 새로 만들기, 기존 초안 이어가기, 기존 초안 보기 중에서 선택합니다. 이전 초안을 조용히 이어가거나 바로 최종 생성을 시작하지 않습니다.
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+이 설치 프로그램은 skills, 로컬 plugin package, Codex plugin cache, marketplace, `config.toml`을 함께 씁니다.
 
 ZIP을 다운로드하거나 저장소를 clone한 경우 `install.cmd`를 더블 클릭해서 설치할 수도 있습니다.
 
@@ -66,3 +70,5 @@ Codex pets 폴더: Codex가 펫을 인식하고 로드
 ```text
 /create-pet
 ```
+
+그다음 새로 만들기, 이어가기, 보기 중 하나를 선택한 뒤 환경 확인과 캐릭터 인터뷰를 시작합니다.

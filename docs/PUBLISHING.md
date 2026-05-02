@@ -2,8 +2,8 @@
 
 This repository currently supports these install paths:
 
-1. GitHub-backed project installer through `npx`
-2. Windows `install.cmd` / PowerShell install
+1. GitHub-backed full local plugin installer through `npx`
+2. Windows `install.cmd` / PowerShell full plugin install
 3. Skills CLI install from GitHub
 
 ## Current User Install Commands
@@ -27,6 +27,8 @@ GitHub project installer:
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
+
+This installs skills, the Agents mirror, the local plugin package, the Codex plugin cache, marketplace metadata, and `config.toml`.
 
 Windows PowerShell:
 
@@ -60,24 +62,26 @@ The package is already prepared with:
 - examples
 - docs
 - install scripts
+- validation scripts
 
 ## GitHub Release Path
 
 For a beginner-friendly release:
 
-1. Create a tag, such as `v0.5.3`.
-2. Create a GitHub Release from that tag.
-3. Tell Windows users to download the source ZIP and double-click `install.cmd`.
-4. Tell Codex users to run the GitHub project installer so both `codex-pet-director` and `create-pet` are installed.
+1. Run `npm test`.
+2. Create a tag, such as `v0.5.4`.
+3. Create a GitHub Release from that tag.
+4. Tell Windows users to download the source ZIP and double-click `install.cmd`.
+5. Tell Codex users to run the GitHub project installer so the full local plugin structure is installed.
 
 Release title:
 
 ```text
-Codex Pet Director v0.5.3
+Codex Pet Director v0.5.4
 ```
 
 Short release description:
 
 ```text
-Fixes local plugin installation so Codex can parse the marketplace file and load the cached `create-pet` plugin package.
+Makes the GitHub `npx` installer install the full local plugin structure and adds automated validation for repository links, skill mirrors, package contents, and temporary-home installation.
 ```

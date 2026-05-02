@@ -38,7 +38,7 @@ The recommended terminal path is this repository's installer:
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-The installer writes to the Codex skills directory, the Agents skills mirror, and `.agents/.skill-lock.json`, so the model can load the skill and skill managers can identify its source and update path.
+The installer writes the Codex skills directory, the Agents skills mirror, `.agents/.skill-lock.json`, the local plugin package, the Codex plugin cache, the marketplace file, and `config.toml`, so the model can load the skill and skill managers can identify its source and update path.
 
 Recommended Windows PowerShell command:
 
@@ -58,15 +58,18 @@ macOS / Linux:
 curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
 ```
 
+The shell installer is a fallback for skills-only installation. For the full local plugin metadata path, prefer the `npx` command above.
+
 ## 30-Second Start
 
 1. Install the skill.
 2. Restart Codex.
 3. Search and select `create-pet` in the slash menu, or send `/create-pet`.
-4. Answer who it is, what form it has, what style it should use, and what it looks like.
-5. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
-6. Confirm the 9 official actions.
-7. Let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
+4. Choose whether to create a new pet, continue an existing draft, or inspect an existing draft.
+5. Answer who it is, what form it has, what style it should use, and what it looks like.
+6. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
+7. Confirm the 9 official actions.
+8. Give final production approval, then let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
 
 ## What It Does
 
@@ -153,7 +156,7 @@ The installer safely creates missing local folders when possible. It does not mo
 
 ## Post-Install Check
 
-When the user selects `create-pet` or sends `/create-pet`, the skill checks:
+When the user selects `create-pet` or sends `/create-pet`, it first asks whether to create a new pet, continue an existing draft, or inspect an existing draft. After the user chooses create or continue, the skill checks:
 
 - whether the machine is Windows, macOS, or Linux
 - whether Codex `skills` and `pets` folders exist

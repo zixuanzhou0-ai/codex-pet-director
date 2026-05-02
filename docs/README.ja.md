@@ -19,11 +19,15 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 /create-pet
 ```
 
+起動後はまず新規作成、既存下書きの続行、既存下書きの確認を選びます。古い下書きを勝手に続行したり、すぐ本番生成を始めたりしません。
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+このインストーラーは skills、ローカル plugin package、Codex plugin cache、marketplace、`config.toml` を書き込みます。
 
 ZIP をダウンロードした場合、またはリポジトリを clone した場合は、`install.cmd` をダブルクリックしてインストールできます。
 
@@ -66,3 +70,5 @@ Codex pets フォルダ：Codex がペットを読み込む
 ```text
 /create-pet
 ```
+
+その後、新規作成、続行、確認を選んでから、環境チェックとキャラクター質問に進みます。

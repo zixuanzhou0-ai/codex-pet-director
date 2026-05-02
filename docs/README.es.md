@@ -19,11 +19,15 @@ Después de instalar, reinicia Codex y escribe:
 /create-pet
 ```
 
+Al iniciar, primero pregunta si quieres crear una mascota nueva, continuar un borrador existente o revisar un borrador. No continúa borradores antiguos ni empieza producción final automáticamente.
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+Este instalador escribe skills, el paquete plugin local, la cache de plugins de Codex, marketplace y `config.toml`.
 
 Si descargas el ZIP o clonas el repositorio, también puedes hacer doble clic en `install.cmd`.
 
@@ -66,3 +70,5 @@ Después de instalar, busca `create-pet` en el menú `/`. También puedes enviar
 ```text
 /create-pet
 ```
+
+Después eliges crear, continuar o revisar, y solo entonces empieza la comprobación del entorno y la entrevista del personaje.

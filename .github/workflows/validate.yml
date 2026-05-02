@@ -1,0 +1,29 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate repository structure
+        run: node scripts/validate_repository.js
+
+      - name: Test one-click installer in a temporary home
+        run: node scripts/test_install.js
+
+      - name: Verify npm package contents
+        run: npm pack --dry-run

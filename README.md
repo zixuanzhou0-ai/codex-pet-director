@@ -54,7 +54,7 @@ npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent code
 npx --yes github:zixuanzhou0-ai/codex-pet-director
 ```
 
-安装器会同时写入 Codex skills 目录、Agents skills 镜像目录和 `.agents/.skill-lock.json`。这样模型上下文能加载它，Codex/Agents 的 Skill 搜索页和管理器也更容易发现、识别来源和更新路径。
+安装器会同时写入 Codex skills 目录、Agents skills 镜像目录、`.agents/.skill-lock.json`、本地 plugin package、Codex plugin cache、marketplace 和 `config.toml`。这样模型上下文能加载它，Codex/Agents 的 Skill 搜索页和管理器也更容易发现、识别来源和更新路径。
 
 Windows 用户也可以复制这一行到 PowerShell：
 
@@ -62,13 +62,13 @@ Windows 用户也可以复制这一行到 PowerShell：
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
 
-开发者如果想同时安装本地插件元数据，可以运行插件安装版：
+排查安装问题时，也可以直接运行底层插件安装器：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
 ```
 
-这会创建本机插件包、注册本地 marketplace，并同时安装 `codex-pet-director` 主 skill 和 `create-pet` 斜杠菜单入口 skill。
+这和 `npx` 安装器写入的是同一套本机插件结构。
 
 ## 简体中文
 
@@ -76,7 +76,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 ### 一键安装
 
-启动入口就是 `/create-pet`。新版安装器会额外安装一个名为 `create-pet` 的入口 skill，让 Codex 桌面端可以在斜杠菜单的 Skills 分组里搜到它。
+启动入口就是 `/create-pet`。新版安装器会安装 `create-pet` 入口 skill、本地 plugin 元数据和 Codex plugin cache，让 Codex 桌面端更容易在 Skills 分组里发现它。
 
 **方式 A：让 Codex 自己安装。**
 
@@ -102,7 +102,7 @@ npx skills add zixuanzhou0-ai/codex-pet-director --skill codex-pet-director --ag
 npx skills add zixuanzhou0-ai/codex-pet-director --skill create-pet --agent codex -g -y --copy
 ```
 
-开发者或熟悉终端的用户也可以用本项目自带安装器：
+开发者或熟悉终端的用户也可以用本项目自带安装器。这个命令会安装完整本地 plugin 结构：
 
 ```bash
 npx --yes github:zixuanzhou0-ai/codex-pet-director
@@ -114,9 +114,9 @@ Windows 用户推荐直接复制这一行到 PowerShell：
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
 
-**方式 C：Windows 本地插件元数据安装。**
+**方式 C：底层插件安装器。**
 
-如果你想把项目同时按本地插件结构放进机器里，运行：
+如果你想排查安装细节，或者只想直接调用底层 PowerShell 插件安装器，运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
@@ -141,7 +141,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 install.cmd
 ```
 
-macOS / Linux:
+macOS / Linux 推荐优先使用上面的 `npx` 命令。如果不能使用 `npx`，可以用 shell fallback 安装 skills：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.sh | bash
@@ -341,10 +341,16 @@ Codex pets 目录：Codex 识别并加载宠物
 │   ├── README.en.md
 │   └── PUBLISHING.md
 ├── bin/
+├── scripts/
+│   ├── validate_repository.js
+│   └── test_install.js
+├── .github/
+│   └── workflows/
 ├── install.cmd
 ├── install-plugin.ps1
 ├── install.ps1
 ├── install.sh
+├── LICENSE
 ├── package.json
 └── README.md
 ```
@@ -352,12 +358,16 @@ Codex pets 目录：Codex 识别并加载宠物
 ## Release Check
 
 ```powershell
+npm test
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\codex-pet-director
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\create-pet
 python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\codex-pet-director
+node .\scripts\validate_repository.js
+node .\scripts\test_install.js
 python .\codex-pet-director\scripts\check_pet_environment.py --json
 python .\codex-pet-director\scripts\pet_brief.py languages
 python .\codex-pet-director\scripts\pet_brief.py --help
+npm pack --dry-run
 npx --yes skills list --agent codex -g
 codex debug prompt-input "/create-pet"
 ```

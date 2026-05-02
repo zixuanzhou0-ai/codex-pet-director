@@ -19,11 +19,15 @@ Starte Codex nach der Installation neu und schreibe dann:
 /create-pet
 ```
 
+Beim Start fragt das Tool zuerst, ob du ein neues Pet erstellen, einen vorhandenen Entwurf fortsetzen oder einen Entwurf ansehen willst. Es setzt alte Entwürfe nicht stillschweigend fort und startet keine finale Produktion automatisch.
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+Dieser Installer schreibt Skills, das lokale Plugin-Paket, den Codex Plugin Cache, Marketplace und `config.toml`.
 
 Wenn du das ZIP herunterlädst oder das Repository klonst, kannst du auch `install.cmd` per Doppelklick starten.
 
@@ -66,3 +70,5 @@ Nach der Installation suche `create-pet` im Slash-Menü. Du kannst auch senden:
 ```text
 /create-pet
 ```
+
+Danach wählst du Erstellen, Fortsetzen oder Ansehen. Erst dann beginnt die Umgebungsprüfung und die Charakterbefragung.

@@ -10,9 +10,11 @@ pet_brief.json
 *.brief.json
 generated/
 output/
+runs/
 dist/
 tmp/
 temp/
+*.tgz
 
 # OS/editor noise
 .DS_Store

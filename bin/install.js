@@ -9,6 +9,7 @@ const path = require("path");
 const skillName = "codex-pet-director";
 const aliasSkillName = "create-pet";
 const repositorySlug = "zixuanzhou0-ai/codex-pet-director";
+const marketplaceName = "local-codex-pet-director";
 
 function log(message) {
   console.log(`[codex-pet-director] ${message}`);
@@ -24,7 +25,13 @@ function parseArgs(argv) {
     dryRun: false,
     installRoot: process.env.CODEX_PET_DIRECTOR_INSTALL_ROOT || "",
     agentsInstallRoot: process.env.CODEX_PET_DIRECTOR_AGENTS_INSTALL_ROOT || "",
+    codexHome: process.env.CODEX_HOME || "",
+    marketplaceRoot: process.env.CODEX_PET_DIRECTOR_MARKETPLACE_ROOT || "",
+    pluginRoot: process.env.CODEX_PET_DIRECTOR_PLUGIN_ROOT || "",
     skipAgentsMirror: false,
+    skipPlugin: false,
+    skipConfig: false,
+    skipEnvironmentCheck: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -43,8 +50,32 @@ function parseArgs(argv) {
         throw new Error("--agents-install-root requires a value");
       }
       options.agentsInstallRoot = argv[i];
+    } else if (arg === "--codex-home") {
+      i += 1;
+      if (!argv[i]) {
+        throw new Error("--codex-home requires a value");
+      }
+      options.codexHome = argv[i];
+    } else if (arg === "--marketplace-root") {
+      i += 1;
+      if (!argv[i]) {
+        throw new Error("--marketplace-root requires a value");
+      }
+      options.marketplaceRoot = argv[i];
+    } else if (arg === "--plugin-root") {
+      i += 1;
+      if (!argv[i]) {
+        throw new Error("--plugin-root requires a value");
+      }
+      options.pluginRoot = argv[i];
     } else if (arg === "--skip-agents-mirror") {
       options.skipAgentsMirror = true;
+    } else if (arg === "--skip-plugin") {
+      options.skipPlugin = true;
+    } else if (arg === "--skip-config") {
+      options.skipConfig = true;
+    } else if (arg === "--skip-environment-check") {
+      options.skipEnvironmentCheck = true;
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }
@@ -67,6 +98,28 @@ function defaultAgentsInstallRoot() {
   return path.join(os.homedir(), ".agents", "skills");
 }
 
+function defaultCodexHome() {
+  if (process.env.CODEX_HOME) {
+    return process.env.CODEX_HOME;
+  }
+  return path.join(os.homedir(), ".codex");
+}
+
+function inferCodexHome(installRoot, explicitCodexHome) {
+  if (explicitCodexHome) {
+    return path.resolve(explicitCodexHome);
+  }
+  const resolvedInstallRoot = path.resolve(installRoot);
+  if (path.basename(resolvedInstallRoot).toLowerCase() === "skills") {
+    return path.dirname(resolvedInstallRoot);
+  }
+  return path.resolve(defaultCodexHome());
+}
+
+function defaultMarketplaceRoot() {
+  return os.homedir();
+}
+
 function assertInside(target, parent) {
   const fullTarget = path.resolve(target);
   const fullParent = path.resolve(parent);
@@ -87,6 +140,18 @@ function copyDirectory(source, destination) {
       fs.copyFileSync(sourcePath, destinationPath);
     }
   }
+}
+
+function copyCleanDirectory(source, destination, allowedParent, dryRun) {
+  log(`Copy target: ${destination}`);
+  if (dryRun) {
+    return;
+  }
+
+  assertInside(destination, allowedParent);
+  fs.rmSync(destination, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  copyDirectory(source, destination);
 }
 
 function resolveSkillSource(repositoryRoot, name = skillName) {
@@ -150,6 +215,23 @@ function readJson(filePath) {
 function writeJson(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+function writeText(filePath, value) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, value, "utf8");
+}
+
+function tomlString(value) {
+  return JSON.stringify(value);
+}
+
+function timestampForFile() {
+  return new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 14);
+}
+
+function timestampForToml() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
 function updateAgentsSkillLock(agentsInstallRoot, installedSkill, skillPath, name = skillName) {
@@ -242,6 +324,166 @@ function installSkillCopy(source, installRoot, label, dryRun, name = skillName) 
   return destination;
 }
 
+function requireRepositoryPath(repositoryRoot, relativePath) {
+  const target = path.join(repositoryRoot, ...relativePath.split("/"));
+  if (!fs.existsSync(target)) {
+    throw new Error(`Missing required repository path: ${relativePath}`);
+  }
+  return target;
+}
+
+function updateMarketplaceJson(marketplacePath) {
+  const marketplace = readJson(marketplacePath) || {
+    name: marketplaceName,
+    interface: {
+      displayName: "Local Codex Pet Director",
+    },
+    plugins: [],
+  };
+
+  if (!marketplace.name) {
+    marketplace.name = marketplaceName;
+  }
+  if (!marketplace.interface || typeof marketplace.interface !== "object") {
+    marketplace.interface = {};
+  }
+  if (!marketplace.interface.displayName) {
+    marketplace.interface.displayName = "Local Codex Pet Director";
+  }
+  if (!Array.isArray(marketplace.plugins)) {
+    marketplace.plugins = [];
+  }
+
+  marketplace.plugins = marketplace.plugins.filter((plugin) => plugin && plugin.name !== skillName);
+  marketplace.plugins.push({
+    name: skillName,
+    source: {
+      source: "local",
+      path: `./plugins/${skillName}`,
+    },
+    policy: {
+      installation: "AVAILABLE",
+      authentication: "ON_INSTALL",
+    },
+    category: "Productivity",
+  });
+
+  writeJson(marketplacePath, marketplace);
+}
+
+function updateCodexConfig(configPath, sourceRoot) {
+  fs.mkdirSync(path.dirname(configPath), { recursive: true });
+  if (!fs.existsSync(configPath)) {
+    writeText(configPath, "");
+  }
+
+  const backupPath = `${configPath}.bak-${timestampForFile()}`;
+  fs.copyFileSync(configPath, backupPath);
+
+  const marketplaceHeader = `[marketplaces.${marketplaceName}]`;
+  const pluginHeader = `[plugins."${skillName}@${marketplaceName}"]`;
+  const lines = fs.readFileSync(configPath, "utf8").split(/\r?\n/);
+  const kept = [];
+  let skip = false;
+
+  for (const line of lines) {
+    if (/^\s*\[.+\]\s*$/.test(line)) {
+      const header = line.trim();
+      if (header === marketplaceHeader || header === pluginHeader) {
+        skip = true;
+        continue;
+      }
+      skip = false;
+    }
+
+    if (!skip) {
+      kept.push(line);
+    }
+  }
+
+  const marketplaceBlock = [
+    marketplaceHeader,
+    `last_updated = ${tomlString(timestampForToml())}`,
+    'source_type = "local"',
+    `source = ${tomlString(path.resolve(sourceRoot))}`,
+  ].join("\n");
+
+  const pluginBlock = [
+    pluginHeader,
+    "enabled = true",
+  ].join("\n");
+
+  const content = `${kept.join("\n").trimEnd()}\n\n${marketplaceBlock}\n\n${pluginBlock}\n`;
+  writeText(configPath, content);
+  log(`Backed up Codex config: ${backupPath}`);
+}
+
+function installPluginMetadata(repositoryRoot, source, aliasSource, options, paths) {
+  if (options.skipPlugin) {
+    log("Plugin metadata install skipped.");
+    return;
+  }
+
+  const manifestSource = requireRepositoryPath(repositoryRoot, ".codex-plugin/plugin.json");
+  const commandsSource = requireRepositoryPath(repositoryRoot, "commands");
+  const assetsSource = path.join(repositoryRoot, "assets");
+  const manifest = readJson(manifestSource);
+  if (!manifest || !manifest.version) {
+    throw new Error(`Missing plugin version in ${manifestSource}`);
+  }
+
+  const pluginParent = path.join(paths.marketplaceRoot, "plugins");
+  const pluginRoot = path.resolve(options.pluginRoot || path.join(pluginParent, skillName));
+  const marketplacePath = path.join(paths.marketplaceRoot, ".agents", "plugins", "marketplace.json");
+  const pluginCacheParent = path.join(paths.codexHome, "plugins", "cache", marketplaceName);
+  const pluginCachePluginRoot = path.join(pluginCacheParent, skillName);
+  const pluginCacheRoot = path.join(pluginCachePluginRoot, manifest.version);
+  const configPath = path.join(paths.codexHome, "config.toml");
+
+  log(`Plugin target: ${pluginRoot}`);
+  log(`Codex plugin cache: ${pluginCacheRoot}`);
+  log(`Marketplace: ${marketplacePath}`);
+  log(`Codex config: ${configPath}`);
+
+  if (options.dryRun) {
+    log("Would install local plugin metadata.");
+    return;
+  }
+
+  assertInside(pluginRoot, pluginParent);
+  assertInside(marketplacePath, paths.marketplaceRoot);
+  assertInside(configPath, paths.codexHome);
+  assertInside(pluginCachePluginRoot, pluginCacheParent);
+  assertInside(pluginCacheRoot, pluginCacheParent);
+
+  fs.rmSync(pluginRoot, { recursive: true, force: true });
+  fs.mkdirSync(pluginRoot, { recursive: true });
+  copyCleanDirectory(source, path.join(pluginRoot, "skills", skillName), pluginRoot, false);
+  copyCleanDirectory(aliasSource, path.join(pluginRoot, "skills", aliasSkillName), pluginRoot, false);
+  copyCleanDirectory(commandsSource, path.join(pluginRoot, "commands"), pluginRoot, false);
+  if (fs.existsSync(assetsSource)) {
+    copyCleanDirectory(assetsSource, path.join(pluginRoot, "assets"), pluginRoot, false);
+  }
+
+  const pluginManifest = {
+    ...manifest,
+    skills: "./skills/",
+    commands: "./commands/",
+  };
+  writeJson(path.join(pluginRoot, ".codex-plugin", "plugin.json"), pluginManifest);
+
+  fs.rmSync(pluginCachePluginRoot, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(pluginCacheRoot), { recursive: true });
+  copyDirectory(pluginRoot, pluginCacheRoot);
+
+  updateMarketplaceJson(marketplacePath);
+  if (!options.skipConfig) {
+    updateCodexConfig(configPath, paths.marketplaceRoot);
+  }
+
+  log("Installed local plugin package metadata.");
+}
+
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const repositoryRoot = path.resolve(__dirname, "..");
@@ -249,6 +491,8 @@ function main() {
   const aliasSource = resolveSkillSource(repositoryRoot, aliasSkillName);
   const installRoot = path.resolve(options.installRoot || defaultInstallRoot());
   const agentsInstallRoot = path.resolve(options.agentsInstallRoot || defaultAgentsInstallRoot());
+  const codexHome = inferCodexHome(installRoot, options.codexHome);
+  const marketplaceRoot = path.resolve(options.marketplaceRoot || defaultMarketplaceRoot());
   const destination = path.join(installRoot, skillName);
   const agentsDestination = path.join(agentsInstallRoot, skillName);
   const aliasAgentsDestination = path.join(agentsInstallRoot, aliasSkillName);
@@ -259,6 +503,8 @@ function main() {
   if (shouldMirrorToAgents) {
     log(`Agents skill mirror root: ${agentsInstallRoot}`);
   }
+  log(`Codex home: ${codexHome}`);
+  log(`Marketplace root: ${marketplaceRoot}`);
 
   if (options.dryRun) {
     installSkillCopy(source, installRoot, "Codex skill", true);
@@ -270,6 +516,7 @@ function main() {
     if (!options.skipAgentsMirror) {
       log(`Would update Agents skill lock under ${agentsInstallRoot}`);
     }
+    installPluginMetadata(repositoryRoot, source, aliasSource, options, { codexHome, marketplaceRoot });
     log("Dry run only. No files were copied.");
     return;
   }
@@ -287,7 +534,10 @@ function main() {
     updateAgentsSkillLock(agentsInstallRoot, agentsDestination, sourceSkillPath(source, skillName), skillName);
     updateAgentsSkillLock(agentsInstallRoot, aliasAgentsDestination, sourceSkillPath(aliasSource, aliasSkillName), aliasSkillName);
   }
-  runEnvironmentCheck(destination);
+  installPluginMetadata(repositoryRoot, source, aliasSource, options, { codexHome, marketplaceRoot });
+  if (!options.skipEnvironmentCheck) {
+    runEnvironmentCheck(destination);
+  }
   log("Done. Restart Codex if the skill list has not refreshed yet.");
   printNextStep();
 }

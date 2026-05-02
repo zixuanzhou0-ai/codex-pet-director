@@ -19,11 +19,15 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 /create-pet
 ```
 
+啟動後會先讓你選擇新建、繼續或查看，不會直接續跑舊草稿或開始正式生成。
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+這個安裝器會寫入 skills、本地 plugin package、Codex plugin cache、marketplace 和 `config.toml`。
 
 如果下載 ZIP 或 clone 倉庫，也可以直接雙擊 `install.cmd`。
 
@@ -66,3 +70,5 @@ Codex pets 目錄：Codex 識別並載入寵物
 ```text
 /create-pet
 ```
+
+接著選擇新建、繼續或查看，再開始環境檢查和角色訪談。

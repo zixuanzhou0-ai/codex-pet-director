@@ -1,10 +1,22 @@
 {
   "name": "codex-pet-director",
-  "version": "0.5.3",
-  "description": "Install the codex-pet-director Codex skill and optional local plugin entrypoint.",
+  "version": "0.5.4",
+  "description": "Install the codex-pet-director Codex skill and local plugin entrypoint.",
+  "author": "zixuanzhou0-ai",
+  "license": "MIT",
+  "homepage": "https://github.com/zixuanzhou0-ai/codex-pet-director#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zixuanzhou0-ai/codex-pet-director.git"
+  },
   "bin": {
     "codex-pet-director": "bin/install.js",
     "codex-pet-director-install": "bin/install.js"
+  },
+  "scripts": {
+    "validate": "node scripts/validate_repository.js",
+    "test:install": "node scripts/test_install.js",
+    "test": "npm run validate && npm run test:install && npm pack --dry-run"
   },
   "files": [
     "bin/install.js",
@@ -23,7 +35,8 @@
     "install.ps1",
     "install.sh",
     "README.md",
-    "docs/**/*"
+    "docs/**/*",
+    "scripts/**/*"
   ],
   "keywords": [
     "codex",

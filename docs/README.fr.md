@@ -19,11 +19,15 @@ Après l'installation, redémarrez Codex puis demandez :
 /create-pet
 ```
 
+Au démarrage, l'outil demande d'abord si vous voulez créer un nouveau pet, continuer un brouillon ou consulter un brouillon. Il ne reprend pas un ancien brouillon et ne lance pas la production finale automatiquement.
+
 Windows PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+Cet installateur écrit les skills, le package plugin local, le cache plugin de Codex, le marketplace et `config.toml`.
 
 Si vous téléchargez le ZIP ou clonez le dépôt, vous pouvez aussi double-cliquer sur `install.cmd`.
 
@@ -66,3 +70,5 @@ Après l'installation, cherchez `create-pet` dans le menu `/`. Vous pouvez aussi
 ```text
 /create-pet
 ```
+
+Choisissez ensuite créer, continuer ou consulter, puis l'outil lance la vérification d'environnement et l'entretien du personnage.

@@ -33,6 +33,8 @@ Test-Path "$env:USERPROFILE\.codex\skills\codex-pet-director"
 Test-Path "$env:USERPROFILE\.codex\skills\create-pet"
 Test-Path "$env:USERPROFILE\.agents\skills\codex-pet-director"
 Test-Path "$env:USERPROFILE\.agents\skills\create-pet"
+Test-Path "$env:USERPROFILE\plugins\codex-pet-director"
+Test-Path "$env:USERPROFILE\.codex\plugins\cache\local-codex-pet-director"
 ```
 
 如果已经安装过，真实新用户测试会不够纯。可以换一台机器测试，或者手动把旧目录临时改名备份。
@@ -74,6 +76,9 @@ C:\Users\<用户名>\.codex\skills\codex-pet-director
 C:\Users\<用户名>\.codex\skills\create-pet
 C:\Users\<用户名>\.agents\skills\codex-pet-director
 C:\Users\<用户名>\.agents\skills\create-pet
+C:\Users\<用户名>\plugins\codex-pet-director
+C:\Users\<用户名>\.codex\plugins\cache\local-codex-pet-director\codex-pet-director\<版本号>
+C:\Users\<用户名>\.agents\plugins\marketplace.json
 ```
 
 ### 3. 重启 Codex
@@ -121,7 +126,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 期望结果：
 
-- 下载安装 skill。
+- 下载安装完整本地 plugin 结构。
+- 写入 Codex skills、Agents skills 镜像、本地 plugin package、Codex plugin cache、marketplace 和 `config.toml`。
 - 自动运行环境检查。
 - 最后提示用户重启 Codex，并输入：
 
@@ -162,6 +168,7 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 - 从 GitHub 拉取 package。
 - 安装到本机 Codex skills 目录，包括 `codex-pet-director` 和 `create-pet`。
 - 同步镜像到 Agents skills 目录，并更新 `.agents/.skill-lock.json`，方便 Skill 搜索页和管理器发现。
+- 写入本地 plugin package、Codex plugin cache、marketplace 和 `config.toml`。
 - 输出下一步 `/create-pet`。
 
 ## 启动后的测试对话
@@ -223,6 +230,7 @@ Codex 是否重启：
 是否安装成功：
 create-pet 是否能在斜杠菜单搜索到：
 /create-pet 普通消息是否启动：
+Codex plugin cache 是否生成：
 环境检查是否出现：
 第一轮问题是否清楚：
 用户卡住的位置：
