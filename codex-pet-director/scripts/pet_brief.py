@@ -23,19 +23,92 @@ ACTION_FRAMES = {
     "review": 6,
 }
 
+SUPPORTED_LANGUAGES = {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "en": "English",
+    "ja": "日本語",
+    "ko": "한국어",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+}
+
+LANGUAGE_ALIASES = {
+    "zh": "zh-CN",
+    "cn": "zh-CN",
+    "中文": "zh-CN",
+    "简体中文": "zh-CN",
+    "chinese": "zh-CN",
+    "simplified-chinese": "zh-CN",
+    "zh-hans": "zh-CN",
+    "tw": "zh-TW",
+    "繁体中文": "zh-TW",
+    "繁體中文": "zh-TW",
+    "traditional-chinese": "zh-TW",
+    "zh-hant": "zh-TW",
+    "英文": "en",
+    "英语": "en",
+    "英語": "en",
+    "english": "en",
+    "jp": "ja",
+    "日语": "ja",
+    "日語": "ja",
+    "日本語": "ja",
+    "japanese": "ja",
+    "kr": "ko",
+    "韩语": "ko",
+    "韓語": "ko",
+    "한국어": "ko",
+    "korean": "ko",
+    "西班牙语": "es",
+    "西班牙語": "es",
+    "español": "es",
+    "spanish": "es",
+    "法语": "fr",
+    "法語": "fr",
+    "français": "fr",
+    "francais": "fr",
+    "french": "fr",
+    "德语": "de",
+    "德語": "de",
+    "deutsch": "de",
+    "german": "de",
+}
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
-def default_brief() -> dict[str, Any]:
+def normalize_language(language: str) -> str:
+    raw = (language or "zh-CN").strip()
+    if raw in SUPPORTED_LANGUAGES:
+        return raw
+    normalized = raw.lower().replace("_", "-").replace(" ", "-")
+    if normalized in LANGUAGE_ALIASES:
+        return LANGUAGE_ALIASES[normalized]
+    for code in SUPPORTED_LANGUAGES:
+        if normalized == code.lower():
+            return code
+    raise SystemExit(
+        "Unsupported language. Use one of: "
+        + ", ".join(f"{code} ({name})" for code, name in SUPPORTED_LANGUAGES.items())
+    )
+
+
+def default_brief(language: str = "zh-CN") -> dict[str, Any]:
+    language = normalize_language(language)
     return {
         "schema_version": 1,
         "meta": {
             "created_at": now_iso(),
             "updated_at": now_iso(),
-            "language": "zh-CN",
+            "language": language,
+            "language_name": SUPPORTED_LANGUAGES[language],
+            "fallback_language": "zh-CN",
             "target": "official-codex-pet",
+            "user_intro_seen": False,
         },
         "environment": {},
         "identity": {
@@ -96,6 +169,10 @@ def load(path: Path) -> dict[str, Any]:
 
 def save(path: Path, brief: dict[str, Any]) -> None:
     brief.setdefault("meta", {})["updated_at"] = now_iso()
+    language = brief.setdefault("meta", {}).get("language", "zh-CN")
+    normalized = normalize_language(language)
+    brief["meta"]["language"] = normalized
+    brief["meta"]["language_name"] = SUPPORTED_LANGUAGES[normalized]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(brief, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -189,7 +266,7 @@ def command_init(args: argparse.Namespace) -> int:
     path = Path(args.path).expanduser()
     if path.exists() and not args.force:
         raise SystemExit(f"Brief already exists: {path}. Use --force to replace it.")
-    brief = default_brief()
+    brief = default_brief(args.language)
     if args.pet_name:
         brief["identity"]["name"] = args.pet_name
     if args.concept:
@@ -233,9 +310,10 @@ def command_validate(args: argparse.Namespace) -> int:
 
 
 def command_template(args: argparse.Namespace) -> int:
-    brief = default_brief()
+    brief = default_brief(args.language)
     if args.compact:
         brief = {
+            "meta": deepcopy(brief["meta"]),
             "identity": deepcopy(brief["identity"]),
             "form": deepcopy(brief["form"]),
             "style": deepcopy(brief["style"]),
@@ -247,6 +325,12 @@ def command_template(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_languages(args: argparse.Namespace) -> int:
+    for code, name in SUPPORTED_LANGUAGES.items():
+        print(f"{code}\t{name}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -255,6 +339,7 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--path", required=True)
     init.add_argument("--pet-name")
     init.add_argument("--concept")
+    init.add_argument("--language", default="zh-CN", help="Conversation language code, such as zh-CN or en.")
     init.add_argument("--force", action="store_true")
     init.set_defaults(func=command_init)
 
@@ -275,7 +360,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     template = sub.add_parser("template", help="Print an empty brief template.")
     template.add_argument("--compact", action="store_true")
+    template.add_argument("--language", default="zh-CN", help="Conversation language code, such as zh-CN or en.")
     template.set_defaults(func=command_template)
+
+    languages = sub.add_parser("languages", help="List supported language codes.")
+    languages.set_defaults(func=command_languages)
 
     return parser
 

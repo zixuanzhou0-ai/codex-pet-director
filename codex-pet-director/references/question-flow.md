@@ -1,6 +1,6 @@
 # Question Flow
 
-Use this interview for official Codex desktop pet creation. Ask one block at a time. Keep each turn short, friendly, and concrete.
+Use this interview for official Codex desktop pet creation. Ask one block at a time. Keep each turn short, friendly, and concrete. Translate the wording into the user's selected language.
 
 ## Opening
 
@@ -12,7 +12,15 @@ Say:
 你不用懂格式，我会一步一步问你，边做边给你看图确认。
 ```
 
-Then run the environment check before asking design questions.
+If the language is not obvious, ask:
+
+```text
+你想用哪种语言完成这个宠物定制？
+可以选：中文 / English / 日本語 / 한국어 / Español / Français / Deutsch。
+你后面也可以随时说“切换到英文”。
+```
+
+Then run the environment check before asking design questions. If the user asks what this is for, load `user-introduction.md` and give the short explanation first.
 
 ## Block 1: 它是谁
 

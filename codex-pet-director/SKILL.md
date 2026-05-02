@@ -1,15 +1,15 @@
 ---
 name: codex-pet-director
-description: Guide users through creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, or wants to prepare a pet brief before handing off to hatch-pet.
+description: Multilingual guide for creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, wants to switch the pet creation flow between Chinese, English, Japanese, Korean, Spanish, French, German, or Traditional Chinese, wants a customer-facing explanation of the pet workflow, or wants to prepare a pet brief before handing off to hatch-pet.
 ---
 
 # Codex Pet Director
 
 ## Overview
 
-Create an official Codex desktop pet through a beginner-friendly high-customization flow. This skill owns environment checks, simple user interviews, style and form choices, staged image confirmations, pet brief management, and the final handoff to `$hatch-pet`.
+Create an official Codex desktop pet through a beginner-friendly high-customization flow. This skill owns environment checks, multilingual user interviews, style and form choices, staged image confirmations, pet brief management, and the final handoff to `$hatch-pet`.
 
-Keep the user-facing conversation in plain Chinese unless the user chooses another language. Avoid technical terms unless they are necessary.
+Keep the user-facing conversation in plain Chinese by default, or in the user's selected language. Avoid technical terms unless they are necessary.
 
 ## Hard Boundaries
 
@@ -19,6 +19,20 @@ Keep the user-facing conversation in plain Chinese unless the user chooses anoth
 - Do not claim the user can add extra official actions, extra rows, extra frames, random behaviors, or custom controls through `pet.json`.
 - Do not rewrite the lower-level spritesheet pipeline. Use `$hatch-pet` for final official pet generation and packaging.
 - Keep reference-image discussion focused on likeness level. If the user provides a reference, ask how close they want the pet to feel to that reference.
+
+## Language Handling
+
+Use `references/language-guide.md` when the user chooses, changes, or asks about language support. The supported language codes are `zh-CN`, `zh-TW`, `en`, `ja`, `ko`, `es`, `fr`, and `de`.
+
+At the start, infer the language from the user's message when obvious. If unclear, ask one simple language question. If the user switches language mid-flow, update `pet_brief.json` with `meta.language=<code>` and continue from the current block without restarting.
+
+Keep official action names, file names, and tool names unchanged across languages.
+
+## User Explanation
+
+Use `references/user-introduction.md` when the user is new, asks what this skill does, wants a customer-facing explanation, or needs a plain-language sales/usage explanation before starting.
+
+Use `references/architecture.md` when explaining the bottom architecture, why the workflow is designed this way, what `pet_brief.json` does, or why final production is delegated to `$hatch-pet`.
 
 ## Required Flow
 
@@ -38,9 +52,15 @@ python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_pet_
 
 Never modify the installed Codex app. If the script cannot find a supported Codex desktop app or `hatch-pet`, explain the missing piece and stop before final pet production. You may still help the user design a brief and concept images if they explicitly want that.
 
-### 1. Interview In Small Blocks
+### 1. Set Language And Interview In Small Blocks
 
 Use the seven-block interview from `references/question-flow.md`. Ask one block at a time, not the whole questionnaire at once.
+
+Record the chosen language when creating the brief:
+
+```bash
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" init --path /absolute/path/to/pet_brief.json --language zh-CN
+```
 
 Default blocks:
 
@@ -60,6 +80,7 @@ Create or update a `pet_brief.json` in the working folder while interviewing:
 
 ```bash
 python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" init --path /absolute/path/to/pet_brief.json
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" languages
 python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" update --path /absolute/path/to/pet_brief.json --set identity.concept="蓝色屏幕脸机器人猫"
 python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" validate --path /absolute/path/to/pet_brief.json --stage final
 ```
@@ -114,6 +135,9 @@ load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.
 ## Reference Files
 
 - `references/question-flow.md`: user interview blocks and simple wording.
+- `references/language-guide.md`: supported languages and switching rules.
+- `references/user-introduction.md`: detailed customer-facing explanation.
+- `references/architecture.md`: bottom architecture, component roles, and design rationale.
 - `references/style-menu.md`: style choices and internal visual translations.
 - `references/action-guide.md`: official action slots, frame counts, and form adaptation.
 - `references/image-confirmation-flow.md`: staged confirmation image policy.
@@ -122,6 +146,7 @@ load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.
 ## Acceptance Criteria
 
 - The flow starts with an environment check.
+- The user's language is inferred or confirmed, recorded in `pet_brief.json`, and can be switched without restarting.
 - The user is asked simple questions one block at a time.
 - A `pet_brief.json` exists before final production.
 - The official Codex fixed format is respected.
