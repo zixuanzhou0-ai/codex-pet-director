@@ -17,6 +17,18 @@
 
 ### 一键安装
 
+最简单的方式：把下面这句话直接发给 Codex：
+
+```text
+请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+开发者也可以用 `npx`：
+
+```bash
+npx --yes github:zixuanzhou0-ai/codex-pet-director
+```
+
 Windows 用户推荐直接复制这一行到 PowerShell：
 
 ```powershell
@@ -129,6 +141,18 @@ Codex pets 目录：Codex 识别并加载宠物
 `codex-pet-director` is a multilingual Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, records the final direction in `pet_brief.json`, and then hands the locked brief to `hatch-pet` to produce a Codex-ready pet package.
 
 ### One-Click Install
+
+The simplest way: paste this directly into Codex:
+
+```text
+Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
+```
+
+Developers can also use `npx`:
+
+```bash
+npx --yes github:zixuanzhou0-ai/codex-pet-director
+```
 
 Recommended Windows PowerShell command:
 
@@ -250,9 +274,11 @@ I have a reference image. Turn it into an official Codex desktop pet.
 │   ├── references/
 │   └── scripts/
 ├── docs/
+├── bin/
 ├── install.cmd
 ├── install.ps1
 ├── install.sh
+├── package.json
 └── README.md
 ```
 

@@ -1,0 +1,24 @@
+{
+  "name": "codex-pet-director",
+  "version": "0.1.0",
+  "description": "Install the codex-pet-director Codex skill.",
+  "bin": {
+    "codex-pet-director": "bin/install.js",
+    "codex-pet-director-install": "bin/install.js"
+  },
+  "files": [
+    "bin/install.js",
+    "codex-pet-director/**/*",
+    "install.cmd",
+    "install.ps1",
+    "install.sh",
+    "README.md",
+    "docs/**/*"
+  ],
+  "keywords": [
+    "codex",
+    "skill",
+    "desktop-pet",
+    "pet"
+  ]
+}
