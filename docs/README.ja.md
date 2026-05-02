@@ -1,6 +1,6 @@
 # Codex Pet Director
 
-[简体中文](../README.md#简体中文) · [English](../README.md#english) · [繁體中文](README.zh-TW.md) · 日本語 · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+[简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · 日本語 · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
 `codex-pet-director` は、Codex の公式デスクトップペットを作るための多言語対応 skill です。環境を確認し、やさしい質問でキャラクター、形、スタイル、見た目、性格、9 個の公式アクションを決め、最後に `hatch-pet` に渡して Codex で使えるペットパッケージを生成します。
 

@@ -1,6 +1,6 @@
 # Codex Pet Director
 
-[简体中文](../README.md#简体中文) · [English](../README.md#english) · 繁體中文 · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+[简体中文](../README.md#简体中文) · [English](README.en.md) · 繁體中文 · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
 `codex-pet-director` 是一個多語言 Codex 桌面寵物高定制向導 skill。它會先檢查使用者環境，再用簡單問題一步步確認角色、形態、風格、外觀、性格和 9 個官方動作，最後把鎖定後的方案交給 `hatch-pet` 生成 Codex 可用的寵物包。
 

@@ -1,6 +1,6 @@
 # Codex Pet Director
 
-[简体中文](../README.md#简体中文) · [English](../README.md#english) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · Deutsch
+[简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · Deutsch
 
 `codex-pet-director` ist ein mehrsprachiger Skill zum Erstellen offizieller Codex Desktop-Pets. Er prüft zuerst die lokale Umgebung, stellt dann einfache Fragen zu Figur, Form, Stil, Aussehen, Persönlichkeit und den 9 offiziellen Aktionen. Danach wird der bestätigte Brief an `hatch-pet` übergeben, um ein Codex-fähiges Pet-Paket zu erzeugen.
 
