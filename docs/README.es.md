@@ -6,7 +6,7 @@
 
 ## Instalación con un comando
 
-No hace falta usar comandos con `/`. Primero envía este mensaje a Codex:
+La entrada de inicio es `/create-pet`. Si tu versión de Codex no muestra un menú de comandos con `/`, envía `/create-pet` como un mensaje normal.
 
 ```text
 Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
@@ -15,7 +15,7 @@ Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0
 Después de instalar, reinicia Codex y escribe:
 
 ```text
-Ayúdame a crear una mascota de escritorio personalizada para Codex.
+/create-pet
 ```
 
 Windows PowerShell:
@@ -60,8 +60,8 @@ Carpeta pets de Codex: Codex detecta y carga la mascota
 
 ## Uso
 
-Después de instalar, no necesitas un comando con `/`. Dile a Codex:
+Después de instalar, escribe esto en Codex:
 
 ```text
-Ayúdame a crear una mascota de escritorio personalizada para Codex.
+/create-pet
 ```

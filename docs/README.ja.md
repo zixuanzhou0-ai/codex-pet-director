@@ -6,7 +6,7 @@
 
 ## ワンクリックインストール
 
-スラッシュコマンドは不要です。まず Codex に次の文をそのまま送ります：
+開始入口は `/create-pet` です。Codex にスラッシュコマンドメニューが表示されない場合でも、`/create-pet` を通常のメッセージとして送れば使えます。
 
 ```text
 Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
@@ -15,7 +15,7 @@ Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0
 インストール後に Codex を再起動し、次のように依頼します：
 
 ```text
-Codex で使えるカスタムデスクトップペットを作ってください。
+/create-pet
 ```
 
 Windows PowerShell:
@@ -60,8 +60,8 @@ Codex pets フォルダ：Codex がペットを読み込む
 
 ## 使い方
 
-インストール後、`/` コマンドは不要です。Codex にこう依頼します：
+インストール後、Codex にこう入力します：
 
 ```text
-Codex で使えるカスタムデスクトップペットを作ってください。
+/create-pet
 ```

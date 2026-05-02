@@ -45,7 +45,7 @@ step() {
 
 print_next_step() {
   step "Next step: restart Codex if needed, then paste this into Codex:"
-  printf '%s\n' "Use codex-pet-director to help me create a custom Codex desktop pet."
+  printf '%s\n' "/create-pet"
 }
 
 script_dir() {

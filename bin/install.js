@@ -13,7 +13,7 @@ function log(message) {
 
 function printNextStep() {
   log("Next step: restart Codex if needed, then paste this into Codex:");
-  console.log("Use codex-pet-director to help me create a custom Codex desktop pet.");
+  console.log("/create-pet");
 }
 
 function parseArgs(argv) {

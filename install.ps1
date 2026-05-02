@@ -16,7 +16,7 @@ function Write-Step {
 
 function Write-NextStep {
     Write-Step "Next step: restart Codex if needed, then paste this into Codex:"
-    Write-Host "Use codex-pet-director to help me create a custom Codex desktop pet."
+    Write-Host "/create-pet"
 }
 
 function Get-DefaultInstallRoot {

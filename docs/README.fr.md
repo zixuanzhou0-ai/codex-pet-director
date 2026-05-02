@@ -6,7 +6,7 @@
 
 ## Installation en une commande
 
-Aucune commande avec `/` n'est nécessaire. Envoyez d'abord ce message à Codex :
+Le point de départ est `/create-pet`. Si votre version de Codex n'affiche pas de menu de commandes avec `/`, envoyez `/create-pet` comme un message normal.
 
 ```text
 Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
@@ -15,7 +15,7 @@ Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0
 Après l'installation, redémarrez Codex puis demandez :
 
 ```text
-Aide-moi à créer un animal de bureau personnalisé pour Codex.
+/create-pet
 ```
 
 Windows PowerShell:
@@ -60,8 +60,8 @@ Dossier pets de Codex : Codex détecte et charge le pet
 
 ## Utilisation
 
-Après l'installation, aucune commande avec `/` n'est nécessaire. Demandez simplement à Codex :
+Après l'installation, saisissez ceci dans Codex :
 
 ```text
-Aide-moi à créer un animal de bureau personnalisé pour Codex.
+/create-pet
 ```

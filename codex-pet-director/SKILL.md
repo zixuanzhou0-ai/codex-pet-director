@@ -1,6 +1,6 @@
 ---
 name: codex-pet-director
-description: Multilingual guide for creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, wants to switch the pet creation flow between Chinese, English, Japanese, Korean, Spanish, French, German, or Traditional Chinese, wants a customer-facing explanation of the pet workflow, or wants to prepare a pet brief before handing off to hatch-pet.
+description: Multilingual guide for creating official custom Codex desktop pets that can be installed under the Codex pets folder. Use when a user types /create-pet, create-pet, wants to start pet creation, wants a high-customization Codex desktop pet, wants to make a custom pet from text or reference images, wants a beginner-friendly pet interview with image confirmations, needs to check whether their Codex environment supports custom pets, wants to switch the pet creation flow between Chinese, English, Japanese, Korean, Spanish, French, German, or Traditional Chinese, wants a customer-facing explanation of the pet workflow, or wants to prepare a pet brief before handing off to hatch-pet.
 ---
 
 # Codex Pet Director
@@ -10,6 +10,12 @@ description: Multilingual guide for creating official custom Codex desktop pets 
 Create an official Codex desktop pet through a beginner-friendly high-customization flow. This skill owns environment checks, multilingual user interviews, style and form choices, staged image confirmations, pet brief management, and the final handoff to `$hatch-pet`.
 
 Keep the user-facing conversation in plain Chinese by default, or in the user's selected language. Avoid technical terms unless they are necessary.
+
+## Start Command
+
+Treat `/create-pet` as the formal start signal for this skill. If the user's message is `/create-pet`, `create-pet`, or "开始创建宠物", start the full creation flow immediately from the environment check. Do not ask the user to repeat the command or explain skill names.
+
+If Codex receives `/create-pet` as plain text rather than a native slash command, handle it exactly the same way.
 
 ## Hard Boundaries
 

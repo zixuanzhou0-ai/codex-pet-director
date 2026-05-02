@@ -17,7 +17,7 @@
 
 ### 一键安装
 
-不需要斜杠命令，也不需要用户知道 skill 名称。安装和启动都可以用普通聊天句子完成。
+启动入口就是 `/create-pet`。如果你的 Codex 当前没有显示斜杠菜单，也没关系，把 `/create-pet` 当普通消息发出去即可。
 
 第一步，把下面这句话直接发给 Codex：
 
@@ -28,7 +28,7 @@
 第二步，安装完成后重启 Codex，然后把下面这句话发给 Codex：
 
 ```text
-帮我定制一个能在 Codex 里直接使用的桌面宠物。
+/create-pet
 ```
 
 开发者也可以用 `npx`：
@@ -132,13 +132,13 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 使用方式
 
-安装后，不需要输入 `/` 命令。在 Codex 里直接说：
+安装后，在 Codex 里直接输入：
 
 ```text
-帮我定制一个能在 Codex 里直接使用的桌面宠物。
+/create-pet
 ```
 
-或：
+如果你的 Codex 版本没有 slash command 菜单，就把它当普通文字发送。也可以直接说：
 
 ```text
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
@@ -150,7 +150,7 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### One-Click Install
 
-No slash command is required, and users do not need to know the internal skill name. Installation and usage both work through normal chat messages.
+The start entry is `/create-pet`. If your Codex build does not show a slash-command menu, send `/create-pet` as a normal chat message.
 
 Step 1: paste this directly into Codex:
 
@@ -161,7 +161,7 @@ Use skill-installer to install this GitHub skill: https://github.com/zixuanzhou0
 Step 2: after installation, restart Codex and paste this:
 
 ```text
-Help me create a custom Codex desktop pet.
+/create-pet
 ```
 
 Developers can also use `npx`:
@@ -268,13 +268,13 @@ The installer safely creates missing local folders when possible. It does not mo
 
 ### Usage
 
-After installation, no `/` command is needed. Just ask Codex:
+After installation, type this in Codex:
 
 ```text
-Help me create a custom Codex desktop pet.
+/create-pet
 ```
 
-or:
+If your Codex build does not have a slash-command menu, send it as normal text. You can also say:
 
 ```text
 I have a reference image. Turn it into an official Codex desktop pet.
@@ -289,6 +289,10 @@ I have a reference image. Turn it into an official Codex desktop pet.
 │   ├── agents/
 │   ├── references/
 │   └── scripts/
+├── commands/
+│   └── create-pet.md
+├── .codex-plugin/
+│   └── plugin.json
 ├── docs/
 ├── bin/
 ├── install.cmd
