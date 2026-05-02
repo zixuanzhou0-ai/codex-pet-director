@@ -208,6 +208,10 @@ Codex pets 目录：Codex 识别并加载宠物
 
 这个示例不是最终生成图，而是告诉用户：从一句想法到正式生产之前，中间会被整理成什么结构。
 
+### 真实用户测试
+
+如果你想模拟一个新用户从 GitHub 下载并使用这个 skill，可以照着这个文档走：[docs/USER_TEST_SCRIPT.zh-CN.md](docs/USER_TEST_SCRIPT.zh-CN.md)。
+
 ## Repository Structure
 
 ```text
@@ -226,6 +230,9 @@ Codex pets 目录：Codex 识别并加载宠物
 ├── examples/
 │   └── blue-robot-cat/
 ├── docs/
+│   ├── USER_TEST_SCRIPT.zh-CN.md
+│   ├── README.en.md
+│   └── PUBLISHING.md
 ├── bin/
 ├── install.cmd
 ├── install.ps1
