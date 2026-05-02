@@ -23,13 +23,13 @@
 请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
 ```
 
-安装完成后重启 Codex，然后输入：
+安装完成后重启 Codex，然后把这句话当普通消息发给 Codex：
 
 ```text
 /create-pet
 ```
 
-如果你的 Codex 版本支持插件斜杠命令，`/create-pet` 可以作为命令入口出现；如果没有显示命令菜单，也可以把 `/create-pet` 当普通消息发送。
+注意：当前 Codex 桌面端的斜杠菜单只显示内置命令，不会把第三方 skill 自动变成可搜索的 slash command。这里的 `/create-pet` 是一个聊天触发词，不需要出现在斜杠菜单里。
 
 终端用户可以直接运行：
 
@@ -43,13 +43,13 @@ Windows 用户也可以复制这一行到 PowerShell：
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
 
-如果你想让 Codex 尽量把它当本地插件加载，并尝试在斜杠菜单里出现 `create-pet`，Windows 用户可以运行插件安装版：
+开发者如果想同时安装本地插件元数据，可以运行插件安装版：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
 ```
 
-这会创建本机插件包、注册本地 marketplace，并启用 `codex-pet-director` 插件。重启 Codex 后，在斜杠菜单搜索 `create-pet`。如果当前 Codex 版本没有开放第三方 slash command 菜单，直接把 `/create-pet` 当普通消息发送，流程仍然会启动。
+这会创建本机插件包、注册本地 marketplace，并启用 `codex-pet-director` 插件元数据。但它不能强制当前 Codex 桌面端在斜杠菜单里显示第三方命令。正式使用仍然是直接发送 `/create-pet`。
 
 ## 简体中文
 
@@ -57,7 +57,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 
 ### 一键安装
 
-启动入口就是 `/create-pet`。如果你的 Codex 当前没有显示斜杠菜单，也没关系，把 `/create-pet` 当普通消息发出去即可。
+启动入口就是 `/create-pet`。它是聊天触发词，不是当前 Codex 内置斜杠菜单命令。直接把 `/create-pet` 当普通消息发出去即可。
 
 **方式 A：让 Codex 自己安装。**
 
@@ -67,7 +67,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 请使用 skill-installer 安装这个 GitHub skill：https://github.com/zixuanzhou0-ai/codex-pet-director/tree/main/codex-pet-director
 ```
 
-安装完成后重启 Codex，然后把下面这句话发给 Codex：
+安装完成后重启 Codex，然后把下面这句话当普通消息发给 Codex：
 
 ```text
 /create-pet
@@ -87,9 +87,9 @@ Windows 用户推荐直接复制这一行到 PowerShell：
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
 
-**方式 C：Windows 本地插件安装。**
+**方式 C：Windows 本地插件元数据安装。**
 
-如果你想尝试让 `/create-pet` 出现在 Codex 的斜杠菜单里，运行：
+如果你想把项目同时按本地插件结构放进机器里，运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
@@ -101,7 +101,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubus
 - `C:\Users\<你>\.agents\plugins\marketplace.json`
 - `C:\Users\<你>\.codex\config.toml`
 
-脚本会先备份 `config.toml`，不会修改 Codex app 本体。安装后需要完全重启 Codex，再打开斜杠菜单搜索 `create-pet`。
+脚本会先备份 `config.toml`，不会修改 Codex app 本体。当前 Codex 桌面端不会读取第三方插件命令到斜杠菜单里，所以安装后仍然用普通消息 `/create-pet` 启动。
 
 如果你是下载 ZIP 或 clone 仓库，也可以直接双击：
 
@@ -119,7 +119,7 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 
 1. 安装这个 skill。
 2. 重启 Codex。
-3. 输入 `/create-pet`。
+3. 把 `/create-pet` 当普通消息发给 Codex。
 4. 回答它是谁、是什么形态、是什么风格、长什么样。
 5. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
 6. 确认 9 个官方动作。
@@ -219,13 +219,13 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### 使用方式
 
-安装后，在 Codex 里直接输入：
+安装后，在 Codex 里直接发送：
 
 ```text
 /create-pet
 ```
 
-如果你的 Codex 版本没有斜杠命令菜单，就把它当普通文字发送。也可以直接说：
+不需要在斜杠菜单里搜索它。也可以直接说：
 
 ```text
 我有一张参考图，帮我做成 Codex 官方桌面宠物。

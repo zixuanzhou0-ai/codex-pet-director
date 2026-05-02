@@ -310,6 +310,6 @@ if (-not $SkipConfig) {
     Update-CodexConfig -ConfigPath $ConfigPath -SourceRoot $MarketplaceRoot
 }
 
-Write-Step "Installed local plugin package."
-Write-Step "Restart Codex completely, then open the slash menu and search: create-pet"
-Write-Step "If the menu still does not list it, paste /create-pet as plain text; the skill trigger is installed and will run."
+Write-Step "Installed local plugin package metadata."
+Write-Step "Current Codex desktop builds do not expose third-party plugin commands in the slash menu."
+Write-Step "Restart Codex if needed, then send /create-pet as a normal chat message to start the flow."
