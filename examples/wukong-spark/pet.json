@@ -1,6 +1,6 @@
 {
-  "id": "wukong-spark-2v2",
-  "displayName": "Wukong Spark 2V2",
-  "description": "A sharper Wukong Spark variant with stronger run motion, clearer reaction accents, and an extended golden power-up hold.",
+  "id": "wukong-spark",
+  "displayName": "Wukong Spark",
+  "description": "A tiny original chibi martial-arts desktop pet with spiky black hair, orange training outfit, monkey tail, bouncing waves, and a temporary golden power-up animation.",
   "spritesheetPath": "spritesheet.webp"
 }
