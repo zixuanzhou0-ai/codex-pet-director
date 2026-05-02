@@ -271,14 +271,26 @@ Codex pets 目录：Codex 识别并加载宠物
   <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
 </p>
 
-这张动图串起了普通待机、金发爆气、奔跑、跳跃和挥手，让用户能直接看到它不是单张图片，而是一套可运行的桌面宠物动作。
+下面的图全部来自 `examples/wukong-spark/spritesheet.webp`，按原始帧直接展示，不重新给动作编英文名字。
 
 <p align="center">
   <img src="assets/examples/wukong-spark/golden-power-up.png" alt="Wukong Spark golden power-up state" width="620">
 </p>
 
 <p align="center">
-  <img src="assets/examples/wukong-spark/actions.png" alt="Wukong Spark nine official actions" width="520">
+  <img src="assets/examples/wukong-spark/all-frames.png" alt="Wukong Spark full spritesheet frame board" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/wukong-spark/row-01.gif" alt="Wukong Spark row 1 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-02.gif" alt="Wukong Spark row 2 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-03.gif" alt="Wukong Spark row 3 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-04.gif" alt="Wukong Spark row 4 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-05.gif" alt="Wukong Spark row 5 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-06.gif" alt="Wukong Spark row 6 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-07.gif" alt="Wukong Spark row 7 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-08.gif" alt="Wukong Spark row 8 animation" width="120">
+  <img src="assets/examples/wukong-spark/row-09.gif" alt="Wukong Spark row 9 animation" width="120">
 </p>
 
 查看完整案例：[examples/wukong-spark](examples/wukong-spark)。这个案例展示了最终用户拿到的真实文件结构：`pet.json` + `spritesheet.webp`。
