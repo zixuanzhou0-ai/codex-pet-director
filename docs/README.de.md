@@ -9,8 +9,10 @@
 Windows PowerShell:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+Wenn du das ZIP herunterlädst oder das Repository klonst, kannst du auch `install.cmd` per Doppelklick starten.
 
 macOS / Linux:
 

@@ -17,10 +17,16 @@
 
 ### 一键安装
 
-Windows PowerShell:
+Windows 用户推荐直接复制这一行到 PowerShell：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+```
+
+如果你是下载 ZIP 或 clone 仓库，也可以直接双击：
+
+```text
+install.cmd
 ```
 
 macOS / Linux:
@@ -124,10 +130,16 @@ Codex pets 目录：Codex 识别并加载宠物
 
 ### One-Click Install
 
-Windows PowerShell:
+Recommended Windows PowerShell command:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
+```
+
+If you download the ZIP or clone the repository, you can also double-click:
+
+```text
+install.cmd
 ```
 
 macOS / Linux:
@@ -238,6 +250,7 @@ I have a reference image. Turn it into an official Codex desktop pet.
 │   ├── references/
 │   └── scripts/
 ├── docs/
+├── install.cmd
 ├── install.ps1
 ├── install.sh
 └── README.md
