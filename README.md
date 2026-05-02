@@ -1,6 +1,11 @@
 # Codex Pet Director
 
 <p align="center">
+  <strong>把一句想法、参考图或角色设定，变成 Codex 桌面端可直接使用的官方宠物包。</strong><br>
+  它会先检查环境，再分轮问问题、生成确认图、锁定角色和 9 个官方动作，最后交给 <code>hatch-pet</code> 输出 <code>pet.json</code> + <code>spritesheet.webp</code>。
+</p>
+
+<p align="center">
   <a href="#简体中文">简体中文</a> ·
   <a href="docs/README.en.md">English</a> ·
   <a href="docs/README.zh-TW.md">繁體中文</a> ·
