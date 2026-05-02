@@ -43,6 +43,14 @@ Windows 用户也可以复制这一行到 PowerShell：
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
 
+如果你想让 Codex 尽量把它当本地插件加载，并尝试在斜杠菜单里出现 `create-pet`，Windows 用户可以运行插件安装版：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
+```
+
+这会创建本机插件包、注册本地 marketplace，并启用 `codex-pet-director` 插件。重启 Codex 后，在斜杠菜单搜索 `create-pet`。如果当前 Codex 版本没有开放第三方 slash command 菜单，直接把 `/create-pet` 当普通消息发送，流程仍然会启动。
+
 ## 简体中文
 
 `codex-pet-director` 是一个多语言 Codex 桌面宠物高定制向导 skill。它会先检查用户环境，再用简单问题一步步确认角色、形态、风格、外观、性格和 9 个官方动作，最后把锁定后的方案交给现有 `hatch-pet` 生成 Codex 可用的宠物包。
@@ -78,6 +86,22 @@ Windows 用户推荐直接复制这一行到 PowerShell：
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install.ps1 | iex"
 ```
+
+**方式 C：Windows 本地插件安装。**
+
+如果你想尝试让 `/create-pet` 出现在 Codex 的斜杠菜单里，运行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/main/install-plugin.ps1 | iex"
+```
+
+它会写入：
+
+- `C:\Users\<你>\plugins\codex-pet-director`
+- `C:\Users\<你>\.agents\plugins\marketplace.json`
+- `C:\Users\<你>\.codex\config.toml`
+
+脚本会先备份 `config.toml`，不会修改 Codex app 本体。安装后需要完全重启 Codex，再打开斜杠菜单搜索 `create-pet`。
 
 如果你是下载 ZIP 或 clone 仓库，也可以直接双击：
 
@@ -240,6 +264,7 @@ Codex pets 目录：Codex 识别并加载宠物
 │   └── PUBLISHING.md
 ├── bin/
 ├── install.cmd
+├── install-plugin.ps1
 ├── install.ps1
 ├── install.sh
 ├── package.json
