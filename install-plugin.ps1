@@ -70,8 +70,17 @@ function Write-JsonFile {
         [object]$Value
     )
     $json = $Value | ConvertTo-Json -Depth 20
+    Write-TextFileNoBom -Path $Path -Value ($json + "`n")
+}
+
+function Write-TextFileNoBom {
+    param(
+        [string]$Path,
+        [string]$Value
+    )
     New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
-    Set-Content -LiteralPath $Path -Value $json -Encoding UTF8
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($Path, $Value, $encoding)
 }
 
 function Test-RepoRoot {
@@ -305,7 +314,7 @@ function Update-CodexConfig {
 
     New-Item -ItemType Directory -Path (Split-Path -Parent $ConfigPath) -Force | Out-Null
     if (-not (Test-Path -LiteralPath $ConfigPath)) {
-        Set-Content -LiteralPath $ConfigPath -Value "" -Encoding UTF8
+        Write-TextFileNoBom -Path $ConfigPath -Value ""
     }
 
     $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -350,7 +359,7 @@ enabled = true
     $content = ($kept.ToArray() -join "`r`n").TrimEnd()
     $content = $content + "`r`n`r`n" + $marketplaceBlock + "`r`n`r`n" + $pluginBlock + "`r`n"
 
-    Set-Content -LiteralPath $ConfigPath -Value $content -Encoding UTF8
+    Write-TextFileNoBom -Path $ConfigPath -Value $content
     Write-Step "Backed up Codex config to $backup"
 }
 
@@ -358,6 +367,7 @@ $RepoRoot = Resolve-RepoRoot
 $SkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot -Name $PluginName
 $AliasSkillSource = Get-SkillSourceRoot -RepoRoot $RepoRoot -Name $AliasSkillName
 $CommandsSource = Join-Path $RepoRoot "commands"
+$AssetsSource = Join-Path $RepoRoot "assets"
 $ManifestSource = Join-Path $RepoRoot ".codex-plugin\plugin.json"
 
 if (-not (Test-Path -LiteralPath (Join-Path $SkillSource "SKILL.md"))) {
@@ -393,6 +403,13 @@ if ([string]::IsNullOrWhiteSpace($CodexHome)) {
 $PluginParent = Join-Path $MarketplaceRoot "plugins"
 $MarketplacePath = Join-Path (Join-Path $MarketplaceRoot ".agents") "plugins\marketplace.json"
 $ConfigPath = Join-Path $CodexHome "config.toml"
+$manifestMetadata = Read-JsonFile -Path $ManifestSource
+if (-not $manifestMetadata -or [string]::IsNullOrWhiteSpace($manifestMetadata.version)) {
+    throw "Could not read plugin version from $ManifestSource"
+}
+$CodexPluginCacheParent = Join-Path (Join-Path (Join-Path $CodexHome "plugins") "cache") $MarketplaceName
+$CodexPluginCachePluginRoot = Join-Path $CodexPluginCacheParent $PluginName
+$CodexPluginCacheRoot = Join-Path $CodexPluginCachePluginRoot $manifestMetadata.version
 $InstalledSkillRoot = Join-Path (Join-Path $CodexHome "skills") $PluginName
 $InstalledAliasSkillRoot = Join-Path (Join-Path $CodexHome "skills") $AliasSkillName
 $AgentsInstalledSkillRoot = Join-Path $AgentsSkillRoot $PluginName
@@ -401,11 +418,14 @@ $AgentsInstalledAliasSkillRoot = Join-Path $AgentsSkillRoot $AliasSkillName
 Assert-Inside -Path $PluginRoot -Parent $PluginParent
 Assert-Inside -Path $MarketplacePath -Parent $MarketplaceRoot
 Assert-Inside -Path $ConfigPath -Parent $CodexHome
+Assert-Inside -Path $CodexPluginCachePluginRoot -Parent $CodexPluginCacheParent
+Assert-Inside -Path $CodexPluginCacheRoot -Parent $CodexPluginCacheParent
 Assert-Inside -Path $AgentsInstalledSkillRoot -Parent $AgentsSkillRoot
 Assert-Inside -Path $AgentsInstalledAliasSkillRoot -Parent $AgentsSkillRoot
 
 Write-Step "Repo source: $RepoRoot"
 Write-Step "Plugin target: $PluginRoot"
+Write-Step "Codex plugin cache: $CodexPluginCacheRoot"
 Write-Step "Marketplace: $MarketplacePath"
 Write-Step "Codex config: $ConfigPath"
 if (-not $SkipAgentsSkillMirror) {
@@ -422,12 +442,21 @@ New-Item -ItemType Directory -Path $PluginRoot -Force | Out-Null
 Copy-CleanDirectory -Source $SkillSource -Destination (Join-Path (Join-Path $PluginRoot "skills") $PluginName) -AllowedParent $PluginRoot
 Copy-CleanDirectory -Source $AliasSkillSource -Destination (Join-Path (Join-Path $PluginRoot "skills") $AliasSkillName) -AllowedParent $PluginRoot
 Copy-CleanDirectory -Source $CommandsSource -Destination (Join-Path $PluginRoot "commands") -AllowedParent $PluginRoot
+if (Test-Path -LiteralPath $AssetsSource) {
+    Copy-CleanDirectory -Source $AssetsSource -Destination (Join-Path $PluginRoot "assets") -AllowedParent $PluginRoot
+}
 
 New-Item -ItemType Directory -Path (Join-Path $PluginRoot ".codex-plugin") -Force | Out-Null
 $manifest = Read-JsonFile -Path $ManifestSource
 $manifest.skills = "./skills/"
 $manifest | Add-Member -Force -NotePropertyName commands -NotePropertyValue "./commands/"
 Write-JsonFile -Path (Join-Path $PluginRoot ".codex-plugin\plugin.json") -Value $manifest
+
+if (Test-Path -LiteralPath $CodexPluginCachePluginRoot) {
+    Assert-Inside -Path $CodexPluginCachePluginRoot -Parent $CodexPluginCacheParent
+    Remove-Item -LiteralPath $CodexPluginCachePluginRoot -Recurse -Force
+}
+Copy-CleanDirectory -Source $PluginRoot -Destination $CodexPluginCacheRoot -AllowedParent $CodexPluginCacheParent
 
 New-Item -ItemType Directory -Path (Split-Path -Parent $InstalledSkillRoot) -Force | Out-Null
 Copy-CleanDirectory -Source $SkillSource -Destination $InstalledSkillRoot -AllowedParent (Join-Path $CodexHome "skills")

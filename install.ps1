@@ -191,8 +191,17 @@ function Write-JsonFile {
         [object]$Value
     )
     $json = $Value | ConvertTo-Json -Depth 20
+    Write-TextFileNoBom -Path $Path -Value ($json + "`n")
+}
+
+function Write-TextFileNoBom {
+    param(
+        [string]$Path,
+        [string]$Value
+    )
     New-Item -ItemType Directory -Path (Split-Path -Parent $Path) -Force | Out-Null
-    Set-Content -LiteralPath $Path -Value $json -Encoding UTF8
+    $encoding = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($Path, $Value, $encoding)
 }
 
 function Get-SkillFolderHash {

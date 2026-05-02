@@ -65,7 +65,7 @@ The package is already prepared with:
 
 For a beginner-friendly release:
 
-1. Create a tag, such as `v0.5.2`.
+1. Create a tag, such as `v0.5.3`.
 2. Create a GitHub Release from that tag.
 3. Tell Windows users to download the source ZIP and double-click `install.cmd`.
 4. Tell Codex users to run the GitHub project installer so both `codex-pet-director` and `create-pet` are installed.
@@ -73,11 +73,11 @@ For a beginner-friendly release:
 Release title:
 
 ```text
-Codex Pet Director v0.5.2
+Codex Pet Director v0.5.3
 ```
 
 Short release description:
 
 ```text
-Adds a safe `create-pet` launcher gate so bare `/create-pet` asks whether to create, continue, or inspect before production.
+Fixes local plugin installation so Codex can parse the marketplace file and load the cached `create-pet` plugin package.
 ```
