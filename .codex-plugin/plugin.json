@@ -35,8 +35,12 @@
     "brandColor": "#F25A2B",
     "screenshots": [
       "./assets/examples/wukong-spark/preview.png",
+      "./assets/examples/vegeta/preview.png",
+      "./assets/examples/dark-judge/preview.png",
       "./assets/examples/wukong-spark/golden-power-up.png",
-      "./assets/examples/wukong-spark/all-frames.png"
+      "./assets/examples/wukong-spark/all-frames.png",
+      "./assets/examples/vegeta/all-frames.png",
+      "./assets/examples/dark-judge/all-frames.png"
     ]
   }
 }

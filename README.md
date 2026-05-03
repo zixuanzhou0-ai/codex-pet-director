@@ -24,6 +24,14 @@
   <img src="assets/examples/wukong-spark/preview.png" alt="Wukong Spark Codex desktop pet example" width="760">
 </p>
 
+<p align="center">
+  <img src="assets/examples/vegeta/preview.png" alt="Vegeta Codex desktop pet example" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/dark-judge/preview.png" alt="Dark Judge Codex desktop pet example" width="760">
+</p>
+
 ## 快速入口
 
 最适合新手的方式：把这句话直接发给 Codex，让 Codex 自己运行一键安装器。
@@ -274,9 +282,11 @@ Codex pets 目录：Codex 识别并加载宠物
 我有一张参考图，帮我做成 Codex 官方桌面宠物。
 ```
 
-### 真实案例：Wukong Spark
+### 真实案例：三个可加载宠物
 
-`Wukong Spark` 是一个已经能被 Codex 桌面端加载的真实宠物包，不是概念图。它包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 个动作、每个动作 8 帧。
+下面三个案例都是已经能被 Codex 桌面端加载的真实宠物包，不是概念图。每个案例都包含标准的 `pet.json` 和 `spritesheet.webp`，并按 Codex 官方格式整理为 9 行动作、8 列图集。
+
+#### Wukong Spark
 
 <p align="center">
   <img src="assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
@@ -305,6 +315,66 @@ Codex pets 目录：Codex 识别并加载宠物
 </p>
 
 查看完整案例：[examples/wukong-spark](examples/wukong-spark)。这个案例展示了最终用户拿到的真实文件结构：`pet.json` + `spritesheet.webp`。
+
+#### 贝吉塔
+
+<p align="center">
+  <img src="assets/examples/vegeta/preview.png" alt="Vegeta Codex desktop pet preview" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/vegeta/showcase.gif" alt="Vegeta full animation showcase" width="280">
+</p>
+
+下面的图全部来自 `examples/vegeta/spritesheet.webp`，按原始帧直接展示。
+
+<p align="center">
+  <img src="assets/examples/vegeta/all-frames.png" alt="Vegeta full spritesheet frame board" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/vegeta/row-01.gif" alt="Vegeta row 1 animation" width="120">
+  <img src="assets/examples/vegeta/row-02.gif" alt="Vegeta row 2 animation" width="120">
+  <img src="assets/examples/vegeta/row-03.gif" alt="Vegeta row 3 animation" width="120">
+  <img src="assets/examples/vegeta/row-04.gif" alt="Vegeta row 4 animation" width="120">
+  <img src="assets/examples/vegeta/row-05.gif" alt="Vegeta row 5 animation" width="120">
+  <img src="assets/examples/vegeta/row-06.gif" alt="Vegeta row 6 animation" width="120">
+  <img src="assets/examples/vegeta/row-07.gif" alt="Vegeta row 7 animation" width="120">
+  <img src="assets/examples/vegeta/row-08.gif" alt="Vegeta row 8 animation" width="120">
+  <img src="assets/examples/vegeta/row-09.gif" alt="Vegeta row 9 animation" width="120">
+</p>
+
+查看完整案例：[examples/vegeta](examples/vegeta)。
+
+#### 黑瞳裁决者
+
+<p align="center">
+  <img src="assets/examples/dark-judge/preview.png" alt="Dark Judge Codex desktop pet preview" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/dark-judge/showcase.gif" alt="Dark Judge full animation showcase" width="280">
+</p>
+
+下面的图全部来自 `examples/dark-judge/spritesheet.webp`，按原始帧直接展示。
+
+<p align="center">
+  <img src="assets/examples/dark-judge/all-frames.png" alt="Dark Judge full spritesheet frame board" width="760">
+</p>
+
+<p align="center">
+  <img src="assets/examples/dark-judge/row-01.gif" alt="Dark Judge row 1 animation" width="120">
+  <img src="assets/examples/dark-judge/row-02.gif" alt="Dark Judge row 2 animation" width="120">
+  <img src="assets/examples/dark-judge/row-03.gif" alt="Dark Judge row 3 animation" width="120">
+  <img src="assets/examples/dark-judge/row-04.gif" alt="Dark Judge row 4 animation" width="120">
+  <img src="assets/examples/dark-judge/row-05.gif" alt="Dark Judge row 5 animation" width="120">
+  <img src="assets/examples/dark-judge/row-06.gif" alt="Dark Judge row 6 animation" width="120">
+  <img src="assets/examples/dark-judge/row-07.gif" alt="Dark Judge row 7 animation" width="120">
+  <img src="assets/examples/dark-judge/row-08.gif" alt="Dark Judge row 8 animation" width="120">
+  <img src="assets/examples/dark-judge/row-09.gif" alt="Dark Judge row 9 animation" width="120">
+</p>
+
+查看完整案例：[examples/dark-judge](examples/dark-judge)。
 
 ### 示例
 
@@ -343,6 +413,8 @@ Codex pets 目录：Codex 识别并加载宠物
 │   └── examples/
 ├── examples/
 │   ├── blue-robot-cat/
+│   ├── dark-judge/
+│   ├── vegeta/
 │   └── wukong-spark/
 ├── docs/
 │   ├── USER_TEST_SCRIPT.zh-CN.md
