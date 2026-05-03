@@ -1,7 +1,7 @@
 {
   "name": "codex-pet-director",
   "version": "0.5.5",
-  "description": "Install the codex-pet-director Codex skill and local plugin entrypoint.",
+  "description": "Install the Codex Pet Director skill with /create-pet and checked hatch-pet handoff.",
   "author": "zixuanzhou0-ai",
   "license": "MIT",
   "homepage": "https://github.com/zixuanzhou0-ai/codex-pet-director#readme",

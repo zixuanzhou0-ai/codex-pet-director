@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · Español · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-`codex-pet-director` es un skill multilingue para crear mascotas de escritorio oficiales de Codex. Primero revisa el entorno del usuario, luego hace preguntas sencillas sobre el personaje, la forma, el estilo, la apariencia, la personalidad y las 9 acciones oficiales. Al final entrega el brief confirmado a `hatch-pet` para generar un paquete listo para Codex.
+`codex-pet-director` es un skill para crear mascotas de escritorio oficiales de Codex. Primero revisa el entorno del usuario, luego hace preguntas sencillas sobre el personaje, la forma, el estilo, la apariencia, la personalidad y las 9 acciones oficiales. Si hay una imagen de referencia, la traduce a una `production_base` validada para el límite oficial `192x208` antes de entregar el brief a `hatch-pet`.
 
 ## Instalación con un comando
 
@@ -44,6 +44,8 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - Permite cambiar de idioma durante el proceso.
 - Genera 2-4 imágenes de confirmación en etapas clave.
 - Guarda las decisiones en `pet_brief.json` para mantener la consistencia.
+- Separa las imágenes bonitas de confirmación de la `production_base` real, para no enviar ilustraciones demasiado detalladas directamente a la producción.
+- Busca la máxima semejanza dentro del límite oficial `192x208`, conservando los rasgos reconocibles y simplificando detalles pequeños.
 - Respeta el formato oficial de Codex pet: 9 acciones, 8 columnas, 9 filas.
 - Delega la generación final a `hatch-pet`.
 
@@ -57,6 +59,8 @@ codex-pet-director: idioma, entrevista, imágenes de confirmación, bloqueo del 
 pet_brief.json: guarda decisiones y las 9 acciones
   ↓
 imagegen: crea imágenes de confirmación
+  ↓
+hatch_pet_handoff.json: entrega production_base y reglas de acciones
   ↓
 hatch-pet: genera pet.json + spritesheet.webp
   ↓

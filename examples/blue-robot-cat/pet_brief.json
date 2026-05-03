@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "meta": {
     "created_at": "2026-05-02T12:00:00+00:00",
     "updated_at": "2026-05-02T12:00:00+00:00",
@@ -31,6 +31,30 @@
     "must_keep": [],
     "avoid_confusion": [],
     "user_confirmed": false
+  },
+  "likeness": {
+    "strategy": "maximum-within-official-limits",
+    "user_requested_level": "no-reference-text-design",
+    "must_preserve": [
+      "screen-face eyes",
+      "small cat ears",
+      "electric blue shell",
+      "tiny code badge",
+      "compact half-body silhouette"
+    ],
+    "may_simplify": [
+      "tiny circuit lines",
+      "small glow effects",
+      "fine joint seams",
+      "badge text"
+    ],
+    "must_avoid_drift": [
+      "realistic fur",
+      "heavy armor",
+      "busy background",
+      "large readable text"
+    ],
+    "notes": "Example-only likeness contract. In a real run, this records how closely to follow user references inside the official 192x208 pet boundary."
   },
   "form": {
     "type": "半身小伙伴",
@@ -89,7 +113,19 @@
   },
   "confirmations": {
     "direction_choice": "A 的脸 + B 的颜色 + C 的气质",
+    "concept_confirmation": "example concept direction selected by user",
     "formal_character_image": "locked-example-character-image",
+    "production_base": "example-only-production-base-192x208.png",
+    "production_base_fit": {
+      "status": "example-only",
+      "checked_at": "",
+      "tool": "check_pet_asset_fit.py",
+      "notes": [
+        "In a real final run this must be a pass result before hatch-pet starts."
+      ],
+      "failures": [],
+      "warnings": []
+    },
     "canonical_base": "locked blue robot cat half-body assistant",
     "key_action_preview": "idle, failed, review preview approved",
     "final_card_confirmed": true

@@ -40,4 +40,6 @@ That means future action prompts must keep the same face, colors, ears, badge, a
 
 ## Production Handoff
 
-When the user confirms the final card, pass the locked brief to `hatch-pet`. Do not add extra official actions or extra frames.
+When the user confirms the final card, create a simplified `production_base` for the official `192x208` pet cell, run `check_pet_asset_fit.py`, then generate `hatch_pet_handoff.json` with `build_hatch_handoff.py`.
+
+Only after that handoff exists should the flow pass the locked brief to `hatch-pet`. Do not add extra official actions or extra frames, and do not use the high-detail confirmation image as the main production reference.

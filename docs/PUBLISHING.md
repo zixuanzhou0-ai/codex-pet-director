@@ -48,6 +48,7 @@ Before publishing:
 
 ```bash
 npm login
+npm test
 npm pack --dry-run
 npm publish --access public
 ```
@@ -69,19 +70,27 @@ The package is already prepared with:
 For a beginner-friendly release:
 
 1. Run `npm test`.
-2. Create a tag, such as `v0.5.4`.
-3. Create a GitHub Release from that tag.
-4. Tell Windows users to download the source ZIP and double-click `install.cmd`.
-5. Tell Codex users to run the GitHub project installer so the full local plugin structure is installed.
+2. Run the production handoff smoke checks:
+
+```bash
+python .\codex-pet-director\scripts\check_pet_asset_fit.py --help
+python .\codex-pet-director\scripts\build_hatch_handoff.py --help
+python .\codex-pet-director\scripts\pet_brief.py --help
+```
+
+3. Create a tag, such as `v0.5.5`.
+4. Create a GitHub Release from that tag.
+5. Tell Windows users to download the source ZIP and double-click `install.cmd`.
+6. Tell Codex users to run the GitHub project installer so the full local plugin structure is installed.
 
 Release title:
 
 ```text
-Codex Pet Director v0.5.4
+Codex Pet Director v0.5.5
 ```
 
 Short release description:
 
 ```text
-Makes the GitHub `npx` installer install the full local plugin structure and adds automated validation for repository links, skill mirrors, package contents, and temporary-home installation.
+Adds the production-base handoff gate between create-pet and hatch-pet: references are translated into a checked 192x208-ready production_base before final spritesheet generation.
 ```

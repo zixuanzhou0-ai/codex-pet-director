@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · 日本語 · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-`codex-pet-director` は、Codex の公式デスクトップペットを作るための多言語対応 skill です。環境を確認し、やさしい質問でキャラクター、形、スタイル、見た目、性格、9 個の公式アクションを決め、最後に `hatch-pet` に渡して Codex で使えるペットパッケージを生成します。
+`codex-pet-director` は、Codex の公式デスクトップペットを作るための skill です。環境を確認し、やさしい質問でキャラクター、形、スタイル、見た目、性格、9 個の公式アクションを決めます。参照画像がある場合は、公式の `192x208` ペット枠の中でできるだけ近づけ、チェック済みの `production_base` を作ってから `hatch-pet` に渡します。
 
 ## ワンクリックインストール
 
@@ -44,6 +44,8 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - 途中で言語を切り替えられます。
 - 重要な段階で 2-4 枚の確認画像を生成します。
 - `pet_brief.json` に決定内容を保存し、キャラクターの一貫性を保ちます。
+- きれいな確認画像と本番用の `production_base` を分け、細かすぎるイラストを直接 spritesheet 生成に使いません。
+- 公式 `192x208` の範囲内で参照画像にできるだけ近づけ、認識しやすい特徴を残して細部を簡略化します。
 - Codex 公式 pet 形式に従います：9 アクション、8 列、9 行。
 - 最終生成は `hatch-pet` に任せます。
 
@@ -57,6 +59,8 @@ codex-pet-director：言語、質問、確認画像、キャラクター固定
 pet_brief.json：選択内容と 9 アクションを保存
   ↓
 imagegen：確認画像を生成
+  ↓
+hatch_pet_handoff.json：production_base とアクション設定を明示的に渡す
   ↓
 hatch-pet：pet.json + spritesheet.webp を生成
   ↓

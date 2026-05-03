@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · English · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-`codex-pet-director` is a multilingual Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, records the final direction in `pet_brief.json`, and then hands the locked brief to `hatch-pet` to produce a Codex-ready pet package.
+`codex-pet-director` is a Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, translates references into a checked `192x208` production base, records the final direction in `pet_brief.json`, and then hands the validated brief to `hatch-pet` to produce a Codex-ready pet package.
 
 ## One-Click Install
 
@@ -68,8 +68,9 @@ The shell installer is a fallback for skills-only installation. For the full loc
 4. Choose whether to create a new pet, continue an existing draft, or inspect an existing draft.
 5. Answer who it is, what form it has, what style it should use, and what it looks like.
 6. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
-7. Confirm the 9 official actions.
-8. Give final production approval, then let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
+7. Generate and check a `192x208`-ready `production_base`.
+8. Confirm the 9 official actions.
+9. Give final production approval, then let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
 
 ## What It Does
 
@@ -79,6 +80,8 @@ The shell installer is a fallback for skills-only installation. For the full loc
 - Lets the user switch language during the flow.
 - Generates 2-4 visual confirmation images at key stages.
 - Saves decisions in `pet_brief.json` so the character stays consistent.
+- Supports maximum likeness within the official boundary: it tries to stay close to references while keeping the asset readable in a `192x208` pet cell.
+- Separates polished confirmation images from the final `production_base`, so high-detail concept art is not sent directly into spritesheet production.
 - Respects the official Codex pet format: 9 actions, 8 columns, 9 rows.
 - Uses the existing `hatch-pet` skill for final package generation instead of rebuilding the spritesheet pipeline.
 
@@ -127,6 +130,8 @@ pet_brief.json: stores user choices and the 9 action settings
   ↓
 imagegen: creates visual confirmation images
   ↓
+hatch_pet_handoff.json: passes production_base and action rules explicitly
+  ↓
 hatch-pet: produces pet.json + spritesheet.webp
   ↓
 Codex pets folder: Codex detects and loads the pet
@@ -139,6 +144,9 @@ This skill separates creative direction from final production.
 - The director flow turns a vague idea into a stable character.
 - `pet_brief.json` locks identity, colors, silhouette, props, and action choices.
 - Confirmation images help beginners choose visually instead of writing perfect prompts.
+- `production_base` converts the confirmed character into a small, readable asset that fits the official `192x208` pet cell.
+- `check_pet_asset_fit.py` blocks high-resolution illustrations, complex backgrounds, and overly detailed images from entering final production.
+- `build_hatch_handoff.py` writes `hatch_pet_handoff.json`, reducing guesswork between the director flow and `hatch-pet`.
 - `hatch-pet` remains responsible for the official spritesheet, `pet.json`, and QA.
 
 This keeps the system maintainable. If Codex changes the pet production format later, the production layer can change without rewriting the whole interview and multilingual guidance layer.

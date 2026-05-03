@@ -373,6 +373,8 @@ python C:\Users\Administrator\.codex\skills\.system\skill-creator\scripts\quick_
 node .\scripts\validate_repository.js
 node .\scripts\test_install.js
 python .\codex-pet-director\scripts\check_pet_environment.py --json
+python .\codex-pet-director\scripts\check_pet_asset_fit.py --help
+python .\codex-pet-director\scripts\build_hatch_handoff.py --help
 python .\codex-pet-director\scripts\pet_brief.py languages
 python .\codex-pet-director\scripts\pet_brief.py --help
 npm pack --dry-run

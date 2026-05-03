@@ -1,6 +1,6 @@
 ---
 name: create-pet
-description: Start /create-pet for Codex Pet Director. Use when the user selects create-pet from the Codex slash command menu, sends /create-pet, wants to create a custom Codex desktop pet, or asks to customize an official Codex pet.
+description: Start /create-pet for Codex Pet Director. Use when the user selects create-pet from the Codex slash command menu, sends /create-pet, wants to create a custom Codex desktop pet, or asks to customize an official Codex pet with a checked hatch-pet handoff.
 metadata:
   short-description: Start custom Codex pet creation
 ---

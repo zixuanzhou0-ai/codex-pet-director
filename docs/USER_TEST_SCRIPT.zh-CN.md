@@ -20,6 +20,14 @@
 看到环境检查
   ↓
 进入宠物定制问答
+  ↓
+确认概念图和正式角色图
+  ↓
+生成并检查 192x208-ready production_base
+  ↓
+确认 9 个官方动作
+  ↓
+生成 hatch_pet_handoff.json 后再进入 hatch-pet
 ```
 
 ## 测试前准备
@@ -185,7 +193,38 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 - 它是什么风格。
 - 它是什么性格。
 - 它长什么样，哪些要保留，哪些不要。
+- 它应该说明：漂亮确认图不是最终生产图，正式生产前会再做一张适合 `192x208` 的 `production_base`。
 - 9 个官方动作怎么动。
+
+## production_base 对接测试
+
+这个测试用来确认 `create-pet` 和 `hatch-pet` 没有再把高清图直接混用。
+
+### 场景 1：高清参考图
+
+给用户一个高清插画、自拍、动漫截图或复杂概念图，然后说：
+
+```text
+请尽量像这张图，但做成 Codex 官方桌面宠物。
+```
+
+期望结果：
+
+- 它应该理解为“在官方桌宠边界内尽量像”，而不是拒绝用户需求。
+- 它应该先生成或整理用户确认图，用来确认角色方向。
+- 它不应该直接把高清确认图交给 `hatch-pet`。
+- 它应该生成一张简化后的 `production_base`，并说明这是为了适配 `192x208` 小尺寸动画资产。
+- 它应该运行 `check_pet_asset_fit.py`，失败时要求修复或重做 `production_base`。
+
+### 场景 2：合格生产基准图
+
+当 `production_base` 已经是透明或纯色背景、角色清楚、细节不糊、适合 `192x208` 的小桌宠图时，期望结果：
+
+- `production_base` 检查通过。
+- `pet_brief.py validate --stage final` 能通过。
+- `build_hatch_handoff.py` 生成 `hatch_pet_handoff.json`。
+- 只有在用户明确确认正式生产后，才加载 `hatch-pet`。
+- `hatch-pet` 使用 `production_base` 作为主参考，而不是概念图或正式角色大图。
 
 ## 参考角色联网测试
 
@@ -216,6 +255,10 @@ npx --yes github:zixuanzhou0-ai/codex-pet-director
 - 选择新建或继续后会进行环境检查。
 - 问题是小白能懂的中文。
 - 它不会承诺无限动作、额外帧数、键盘控制或手柄控制。
+- 它会把“尽量像参考图”解释为“在官方 `192x208` 桌宠边界内尽量像”。
+- 它会区分确认图、正式角色图和 `production_base`。
+- `production_base` 不通过检查时，不会进入 `hatch-pet` 正式生产。
+- 它会在正式生产前生成 `hatch_pet_handoff.json`。
 - 它会明确最终交给 `hatch-pet` 生成官方格式。
 
 ## 记录问题
@@ -233,6 +276,9 @@ create-pet 是否能在斜杠菜单搜索到：
 Codex plugin cache 是否生成：
 环境检查是否出现：
 第一轮问题是否清楚：
+是否说明 production_base：
+production_base 是否通过检查：
+hatch_pet_handoff.json 是否生成：
 用户卡住的位置：
 需要修改 README 的地方：
 需要修改 skill 的地方：

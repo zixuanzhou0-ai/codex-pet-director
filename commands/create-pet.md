@@ -1,5 +1,5 @@
 ---
-description: Start the Codex Pet Director flow to create an official custom Codex desktop pet.
+description: Start Codex Pet Director to create an official desktop pet with a checked hatch-pet handoff.
 ---
 
 # /create-pet

@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · Français · [Deutsch](README.de.md)
 
-`codex-pet-director` est un skill multilingue pour créer des animaux de bureau officiels pour Codex. Il vérifie d'abord l'environnement, puis guide l'utilisateur avec des questions simples sur le personnage, la forme, le style, l'apparence, la personnalité et les 9 actions officielles. Le brief validé est ensuite transmis à `hatch-pet` pour générer un paquet utilisable par Codex.
+`codex-pet-director` est un skill pour créer des pets de bureau officiels pour Codex. Il vérifie d'abord l'environnement, puis guide l'utilisateur avec des questions simples sur le personnage, la forme, le style, l'apparence, la personnalité et les 9 actions officielles. Si l'utilisateur donne une image de référence, il la traduit en `production_base` validée pour la limite officielle `192x208` avant de transmettre le brief à `hatch-pet`.
 
 ## Installation en une commande
 
@@ -44,6 +44,8 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - Permet de changer de langue pendant le processus.
 - Génère 2-4 images de confirmation aux étapes clés.
 - Enregistre les décisions dans `pet_brief.json` pour garder le personnage cohérent.
+- Sépare les belles images de confirmation de la vraie `production_base`, afin de ne pas envoyer une illustration trop détaillée directement en production.
+- Cherche la ressemblance maximale dans la limite officielle `192x208`, en gardant les traits reconnaissables et en simplifiant les détails fragiles.
 - Respecte le format officiel Codex pet : 9 actions, 8 colonnes, 9 lignes.
 - Confie la génération finale à `hatch-pet`.
 
@@ -57,6 +59,8 @@ codex-pet-director : langue, entretien, images de confirmation, verrouillage du 
 pet_brief.json : décisions et 9 actions
   ↓
 imagegen : images de confirmation
+  ↓
+hatch_pet_handoff.json : transmet production_base et règles d'action
   ↓
 hatch-pet : pet.json + spritesheet.webp
   ↓

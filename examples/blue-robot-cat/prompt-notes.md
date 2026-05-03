@@ -2,6 +2,8 @@
 
 Use these notes as a style and action reference. They are not a replacement for the final `hatch-pet` workflow.
 
+For final production, convert the locked character into a `production_base`: a transparent or flat-background image that reads clearly inside one official `192x208` Codex pet cell. The production base should keep the face, ears, color blocks, badge, and compact silhouette, while simplifying tiny wires, text, glow effects, and shading.
+
 ## Character Lock
 
 ```text

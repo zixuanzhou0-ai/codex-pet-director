@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · Deutsch
 
-`codex-pet-director` ist ein mehrsprachiger Skill zum Erstellen offizieller Codex Desktop-Pets. Er prüft zuerst die lokale Umgebung, stellt dann einfache Fragen zu Figur, Form, Stil, Aussehen, Persönlichkeit und den 9 offiziellen Aktionen. Danach wird der bestätigte Brief an `hatch-pet` übergeben, um ein Codex-fähiges Pet-Paket zu erzeugen.
+`codex-pet-director` ist ein Skill zum Erstellen offizieller Codex Desktop-Pets. Er prüft zuerst die lokale Umgebung, stellt dann einfache Fragen zu Figur, Form, Stil, Aussehen, Persönlichkeit und den 9 offiziellen Aktionen. Wenn es ein Referenzbild gibt, übersetzt er es in eine geprüfte `production_base` innerhalb der offiziellen `192x208`-Grenze, bevor der Brief an `hatch-pet` übergeben wird.
 
 ## Installation mit einem Befehl
 
@@ -44,6 +44,8 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - Erlaubt Sprachwechsel während des Prozesses.
 - Erstellt in wichtigen Phasen 2-4 Bestätigungsbilder.
 - Speichert Entscheidungen in `pet_brief.json`, damit die Figur konsistent bleibt.
+- Trennt schöne Bestätigungsbilder von der echten `production_base`, damit detailreiche Konzeptbilder nicht direkt in die Spritesheet-Produktion gehen.
+- Strebt maximale Ähnlichkeit innerhalb der offiziellen `192x208`-Grenze an, behält erkennbare Merkmale und vereinfacht kleine Details.
 - Beachtet das offizielle Codex pet Format: 9 Aktionen, 8 Spalten, 9 Zeilen.
 - Übergibt die finale Produktion an `hatch-pet`.
 
@@ -57,6 +59,8 @@ codex-pet-director: Sprache, Interview, Bestätigungsbilder, Figur fixieren
 pet_brief.json: Entscheidungen und 9 Aktionen
   ↓
 imagegen: Bestätigungsbilder
+  ↓
+hatch_pet_handoff.json: übergibt production_base und Aktionsregeln
   ↓
 hatch-pet: pet.json + spritesheet.webp
   ↓
