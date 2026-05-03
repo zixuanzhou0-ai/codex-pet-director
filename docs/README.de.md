@@ -4,6 +4,8 @@
 
 `codex-pet-director` ist ein Skill zum Erstellen offizieller Codex Desktop-Pets. Er prüft zuerst die lokale Umgebung, stellt dann einfache Fragen zu Figur, Form, Stil, Aussehen, Persönlichkeit und den 9 offiziellen Aktionen. Wenn es ein Referenzbild gibt, übersetzt er es in eine geprüfte `production_base` innerhalb der offiziellen `192x208`-Grenze, bevor der Brief an `hatch-pet` übergeben wird.
 
+Die vollständige visuelle Showcase-Seite findest du auf [简体中文](../README.md#真实案例三个可加载宠物) oder [English](README.en.md#real-pet-showcase).
+
 ## Installation mit einem Befehl
 
 Der Einstieg ist `create-pet` im Skills-Bereich des Slash-Menüs. Du kannst auch `/create-pet` als normale Nachricht senden.

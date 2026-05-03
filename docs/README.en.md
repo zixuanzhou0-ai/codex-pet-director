@@ -4,6 +4,18 @@
 
 `codex-pet-director` is a Codex skill for creating highly customized official Codex desktop pets. It checks the user's environment, guides the user through simple design questions, confirms the character with generated images, translates references into a checked `192x208` production base, records the final direction in `pet_brief.json`, and then hands the validated brief to `hatch-pet` to produce a Codex-ready pet package.
 
+<p align="center">
+  <img src="../assets/examples/wukong-spark/preview.png" alt="Wukong Spark Codex desktop pet example" width="760">
+</p>
+
+<p align="center">
+  <img src="../assets/examples/vegeta/preview.png" alt="Vegeta Codex desktop pet example" width="760">
+</p>
+
+<p align="center">
+  <img src="../assets/examples/dark-judge/preview.png" alt="Dark Judge Codex desktop pet example" width="760">
+</p>
+
 ## One-Click Install
 
 The start entry is `create-pet` in the Skills slash menu. You can also send `/create-pet` as a normal chat message.
@@ -188,10 +200,36 @@ If manually typed `/create-pet` still shows "No commands", select `create-pet` f
 I have a reference image. Turn it into an official Codex desktop pet.
 ```
 
-## Example
+## Real Pet Showcase
 
-See [../examples/wukong-spark](../examples/wukong-spark) for the original Wukong Spark generated Codex desktop pet package. It contains the actual `pet.json` and `spritesheet.webp` files Codex can load, plus a full static frame board and row-by-row GIFs generated directly from the sprite sheet.
+These are real Codex desktop pet packages, not concept mockups. Each example includes the final `pet.json` and `spritesheet.webp` files that Codex can load.
+
+### Wukong Spark
+
+<p align="center">
+  <img src="../assets/examples/wukong-spark/showcase.gif" alt="Wukong Spark full animation showcase" width="280">
+</p>
+
+[Open the full Wukong Spark example](../examples/wukong-spark) to inspect the static frame board, row GIFs, `pet.json`, and `spritesheet.webp`.
+
+### Vegeta
+
+<p align="center">
+  <img src="../assets/examples/vegeta/showcase.gif" alt="Vegeta full animation showcase" width="280">
+</p>
+
+[Open the full Vegeta example](../examples/vegeta) to inspect the static frame board, row GIFs, `pet.json`, and `spritesheet.webp`.
+
+### Dark Judge
+
+<p align="center">
+  <img src="../assets/examples/dark-judge/showcase.gif" alt="Dark Judge full animation showcase" width="280">
+</p>
+
+[Open the full Dark Judge example](../examples/dark-judge) to inspect the static frame board, row GIFs, `pet.json`, and `spritesheet.webp`.
+
+## Planning Example
 
 See [../examples/blue-robot-cat](../examples/blue-robot-cat) for a complete sample brief, preview card, and action prompt notes.
 
-The Wukong example shows the finished output. The blue robot cat example shows how a rough idea becomes a structured brief before final production.
+The real pet examples show finished output. The blue robot cat example shows how a rough idea becomes a structured brief before final production.

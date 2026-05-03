@@ -4,6 +4,8 @@
 
 `codex-pet-director`는 Codex 공식 데스크톱 펫을 만들기 위한 skill입니다. 사용자의 환경을 먼저 확인하고, 쉬운 질문으로 캐릭터, 형태, 스타일, 외형, 성격, 9개의 공식 동작을 정합니다. 참고 이미지가 있으면 공식 `192x208` 펫 셀 안에서 최대한 닮게 줄여 `production_base`를 만들고, 검사를 통과한 뒤 `hatch-pet`에 전달합니다.
 
+전체 이미지 쇼케이스는 [简体中文](../README.md#真实案例三个可加载宠物) 또는 [English](README.en.md#real-pet-showcase)에서 볼 수 있습니다.
+
 ## 원클릭 설치
 
 시작 항목은 슬래시 메뉴의 Skills 그룹에 있는 `create-pet`입니다. `/create-pet`을 일반 메시지로 보내도 됩니다.

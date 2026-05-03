@@ -4,6 +4,8 @@
 
 `codex-pet-director` 是一個 Codex 桌面寵物高定制向導 skill。它會先檢查使用者環境，再用簡單問題一步步確認角色、形態、風格、外觀、性格和 9 個官方動作；如果使用者提供參考圖，它會在官方 `192x208` 桌寵邊界內盡量還原，生成通過檢查的 `production_base`，最後再交給 `hatch-pet` 生成 Codex 可用的寵物包。
 
+完整圖文展示請看 [简体中文](../README.md#真实案例三个可加载宠物) 或 [English](README.en.md#real-pet-showcase)。
+
 ## 一鍵安裝
 
 啟動入口是在斜線選單裡搜尋 `create-pet`。你也可以把 `/create-pet` 當普通訊息發出去。
