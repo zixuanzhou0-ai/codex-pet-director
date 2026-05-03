@@ -131,12 +131,21 @@ Ask:
 比如不要文字、不要恐怖、不要太写实、不要太复杂。
 
 如果你给了参考图，你想它和参考图有多像？
-A. 尽量接近
-B. 保留重点
-C. 只借鉴感觉
+A. 尽量接近：在 192x208 桌宠边界内尽可能像
+B. 保留重点：保留最明显的特征
+C. 只借鉴感觉：保留气质，不强求外形一致
 ```
 
-After this block, generate or refine the formal character image. Once the user confirms it, lock the character identity.
+If the user says "一模一样", "完全照着", or "尽量像", explain the boundary without asking them to lower the goal:
+
+```text
+我会尽量贴近参考图，但会把它转成 Codex 官方桌宠能承载的版本。
+细碎纹理会简化，核心识别点会保留。
+```
+
+Record the likeness intent in `likeness.user_requested_level`, key traits in `likeness.must_preserve`, safe simplifications in `likeness.may_simplify`, and unwanted drift in `likeness.must_avoid_drift`.
+
+After this block, generate or refine the formal character image. Once the user confirms it, lock the character identity. Then generate a simplified `production_base` candidate for 192x208 pet production and run `check_pet_asset_fit.py`. If it fails, regenerate or revise the production base before moving on.
 
 ## Block 6: 它怎么动
 
@@ -166,7 +175,9 @@ Create a pet card:
 风格：
 性格：
 主色：
+还原程度：
 必须保留：
+为了桌宠会简化：
 必须避免：
 平时：
 工作中：
@@ -185,3 +196,4 @@ Ask:
 ```
 
 Only after confirmation, hand off to `hatch-pet`.
+Only hand off after `pet_brief.py validate --stage final` passes and `build_hatch_handoff.py` has created `hatch_pet_handoff.json`.

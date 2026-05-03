@@ -25,9 +25,11 @@ Open the beginner-friendly Codex desktop pet launcher. A bare `/create-pet` shou
 9. If the user names a celebrity, public figure, anime/game/film character, mascot, or other known figure, research the reference online before image generation.
 10. Generate 2-4 user-facing confirmation images at key visual stages.
 11. Record decisions in `pet_brief.json`.
-12. After the formal character image is confirmed, keep identity locked and only vary action poses.
-13. Ask for explicit final production confirmation before loading `$hatch-pet`.
-14. Hand the final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
+12. After the formal character image is confirmed, keep identity locked and generate a simplified `production_base` for the official 192x208 pet boundary.
+13. Run `check_pet_asset_fit.py`; if it fails, regenerate or revise `production_base` instead of loading `$hatch-pet`.
+14. Build `hatch_pet_handoff.json` with `build_hatch_handoff.py`.
+15. Ask for explicit final production confirmation before loading `$hatch-pet`.
+16. Hand the validated `production_base` and final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
 
 ## Guardrails
 
@@ -35,6 +37,9 @@ Open the beginner-friendly Codex desktop pet launcher. A bare `/create-pet` shou
 - Do not promise extra official actions, extra frames, keyboard control, controller control, or unlimited random actions.
 - Keep the user-facing language simple.
 - Treat confirmation images as previews, not final production sprites.
+- Treat the user's request as the creative target, but keep the official 192x208 Codex pet format as the hard boundary.
+- Do not use high-resolution confirmation images, selfies, anime screenshots, or polished concept art as the main `$hatch-pet` production reference.
+- Use `confirmations.production_base` as the only production reference, and only after it passes `check_pet_asset_fit.py`.
 - Do not start production just because the user selected the slash entry.
 - Do not silently continue a previous `pet_brief.json`.
 - Do not rely on memory for named people or known fictional characters when no clear reference image is provided.

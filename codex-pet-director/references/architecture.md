@@ -13,7 +13,9 @@ pet_brief.json as the source of truth
   ↓
 image confirmation rounds with imagegen
   ↓
-locked character + 9 action design
+locked character + production_base fit gate + 9 action design
+  ↓
+hatch_pet_handoff.json contract
   ↓
 hatch-pet final production
   ↓
@@ -34,6 +36,8 @@ Codex pets folder: pet.json + spritesheet.webp
 | `references/handoff-to-hatch-pet.md` | How to pass the locked brief to `hatch-pet`. |
 | `scripts/check_pet_environment.py` | Detects OS, Codex home, pets folder, write access, Codex desktop evidence, and `hatch-pet`. |
 | `scripts/pet_brief.py` | Creates, updates, shows, validates, and language-tags `pet_brief.json`. |
+| `scripts/check_pet_asset_fit.py` | Checks that `production_base` can work inside the official 192x208 pet cell. |
+| `scripts/build_hatch_handoff.py` | Converts a validated brief into an explicit `hatch_pet_handoff.json` contract. |
 | `install.ps1` / `install.sh` | Copies the skill into the user's Codex skills folder. |
 
 ## Why This Design
@@ -43,6 +47,8 @@ The skill separates creative direction from final production.
 - The pet director handles conversation, language, choices, and visual decision-making.
 - `pet_brief.json` prevents the character from drifting between rounds.
 - Confirmation images let beginners choose visually instead of writing perfect prompts.
+- The production-base gate lets the system pursue maximum likeness without breaking the official 192x208 asset limits.
+- `hatch_pet_handoff.json` removes guesswork between the director flow and the production generator.
 - `hatch-pet` remains responsible for spritesheet assembly and final Codex package files.
 
 This keeps the system easier to maintain. If Codex changes the pet production details later, only the production layer should need changes; the interview, language flow, and customer-facing guidance can stay stable.
@@ -71,8 +77,10 @@ It records:
 - form and style
 - personality
 - visual locks
+- likeness intent and the tradeoff between maximum resemblance and official pet limits
 - blocked dislikes
 - confirmation-image choices
+- the checked `production_base` image and its asset-fit result
 - 9 action descriptions
 
 When later prompts are generated, the brief should be used as the source of truth. The confirmed face, silhouette, colors, props, and action meanings should not be reinvented.

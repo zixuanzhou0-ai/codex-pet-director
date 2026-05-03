@@ -1,6 +1,6 @@
 {
   "name": "codex-pet-director",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Create official custom Codex desktop pets with a beginner-friendly director flow and /create-pet entrypoint.",
   "author": {
     "name": "zixuanzhou0-ai",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Codex Pet Director",
     "shortDescription": "Create official custom Codex desktop pets.",
-    "longDescription": "A beginner-friendly director flow for creating official Codex desktop pets. It starts from /create-pet, checks the local pet environment, interviews the user in simple blocks, generates visual confirmations, records a pet brief, and hands final production to hatch-pet.",
+    "longDescription": "A beginner-friendly director flow for creating official Codex desktop pets. It starts from /create-pet, checks the local pet environment, interviews the user in simple blocks, generates visual confirmations, translates references into a checked 192x208 production base, records a pet brief, and hands final production to hatch-pet.",
     "developerName": "zixuanzhou0-ai",
     "category": "Productivity",
     "capabilities": [

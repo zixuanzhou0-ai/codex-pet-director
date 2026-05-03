@@ -13,6 +13,8 @@ Create an official Codex desktop pet through a beginner-friendly high-customizat
 
 Keep the user-facing conversation in plain Chinese by default, or in the user's selected language. Avoid technical terms unless they are necessary.
 
+Core production principle: the user's request is the creative target, and the official Codex pet format is the hard boundary. When a user asks for high likeness, "exactly like this", or "as close as possible", interpret it as maximum likeness within the official 192x208 pet limits. Preserve the strongest identity cues and automatically simplify details that would break small animated sprites.
+
 ## Start Command
 
 Treat `/create-pet` as the formal entry signal for this skill, not as permission to begin production. If the user's message is only `/create-pet`, `create-pet`, or "开始创建宠物", open a safe launcher first:
@@ -34,6 +36,8 @@ If Codex receives `/create-pet` as plain text rather than a native slash command
 - Do not claim the user can add extra official actions, extra rows, extra frames, random behaviors, or custom controls through `pet.json`.
 - Do not rewrite the lower-level spritesheet pipeline. Use `$hatch-pet` for final official pet generation and packaging.
 - Keep reference-image discussion focused on likeness level. If the user provides a reference, ask how close they want the pet to feel to that reference.
+- Do not hand a high-resolution confirmation image, selfie, anime screenshot, concept image, or polished illustration directly to `$hatch-pet` as the production reference.
+- Final production must use `confirmations.production_base`, and it must pass `scripts/check_pet_asset_fit.py`.
 
 ## Language Handling
 
@@ -126,9 +130,26 @@ ${CODEX_HOME:-$HOME/.codex}/skills/.system/imagegen/SKILL.md
 Confirmation images are decision aids, not the final spritesheet. Follow `references/image-confirmation-flow.md` to keep this clear:
 
 - early images help users choose identity, form, style, and expression
-- production images later create the base reference and 9 official action rows
+- `concept_confirmation` and `formal_character_image` help users choose and lock the character
+- `production_base` is the only image allowed to become the `$hatch-pet` production reference
+- production images later create the 9 official action rows, contact sheet, previews, and final spritesheet
 
 Do not use local scripts, SVG, canvas, or handmade image editing as a substitute for generated visual confirmation images.
+
+After the formal character image is confirmed, generate a simplified `production_base` image for official Codex pet production. Explain this plainly:
+
+```text
+我会尽量贴近参考图，但会把它转成 Codex 官方桌宠能承载的版本。
+细碎纹理会简化，核心识别点会保留。
+```
+
+Check the candidate production base before handoff:
+
+```bash
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_pet_asset_fit.py" --image /absolute/path/to/production_base.png --json
+```
+
+Record the result in `pet_brief.json` under `confirmations.production_base` and `confirmations.production_base_fit`. If the check fails, do not load `$hatch-pet`; regenerate or revise the production base first.
 
 ### 4. Design The 9 Official Actions
 
@@ -155,10 +176,19 @@ When the user has confirmed:
 - environment is usable
 - character direction
 - formal character image
+- production base image
+- `production_base` asset-fit check has passed
 - key actions
 - final pet card
 
-ask for one final production confirmation in plain language. Only after the user clearly agrees, load `$hatch-pet` and follow its workflow. Use `references/handoff-to-hatch-pet.md` to convert the pet brief into `hatch-pet` inputs. The `hatch-pet` skill owns base generation, row generation, atlas assembly, QA, preview videos, `pet.json`, and `spritesheet.webp`.
+validate the final brief and build a hatch handoff manifest:
+
+```bash
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/pet_brief.py" validate --path /absolute/path/to/pet_brief.json --stage final
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/build_hatch_handoff.py" --brief /absolute/path/to/pet_brief.json --output-dir /absolute/path/to/run
+```
+
+Ask for one final production confirmation in plain language. Only after the user clearly agrees, load `$hatch-pet` and follow its workflow using the `production_base` reference and the generated `hatch_pet_handoff.json`. Use `references/handoff-to-hatch-pet.md` to convert the pet brief into `hatch-pet` inputs. The `hatch-pet` skill owns base generation, row generation, atlas assembly, QA, preview videos, `pet.json`, and `spritesheet.webp`.
 
 ## Reference Files
 
@@ -171,6 +201,8 @@ ask for one final production confirmation in plain language. Only after the user
 - `references/action-guide.md`: official action slots, frame counts, and form adaptation.
 - `references/image-confirmation-flow.md`: staged confirmation image policy.
 - `references/handoff-to-hatch-pet.md`: final production handoff.
+- `scripts/check_pet_asset_fit.py`: production-base suitability check for the 192x208 official pet boundary.
+- `scripts/build_hatch_handoff.py`: validated `pet_brief.json` to `hatch_pet_handoff.json` converter.
 
 ## Acceptance Criteria
 
@@ -183,6 +215,10 @@ ask for one final production confirmation in plain language. Only after the user
 - A `pet_brief.json` exists before final production.
 - The official Codex fixed format is respected.
 - The formal character image is locked before action generation.
+- High-likeness requests are translated into maximum likeness within official 192x208 limits.
+- The production reference is `confirmations.production_base`, not a high-resolution confirmation image.
+- `check_pet_asset_fit.py` passes before `$hatch-pet` is loaded.
+- `build_hatch_handoff.py` produces `hatch_pet_handoff.json` before production starts.
 - `$hatch-pet` is loaded only after explicit final production confirmation.
 - Final production is delegated to `$hatch-pet`.
 - The final installed pet contains `pet.json` and `spritesheet.webp` under `${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/`.

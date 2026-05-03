@@ -19,6 +19,8 @@ Research before image generation when:
 
 Do not browse if the user provides a clear reference image and says to follow that image only. In that case, ask for likeness level and continue with the image as the source of truth.
 
+When the user asks for high likeness, record it as maximum likeness within the official 192x208 Codex pet boundary. The goal is to preserve recognition, not to keep every tiny source detail.
+
 ## User-Facing Wording
 
 Keep it simple:
@@ -99,6 +101,12 @@ Avoid:
 - tiny text
 - large detached background effects
 - fragile details that will drift between frames
+
+Map the result into `likeness` as well:
+
+- `likeness.must_preserve`: the strongest identity cues from `must_keep` and `desktop_pet_traits`
+- `likeness.may_simplify`: fragile details such as hair strands, fabric texture, small jewelry, tiny symbols, and complex shading
+- `likeness.must_avoid_drift`: versions, colors, body shapes, or outfits that would make the pet feel like the wrong character
 
 ## Brief Fields
 

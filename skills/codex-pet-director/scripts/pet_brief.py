@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 
 
+SCHEMA_VERSION = 2
+
 ACTION_FRAMES = {
     "idle": 6,
     "running-right": 8,
@@ -100,7 +102,7 @@ def normalize_language(language: str) -> str:
 def default_brief(language: str = "zh-CN") -> dict[str, Any]:
     language = normalize_language(language)
     return {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
         "meta": {
             "created_at": now_iso(),
             "updated_at": now_iso(),
@@ -116,6 +118,14 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
             "concept": "",
             "reference_images": [],
             "reference_likeness": "",
+        },
+        "likeness": {
+            "strategy": "maximum-within-official-limits",
+            "user_requested_level": "as-close-as-possible-within-official-limits",
+            "must_preserve": [],
+            "may_simplify": [],
+            "must_avoid_drift": [],
+            "notes": "",
         },
         "reference_research": {
             "enabled": False,
@@ -156,7 +166,17 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
         },
         "confirmations": {
             "direction_choice": "",
+            "concept_confirmation": "",
             "formal_character_image": "",
+            "production_base": "",
+            "production_base_fit": {
+                "status": "",
+                "checked_at": "",
+                "tool": "check_pet_asset_fit.py",
+                "notes": [],
+                "failures": [],
+                "warnings": [],
+            },
             "canonical_base": "",
             "key_action_preview": "",
             "final_card_confirmed": False,
@@ -174,13 +194,30 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
     }
 
 
+def merge_missing(target: dict[str, Any], defaults: dict[str, Any]) -> dict[str, Any]:
+    for key, value in defaults.items():
+        if key not in target:
+            target[key] = deepcopy(value)
+        elif isinstance(target[key], dict) and isinstance(value, dict):
+            merge_missing(target[key], value)
+    return target
+
+
+def upgrade_brief(brief: dict[str, Any]) -> dict[str, Any]:
+    language = brief.get("meta", {}).get("language", "zh-CN")
+    upgraded = merge_missing(brief, default_brief(language))
+    upgraded["schema_version"] = SCHEMA_VERSION
+    return upgraded
+
+
 def load(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise SystemExit(f"Brief does not exist: {path}")
-    return json.loads(path.read_text(encoding="utf-8"))
+    return upgrade_brief(json.loads(path.read_text(encoding="utf-8")))
 
 
 def save(path: Path, brief: dict[str, Any]) -> None:
+    brief = upgrade_brief(brief)
     brief.setdefault("meta", {})["updated_at"] = now_iso()
     language = brief.setdefault("meta", {}).get("language", "zh-CN")
     normalized = normalize_language(language)
@@ -245,7 +282,41 @@ def is_blank(value: Any) -> bool:
     return value is None or value == "" or value == [] or value == {}
 
 
-def missing_for_stage(brief: dict[str, Any], stage: str) -> list[str]:
+def action_frame_errors(brief: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    actions = brief.get("actions", {})
+    if not isinstance(actions, dict):
+        return ["actions must be an object"]
+    for action, expected_frames in ACTION_FRAMES.items():
+        actual_frames = get_path(brief, f"actions.{action}.frames")
+        if actual_frames != expected_frames:
+            errors.append(
+                f"actions.{action}.frames must be official value {expected_frames}, got {actual_frames!r}"
+            )
+    return errors
+
+
+def production_base_errors(brief: dict[str, Any], brief_path: Path | None = None) -> list[str]:
+    errors: list[str] = []
+    production_base = get_path(brief, "confirmations.production_base")
+    if is_blank(production_base):
+        errors.append("confirmations.production_base is required for final production")
+    else:
+        base_path = Path(str(production_base)).expanduser()
+        if brief_path is not None and not base_path.is_absolute():
+            base_path = brief_path.parent / base_path
+        if not base_path.is_file():
+            errors.append(f"confirmations.production_base file does not exist: {base_path}")
+
+    fit_status = str(get_path(brief, "confirmations.production_base_fit.status") or "").lower()
+    if fit_status != "pass":
+        errors.append("confirmations.production_base_fit.status must be 'pass'")
+    return errors
+
+
+def validation_errors_for_stage(
+    brief: dict[str, Any], stage: str, brief_path: Path | None = None
+) -> tuple[list[str], list[str]]:
     required = [
         "identity.concept",
         "form.type",
@@ -258,12 +329,17 @@ def missing_for_stage(brief: dict[str, Any], stage: str) -> list[str]:
         required.extend(
             [
                 "confirmations.formal_character_image",
-                "confirmations.canonical_base",
                 "appearance.visual_locks",
             ]
         )
     if stage == "final":
-        required.append("confirmations.final_card_confirmed")
+        required.extend(
+            [
+                "confirmations.production_base",
+                "confirmations.production_base_fit.status",
+                "confirmations.final_card_confirmed",
+            ]
+        )
         for action in ACTION_FRAMES:
             required.append(f"actions.{action}.user_answer")
 
@@ -285,6 +361,16 @@ def missing_for_stage(brief: dict[str, Any], stage: str) -> list[str]:
         value = get_path(brief, key)
         if is_blank(value) or value is False:
             missing.append(key)
+
+    invalid: list[str] = []
+    invalid.extend(action_frame_errors(brief))
+    if stage == "final":
+        invalid.extend(production_base_errors(brief, brief_path))
+    return missing, invalid
+
+
+def missing_for_stage(brief: dict[str, Any], stage: str) -> list[str]:
+    missing, _invalid = validation_errors_for_stage(brief, stage)
     return missing
 
 
@@ -325,11 +411,15 @@ def command_show(args: argparse.Namespace) -> int:
 def command_validate(args: argparse.Namespace) -> int:
     path = Path(args.path).expanduser()
     brief = load(path)
-    missing = missing_for_stage(brief, args.stage)
-    if missing:
+    missing, invalid = validation_errors_for_stage(brief, args.stage, path)
+    if missing or invalid:
         print(f"Brief is missing {len(missing)} required fields for stage '{args.stage}':")
         for key in missing:
             print(f"- {key}")
+        if invalid:
+            print(f"Brief has {len(invalid)} invalid fields for stage '{args.stage}':")
+            for error in invalid:
+                print(f"- {error}")
         return 1
     print(f"Brief is valid for stage '{args.stage}': {path}")
     return 0
@@ -341,11 +431,13 @@ def command_template(args: argparse.Namespace) -> int:
         brief = {
             "meta": deepcopy(brief["meta"]),
             "identity": deepcopy(brief["identity"]),
+            "likeness": deepcopy(brief["likeness"]),
             "reference_research": deepcopy(brief["reference_research"]),
             "form": deepcopy(brief["form"]),
             "style": deepcopy(brief["style"]),
             "personality": deepcopy(brief["personality"]),
             "appearance": deepcopy(brief["appearance"]),
+            "confirmations": deepcopy(brief["confirmations"]),
             "actions": deepcopy(brief["actions"]),
         }
     print(json.dumps(brief, ensure_ascii=False, indent=2))
