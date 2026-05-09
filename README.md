@@ -2,7 +2,7 @@
 
 <p align="center">
   <strong>把一句想法、参考图或角色设定，变成 Codex 桌面端可直接使用的官方宠物包。</strong><br>
-  它会先检查环境，再分轮问问题、生成确认图、在 192×208 官方边界内最大还原角色、锁定 9 个官方动作，最后交给 <code>hatch-pet</code> 输出 <code>pet.json</code> + <code>spritesheet.webp</code>。
+  它会先检查环境，再分轮问问题、生成确认图、在 192×208 官方边界内最大还原角色，用动作导演补齐并确认 9 个官方动作，最后交给 <code>hatch-pet</code> 输出 <code>pet.json</code> + <code>spritesheet.webp</code>。
 </p>
 
 <p align="center">
@@ -163,9 +163,10 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 4. 选择 `新建宠物`、`继续已有` 或 `查看已有`。
 5. 回答它是谁、是什么形态、是什么风格、长什么样。
 6. 从 2-4 张确认图里选方向，也可以说“要 A 的脸 + B 的颜色”。
-7. 生成并检查适合 `192×208` 的 `production_base`。
-8. 确认 9 个官方动作。
-9. 最后确认正式生产，再让 `hatch-pet` 生成 `pet.json` 和 `spritesheet.webp`。
+7. 生成并检查适合 `192×208` 的 `production_base`，查看真实尺寸预览。
+8. 进入动作导演：先说特殊动作需求，再由系统补齐 9 个官方动作。
+9. 确认动作卡和关键动作预览后，让 `hatch-pet` 生成 `pet.json` 和 `spritesheet.webp`。
+10. 用最终 QA 检查 contact sheet、row GIF 和 spritesheet 格式。
 
 ### 这个 skill 做什么
 
@@ -174,9 +175,12 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - 用户说出明星、公众人物、动漫角色、游戏角色或其它知名角色时，先联网查清外观和版本，再生成确认图。
 - 支持“边界内最大还原”：尽量贴近参考图，但必须满足官方 `192×208` 动画资产要求。
 - 每个关键板块后生成 2-4 张确认图，让用户选择或混合偏好。
+- 动作导演会先问用户有没有特别想看的动作，再根据角色形态和性格补齐 9 个官方动作。
 - 记录 `pet_brief.json`，避免每轮重新发明角色。
 - 把高清确认图和正式 `production_base` 分开，防止漂亮插画直接进入 spritesheet 生产。
+- `check_pet_asset_fit.py` 会输出 `cell-preview.png` 和 `review.md`，让用户先确认真实 192×208 可读性。
 - 明确使用 Codex 官方 pet 固定格式：9 个动作、8 列、9 行 spritesheet。
+- 生产后可用 `check_hatch_output.py` 生成最终 contact sheet、row GIF 和 `output_check.json`。
 - 最终正式生产阶段调用已有 `hatch-pet`，不重写底层 spritesheet 逻辑。
 
 ### 给用户看的介绍
@@ -222,9 +226,13 @@ pet_brief.json：保存用户选择和 9 个动作设定
   ↓
 imagegen：生成每轮确认图
   ↓
+Action Director：收集特殊动作需求，推荐并补齐 9 个动作
+  ↓
 hatch_pet_handoff.json：明确交接 production_base 和动作设定
   ↓
 hatch-pet：正式生成 pet.json + spritesheet.webp
+  ↓
+check_hatch_output.py：检查最终包，生成 contact sheet 和 row GIF
   ↓
 Codex pets 目录：Codex 识别并加载宠物
 ```
@@ -237,9 +245,11 @@ Codex pets 目录：Codex 识别并加载宠物
 - `pet_brief.json` 负责锁定角色，避免后续图片越生成越不像。
 - 确认图让新手用视觉选择，不需要一开始就写完美提示词。
 - `production_base` 是正式生产入口，负责把用户参考图转成官方 192×208 边界内可读的小桌宠资产。
-- `check_pet_asset_fit.py` 会拦住高清插画、复杂背景或细节过多的图，避免直接进入 `hatch-pet`。
+- 动作导演先听用户特别想要的动作，再自动补齐剩余动作，避免 9 个动作变成模板化表单。
+- `check_pet_asset_fit.py` 会拦住高清插画、复杂背景或细节过多的图，并输出真实尺寸预览，避免直接进入 `hatch-pet`。
 - `build_hatch_handoff.py` 会生成 `hatch_pet_handoff.json`，减少 Director 和 `hatch-pet` 之间的猜测。
-- `hatch-pet` 继续负责官方格式的 spritesheet、`pet.json` 和 QA。
+- `hatch-pet` 继续负责官方格式的 spritesheet、`pet.json` 和基础 QA。
+- `check_hatch_output.py` 做 Director 层最终验收，输出 contact sheet、row GIF 和 `output_check.json`。
 
 这样后续更容易维护：如果 Codex 的宠物底层格式变化，主要改生产层；如果用户访谈、语言、风格菜单要升级，则主要改这个 director skill。
 
@@ -446,6 +456,7 @@ node .\scripts\validate_repository.js
 node .\scripts\test_install.js
 python .\codex-pet-director\scripts\check_pet_environment.py --json
 python .\codex-pet-director\scripts\check_pet_asset_fit.py --help
+python .\codex-pet-director\scripts\check_hatch_output.py --help
 python .\codex-pet-director\scripts\build_hatch_handoff.py --help
 python .\codex-pet-director\scripts\pet_brief.py languages
 python .\codex-pet-director\scripts\pet_brief.py --help

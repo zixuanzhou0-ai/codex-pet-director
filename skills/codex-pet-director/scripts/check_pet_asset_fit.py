@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image
+from PIL import ImageDraw
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -259,9 +260,112 @@ def print_human(report: dict[str, Any]) -> None:
                 print(f"- {value}")
 
 
+def checkerboard(size: tuple[int, int], cell: int = 8) -> Image.Image:
+    image = Image.new("RGBA", size, "#F7FAFC")
+    draw = ImageDraw.Draw(image)
+    for y in range(0, size[1], cell):
+        for x in range(0, size[0], cell):
+            if (x // cell + y // cell) % 2:
+                draw.rectangle((x, y, x + cell - 1, y + cell - 1), fill="#E7EEF7")
+    return image
+
+
+def make_cell_preview(image_path: Path, output_path: Path) -> None:
+    with Image.open(image_path) as opened:
+        image = opened.convert("RGBA")
+    cell_image = resize_into_cell(image, Image.Resampling.LANCZOS)
+    preview = checkerboard((CELL_WIDTH, CELL_HEIGHT))
+    preview.alpha_composite(cell_image)
+    draw = ImageDraw.Draw(preview)
+    draw.rectangle(
+        (
+            SAFE_MARGIN_X,
+            SAFE_MARGIN_Y,
+            CELL_WIDTH - SAFE_MARGIN_X - 1,
+            CELL_HEIGHT - SAFE_MARGIN_Y - 1,
+        ),
+        outline="#49A7FF",
+        width=1,
+    )
+    draw.rectangle((0, 0, CELL_WIDTH - 1, CELL_HEIGHT - 1), outline="#1F2A44", width=1)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    preview.save(output_path)
+
+
+def review_markdown(report: dict[str, Any]) -> str:
+    lines = [
+        "# Production Base Fit Review",
+        "",
+        f"Status: **{str(report.get('status', '')).upper()}**",
+        f"Image: `{report.get('image', {}).get('path', '')}`",
+    ]
+    image = report.get("image", {})
+    if image.get("width") and image.get("height"):
+        lines.append(f"Source size: `{image['width']}x{image['height']}`")
+    sprite = report.get("sprite", {})
+    if sprite:
+        lines.extend(
+            [
+                f"Cell bbox: `{sprite.get('cell_bbox')}`",
+                f"Cell coverage: `{sprite.get('cell_coverage')}`",
+            ]
+        )
+    detail = report.get("detail", {})
+    if detail:
+        lines.extend(
+            [
+                f"Edge density: `{detail.get('edge_density')}`",
+                f"Palette estimate: `{detail.get('palette_estimate')}`",
+            ]
+        )
+
+    labels = [
+        ("failures", "Failures"),
+        ("warnings", "Warnings"),
+        ("recommendations", "Recommendations"),
+    ]
+    for key, title in labels:
+        values = report.get(key) or []
+        if values:
+            lines.extend(["", f"## {title}"])
+            lines.extend(f"- {value}" for value in values)
+
+    lines.extend(
+        [
+            "",
+            "## User Check",
+            "",
+            "Show `cell-preview.png` to the user before hatch-pet handoff.",
+            "Only continue after the user confirms the character still reads clearly at 192x208.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def write_outputs(report: dict[str, Any], output_dir: Path, image_path: Path) -> dict[str, str]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    json_path = output_dir / "asset_fit.json"
+    review_path = output_dir / "review.md"
+    preview_path = output_dir / "cell-preview.png"
+
+    artifacts = {
+        "asset_fit": str(json_path),
+        "review": str(review_path),
+    }
+    if image_path.is_file():
+        make_cell_preview(image_path, preview_path)
+        artifacts["cell_preview"] = str(preview_path)
+
+    report["artifacts"] = artifacts
+    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    review_path.write_text(review_markdown(report), encoding="utf-8")
+    return artifacts
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--image", required=True, help="Candidate production_base image.")
+    parser.add_argument("--output-dir", help="Write asset_fit.json, cell-preview.png, and review.md.")
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     args = parser.parse_args()
 
@@ -278,6 +382,9 @@ def main() -> int:
         }
     else:
         report = check_image(image_path)
+
+    if args.output_dir:
+        write_outputs(report, Path(args.output_dir).expanduser(), image_path)
 
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2))

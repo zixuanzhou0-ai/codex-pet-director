@@ -1,6 +1,6 @@
 ---
 name: codex-pet-director
-description: Create a custom official Codex desktop pet from /create-pet, text, reference images, or named characters. Guides environment checks, beginner interviews, web reference research, confirmation images, 9 action designs, and hatch-pet handoff.
+description: Create a custom official Codex desktop pet from /create-pet, text, reference images, or named characters. Guides environment checks, beginner interviews, web reference research, confirmation images, Action Director for 9 official actions, and hatch-pet handoff.
 metadata:
   short-description: Create custom Codex desktop pets
 ---
@@ -143,17 +143,19 @@ After the formal character image is confirmed, generate a simplified `production
 细碎纹理会简化，核心识别点会保留。
 ```
 
-Check the candidate production base before handoff:
+Check the candidate production base before handoff. Prefer writing a review folder so the user can inspect the real 192x208 preview:
 
 ```bash
-python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_pet_asset_fit.py" --image /absolute/path/to/production_base.png --json
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_pet_asset_fit.py" --image /absolute/path/to/production_base.png --output-dir /absolute/path/to/asset-fit-review --json
 ```
 
-Record the result in `pet_brief.json` under `confirmations.production_base` and `confirmations.production_base_fit`. If the check fails, do not load `$hatch-pet`; regenerate or revise the production base first.
+Record the result in `pet_brief.json` under `confirmations.production_base`, `confirmations.production_base_fit`, `confirmations.production_base_preview`, and `confirmations.production_base_report`. Show `cell-preview.png` to the user and record `confirmations.production_base_user_confirmed=true` only after the user confirms the pet still reads clearly at 192x208. If the check fails, do not load `$hatch-pet`; regenerate or revise the production base first.
 
-### 4. Design The 9 Official Actions
+### 4. Run Action Director For The 9 Official Actions
 
-Use `references/action-guide.md` for state names, frame counts, and beginner-friendly questions.
+Use `references/action-director.md` and `references/action-guide.md` for action intent collection, state names, frame counts, form adaptation, and beginner-friendly options.
+
+Start by asking the user whether they have any special action moments they care about. Do not begin by asking nine technical row questions. Capture user ideas first, then fill missing slots from the locked character's form, personality, and style. If the user cannot describe action ideas, recommend a complete 9-action set and let the user revise it.
 
 Official states:
 
@@ -167,7 +169,13 @@ Official states:
 - `running`
 - `review`
 
+For every official action, record `special_request`, `recommended`, `final_direction`, `beat_sheet`, `preview_required`, `preview_confirmed`, and `source` in `pet_brief.json`. Mark `source` as `user`, `mixed`, or `recommended`.
+
 Adapt movement to the pet form. A half-body pet, screen face, floating object, or object mascot does not need literal legs; translate movement into drifting, bouncing, tilting, sliding, jetting, screen flicker, or prop motion.
+
+Show a complete action card and ask the user to confirm or revise it. Accept natural short edits such as `改 failed`, `waving 改成点头`, or `running-left 不要镜像`. Do not hand off until all 9 official actions have `final_direction`.
+
+Preview key actions before final production when visual generation budget allows. Default preview rows are `idle`, `running-right`, `failed`, and `review`; add `jumping` for full-body motion-heavy pets, or `waiting`/`waving` for half-body, head-only, or screen-face pets.
 
 ### 5. Hand Off To Hatch Pet
 
@@ -178,7 +186,9 @@ When the user has confirmed:
 - formal character image
 - production base image
 - `production_base` asset-fit check has passed
-- key actions
+- user-confirmed 192x208 production-base preview
+- complete user-confirmed action card with all 9 `final_direction` values
+- key action previews when requested
 - final pet card
 
 validate the final brief and build a hatch handoff manifest:
@@ -190,6 +200,14 @@ python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/build_hatc
 
 Ask for one final production confirmation in plain language. Only after the user clearly agrees, load `$hatch-pet` and follow its workflow using the `production_base` reference and the generated `hatch_pet_handoff.json`. Use `references/handoff-to-hatch-pet.md` to convert the pet brief into `hatch-pet` inputs. The `hatch-pet` skill owns base generation, row generation, atlas assembly, QA, preview videos, `pet.json`, and `spritesheet.webp`.
 
+After `$hatch-pet` finalizes the installed pet folder, run:
+
+```bash
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_hatch_output.py" --pet-dir /absolute/path/to/pet --output-dir /absolute/path/to/director-qa
+```
+
+Review `output_check.json`, `contact-sheet.png`, and the row GIFs before calling the pet complete.
+
 ## Reference Files
 
 - `references/question-flow.md`: user interview blocks and simple wording.
@@ -198,11 +216,13 @@ Ask for one final production confirmation in plain language. Only after the user
 - `references/user-introduction.md`: detailed customer-facing explanation.
 - `references/architecture.md`: bottom architecture, component roles, and design rationale.
 - `references/style-menu.md`: style choices and internal visual translations.
+- `references/action-director.md`: user intent collection, action recommendation, action card, and preview policy.
 - `references/action-guide.md`: official action slots, frame counts, and form adaptation.
 - `references/image-confirmation-flow.md`: staged confirmation image policy.
 - `references/handoff-to-hatch-pet.md`: final production handoff.
 - `scripts/check_pet_asset_fit.py`: production-base suitability check for the 192x208 official pet boundary.
 - `scripts/build_hatch_handoff.py`: validated `pet_brief.json` to `hatch_pet_handoff.json` converter.
+- `scripts/check_hatch_output.py`: final `pet.json` and `spritesheet.webp` QA with contact sheet and row GIFs.
 
 ## Acceptance Criteria
 
@@ -218,7 +238,10 @@ Ask for one final production confirmation in plain language. Only after the user
 - High-likeness requests are translated into maximum likeness within official 192x208 limits.
 - The production reference is `confirmations.production_base`, not a high-resolution confirmation image.
 - `check_pet_asset_fit.py` passes before `$hatch-pet` is loaded.
+- The user confirms `confirmations.production_base_preview` before `$hatch-pet` is loaded.
+- All 9 official actions have `actions.<state>.final_direction` before handoff.
 - `build_hatch_handoff.py` produces `hatch_pet_handoff.json` before production starts.
 - `$hatch-pet` is loaded only after explicit final production confirmation.
 - Final production is delegated to `$hatch-pet`.
 - The final installed pet contains `pet.json` and `spritesheet.webp` under `${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/`.
+- `check_hatch_output.py` is run on the final installed pet before reporting completion.

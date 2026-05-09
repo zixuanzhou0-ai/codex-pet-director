@@ -80,9 +80,10 @@ The shell installer is a fallback for skills-only installation. For the full loc
 4. Choose whether to create a new pet, continue an existing draft, or inspect an existing draft.
 5. Answer who it is, what form it has, what style it should use, and what it looks like.
 6. Pick from 2-4 confirmation images, or mix choices like "A's face + B's colors".
-7. Generate and check a `192x208`-ready `production_base`.
-8. Confirm the 9 official actions.
-9. Give final production approval, then let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
+7. Generate and check a `192x208`-ready `production_base`, including a real cell preview.
+8. Run Action Director: collect special motion requests, fill the 9 official actions, and confirm the action card.
+9. Confirm key action previews, then let `hatch-pet` produce `pet.json` and `spritesheet.webp`.
+10. Run final QA with contact sheet, row GIFs, and spritesheet checks.
 
 ## What It Does
 
@@ -92,9 +93,12 @@ The shell installer is a fallback for skills-only installation. For the full loc
 - Lets the user switch language during the flow.
 - Generates 2-4 visual confirmation images at key stages.
 - Saves decisions in `pet_brief.json` so the character stays consistent.
+- Uses Action Director to ask for special motion ideas first, then fills the remaining 9 official actions from form and personality.
 - Supports maximum likeness within the official boundary: it tries to stay close to references while keeping the asset readable in a `192x208` pet cell.
 - Separates polished confirmation images from the final `production_base`, so high-detail concept art is not sent directly into spritesheet production.
+- Writes a `cell-preview.png` and `review.md` before handoff so the user can confirm 192x208 readability.
 - Respects the official Codex pet format: 9 actions, 8 columns, 9 rows.
+- Can run final output QA with `check_hatch_output.py`, producing a contact sheet, row GIFs, and `output_check.json`.
 - Uses the existing `hatch-pet` skill for final package generation instead of rebuilding the spritesheet pipeline.
 
 ## User-Friendly Explanation
@@ -142,9 +146,13 @@ pet_brief.json: stores user choices and the 9 action settings
   ↓
 imagegen: creates visual confirmation images
   ↓
+Action Director: collects special motion requests and completes the 9 official actions
+  ↓
 hatch_pet_handoff.json: passes production_base and action rules explicitly
   ↓
 hatch-pet: produces pet.json + spritesheet.webp
+  ↓
+check_hatch_output.py: checks the final package and creates contact sheet + row GIFs
   ↓
 Codex pets folder: Codex detects and loads the pet
 ```
@@ -157,9 +165,11 @@ This skill separates creative direction from final production.
 - `pet_brief.json` locks identity, colors, silhouette, props, and action choices.
 - Confirmation images help beginners choose visually instead of writing perfect prompts.
 - `production_base` converts the confirmed character into a small, readable asset that fits the official `192x208` pet cell.
-- `check_pet_asset_fit.py` blocks high-resolution illustrations, complex backgrounds, and overly detailed images from entering final production.
+- Action Director listens for the user's special motion requests first, then completes the missing official actions without turning the flow into a form.
+- `check_pet_asset_fit.py` blocks high-resolution illustrations, complex backgrounds, and overly detailed images from entering final production, and now writes a real-size preview.
 - `build_hatch_handoff.py` writes `hatch_pet_handoff.json`, reducing guesswork between the director flow and `hatch-pet`.
-- `hatch-pet` remains responsible for the official spritesheet, `pet.json`, and QA.
+- `hatch-pet` remains responsible for the official spritesheet, `pet.json`, and base QA.
+- `check_hatch_output.py` adds a Director-level final review with contact sheet, row GIFs, and output JSON.
 
 This keeps the system maintainable. If Codex changes the pet production format later, the production layer can change without rewriting the whole interview and multilingual guidance layer.
 

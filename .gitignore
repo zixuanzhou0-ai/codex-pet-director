@@ -7,7 +7,13 @@ __pycache__/
 
 # Local generated briefs and pet outputs
 pet_brief.json
+pet_brief_*.json
 *.brief.json
+*_production_base*.png
+*_formal_character*.png
+*_formal_confirmation*.png
+*_idle_preview_*.png
+*_hatch_run/
 generated/
 output/
 runs/

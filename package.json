@@ -1,7 +1,7 @@
 {
   "name": "codex-pet-director",
-  "version": "0.5.5",
-  "description": "Install the Codex Pet Director skill with /create-pet and checked hatch-pet handoff.",
+  "version": "0.5.6",
+  "description": "Install the Codex Pet Director skill with Action Director, /create-pet, and checked hatch-pet handoff.",
   "author": "zixuanzhou0-ai",
   "license": "MIT",
   "homepage": "https://github.com/zixuanzhou0-ai/codex-pet-director#readme",

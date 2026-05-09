@@ -26,10 +26,13 @@ Open the beginner-friendly Codex desktop pet launcher. A bare `/create-pet` shou
 10. Generate 2-4 user-facing confirmation images at key visual stages.
 11. Record decisions in `pet_brief.json`.
 12. After the formal character image is confirmed, keep identity locked and generate a simplified `production_base` for the official 192x208 pet boundary.
-13. Run `check_pet_asset_fit.py`; if it fails, regenerate or revise `production_base` instead of loading `$hatch-pet`.
-14. Build `hatch_pet_handoff.json` with `build_hatch_handoff.py`.
-15. Ask for explicit final production confirmation before loading `$hatch-pet`.
-16. Hand the validated `production_base` and final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
+13. Run `check_pet_asset_fit.py --output-dir`; show `cell-preview.png` and only continue after the user confirms the 192x208 preview.
+14. Run the Action Director flow: ask for special action requests first, fill missing slots, show a 9-action card, and accept natural revisions.
+15. Mark key action previews for `idle`, `running-right`, `failed`, and `review` by default; adapt the preview set to the pet form.
+16. Build `hatch_pet_handoff.json` with `build_hatch_handoff.py`.
+17. Ask for explicit final production confirmation before loading `$hatch-pet`.
+18. Hand the validated `production_base` and final brief to `$hatch-pet` for `pet.json` and `spritesheet.webp`.
+19. After `$hatch-pet` finalizes, run `check_hatch_output.py` on the installed pet folder and review `output_check.json`, `contact-sheet.png`, and row GIFs.
 
 ## Guardrails
 
@@ -40,6 +43,8 @@ Open the beginner-friendly Codex desktop pet launcher. A bare `/create-pet` shou
 - Treat the user's request as the creative target, but keep the official 192x208 Codex pet format as the hard boundary.
 - Do not use high-resolution confirmation images, selfies, anime screenshots, or polished concept art as the main `$hatch-pet` production reference.
 - Use `confirmations.production_base` as the only production reference, and only after it passes `check_pet_asset_fit.py`.
+- Require user confirmation of the `production_base` 192x208 preview before final handoff.
+- Require all 9 official actions to have user-confirmed `final_direction` values before final handoff.
 - Do not start production just because the user selected the slash entry.
 - Do not silently continue a previous `pet_brief.json`.
 - Do not rely on memory for named people or known fictional characters when no clear reference image is provided.

@@ -89,11 +89,35 @@ def action_manifest(brief: dict[str, Any]) -> dict[str, dict[str, Any]]:
     for action, frames in ACTION_FRAMES.items():
         actions[action] = {
             "frames": frames,
+            "special_request": get_path(brief, f"actions.{action}.special_request") or "",
+            "recommended": get_path(brief, f"actions.{action}.recommended") or "",
+            "options": get_path(brief, f"actions.{action}.options") or [],
+            "user_choice": get_path(brief, f"actions.{action}.user_choice") or "",
+            "final_direction": get_path(brief, f"actions.{action}.final_direction") or "",
+            "beat_sheet": get_path(brief, f"actions.{action}.beat_sheet") or [],
+            "preview_required": bool(get_path(brief, f"actions.{action}.preview_required")),
+            "preview_confirmed": bool(get_path(brief, f"actions.{action}.preview_confirmed")),
+            "source": get_path(brief, f"actions.{action}.source") or "",
             "user_answer": get_path(brief, f"actions.{action}.user_answer") or "",
             "summary": get_path(brief, f"actions.{action}.summary") or "",
             "prompt_notes": get_path(brief, f"actions.{action}.prompt_notes") or "",
         }
     return actions
+
+
+def action_card(actions: dict[str, dict[str, Any]]) -> list[str]:
+    rows: list[str] = []
+    for action, data in actions.items():
+        source = data.get("source") or "recommended"
+        direction = data.get("final_direction") or data.get("summary") or data.get("user_answer") or ""
+        beats = data.get("beat_sheet") or []
+        beat_text = compact_join([str(beat) for beat in beats])
+        line = f"{action}: {direction}"
+        if beat_text:
+            line += f" Beats: {beat_text}"
+        line += f" Source: {source}."
+        rows.append(line)
+    return rows
 
 
 def shell_join(parts: list[str]) -> str:
@@ -137,6 +161,16 @@ def build_handoff(brief_path: Path, output_dir: Path) -> dict[str, Any]:
         "--force",
     ]
 
+    actions = action_manifest(brief)
+    expected_output_check_command = [
+        "python",
+        "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_hatch_output.py",
+        "--pet-dir",
+        "<installed-pet-dir>",
+        "--output-dir",
+        str((output_dir / "director-qa").resolve()),
+    ]
+
     return {
         "schema_version": 1,
         "created_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -147,6 +181,9 @@ def build_handoff(brief_path: Path, output_dir: Path) -> dict[str, Any]:
         "description": description,
         "production_base": str(production_base),
         "production_base_fit": get_path(brief, "confirmations.production_base_fit"),
+        "production_base_preview": get_path(brief, "confirmations.production_base_preview") or "",
+        "production_base_report": get_path(brief, "confirmations.production_base_report") or "",
+        "production_base_user_confirmed": bool(get_path(brief, "confirmations.production_base_user_confirmed")),
         "concept_confirmation": get_path(brief, "confirmations.concept_confirmation") or "",
         "formal_character_image": get_path(brief, "confirmations.formal_character_image") or "",
         "likeness_contract": get_path(brief, "likeness"),
@@ -157,7 +194,8 @@ def build_handoff(brief_path: Path, output_dir: Path) -> dict[str, Any]:
             "must_avoid_drift": as_list(get_path(brief, "likeness.must_avoid_drift")),
             "avoid": as_list(get_path(brief, "appearance.avoid")) + as_list(get_path(brief, "style.avoid_styles")),
         },
-        "actions": action_manifest(brief),
+        "actions": actions,
+        "action_card": action_card(actions),
         "hatch_pet_inputs": {
             "pet_name": pet_name,
             "description": description,
@@ -166,8 +204,14 @@ def build_handoff(brief_path: Path, output_dir: Path) -> dict[str, Any]:
             "pet_notes": notes,
             "style_notes": styles,
         },
+        "handoff": {
+            "run_dir": str(output_dir.resolve()),
+            "existing_manifest": get_path(brief, "handoff.manifest") or "",
+        },
         "prepare_pet_run_command": prepare_command,
         "prepare_pet_run_command_text": shell_join(prepare_command),
+        "expected_output_check_command": expected_output_check_command,
+        "expected_output_check_command_text": shell_join(expected_output_check_command),
     }
 
 

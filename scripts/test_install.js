@@ -101,6 +101,7 @@ try {
     assertExists(path.join(root, "skills", "codex-pet-director", "SKILL.md"));
     assertExists(path.join(root, "skills", "create-pet", "SKILL.md"));
     assertExists(path.join(root, "skills", "codex-pet-director", "scripts", "check_pet_asset_fit.py"));
+    assertExists(path.join(root, "skills", "codex-pet-director", "scripts", "check_hatch_output.py"));
     assertExists(path.join(root, "skills", "codex-pet-director", "scripts", "build_hatch_handoff.py"));
     assertExists(path.join(root, "commands", "create-pet.md"));
     assertExists(path.join(root, "assets", "examples", "wukong-spark", "preview.png"));
@@ -113,9 +114,11 @@ try {
   assertExists(path.join(installRoot, "codex-pet-director", "SKILL.md"));
   assertExists(path.join(installRoot, "create-pet", "SKILL.md"));
   assertExists(path.join(installRoot, "codex-pet-director", "scripts", "check_pet_asset_fit.py"));
+  assertExists(path.join(installRoot, "codex-pet-director", "scripts", "check_hatch_output.py"));
   assertExists(path.join(installRoot, "codex-pet-director", "scripts", "build_hatch_handoff.py"));
   assertExists(path.join(agentsInstallRoot, "codex-pet-director", "SKILL.md"));
   assertExists(path.join(agentsInstallRoot, "create-pet", "SKILL.md"));
+  assertExists(path.join(agentsInstallRoot, "codex-pet-director", "scripts", "check_hatch_output.py"));
   assertExists(marketplacePath);
   assertExists(configPath);
   assertExists(lockPath);

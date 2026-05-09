@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 ACTION_FRAMES = {
     "idle": 6,
@@ -169,6 +169,9 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
             "concept_confirmation": "",
             "formal_character_image": "",
             "production_base": "",
+            "production_base_preview": "",
+            "production_base_report": "",
+            "production_base_user_confirmed": False,
             "production_base_fit": {
                 "status": "",
                 "checked_at": "",
@@ -181,9 +184,25 @@ def default_brief(language: str = "zh-CN") -> dict[str, Any]:
             "key_action_preview": "",
             "final_card_confirmed": False,
         },
+        "handoff": {
+            "manifest": "",
+            "run_dir": "",
+        },
+        "qa": {
+            "output_check": "",
+        },
         "actions": {
             action: {
                 "frames": frames,
+                "special_request": "",
+                "recommended": "",
+                "options": [],
+                "user_choice": "",
+                "final_direction": "",
+                "beat_sheet": [],
+                "preview_required": False,
+                "preview_confirmed": False,
+                "source": "",
                 "user_answer": "",
                 "summary": "",
                 "prompt_notes": "",
@@ -337,11 +356,12 @@ def validation_errors_for_stage(
             [
                 "confirmations.production_base",
                 "confirmations.production_base_fit.status",
+                "confirmations.production_base_user_confirmed",
                 "confirmations.final_card_confirmed",
             ]
         )
         for action in ACTION_FRAMES:
-            required.append(f"actions.{action}.user_answer")
+            required.append(f"actions.{action}.final_direction")
 
     reference_research = brief.get("reference_research", {})
     if isinstance(reference_research, dict) and reference_research.get("enabled"):

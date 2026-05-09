@@ -25,6 +25,9 @@ function listFiles(root) {
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
     const entryPath = path.join(root, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === "__pycache__" || entry.name === ".pytest_cache") {
+        continue;
+      }
       files.push(...listFiles(entryPath));
     } else if (entry.isFile()) {
       files.push(entryPath);

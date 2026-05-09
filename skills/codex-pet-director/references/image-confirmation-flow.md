@@ -14,7 +14,7 @@ Default counts:
 - Form comparison: 2-3 images
 - Style comparison: 2-4 images
 - Formal character image: 1-2 images
-- Key action preview: 3-5 images
+- Key action preview: only selected key rows by default, usually `idle`, `running-right`, `failed`, and `review`
 
 Goal: help the user choose direction, form, style, expression, and major action personality.
 
@@ -47,6 +47,12 @@ It must:
 
 Record it as `confirmations.production_base` and record the check result as `confirmations.production_base_fit`.
 
+When running `check_pet_asset_fit.py --output-dir`, also record:
+
+- `confirmations.production_base_preview`: `cell-preview.png`
+- `confirmations.production_base_report`: `review.md`
+- `confirmations.production_base_user_confirmed`: true only after the user confirms the 192x208 preview
+
 ### Production Images
 
 These are created later for the actual pet package:
@@ -76,7 +82,7 @@ Tell the user:
 | 它是什么风格 | Generate style variants using the same character concept. |
 | 它是什么性格 | Generate expression or mood previews, not full redesigns. |
 | 它长什么样 | Generate the formal character image, lock identity, then generate and check `production_base`. |
-| 它怎么动 | Generate key action previews before full production. |
+| 动作导演 | Ask for special action moments, fill the 9 official actions, then generate selected key action previews before full production. |
 | 最终确认 | Show pet card; do not generate more unless user asks for revisions. |
 
 ## Selection Language

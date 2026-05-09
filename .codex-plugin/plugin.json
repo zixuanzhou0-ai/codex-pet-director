@@ -1,7 +1,7 @@
 {
   "name": "codex-pet-director",
-  "version": "0.5.5",
-  "description": "Create official Codex desktop pets with /create-pet and a checked hatch-pet handoff.",
+  "version": "0.5.6",
+  "description": "Create official Codex desktop pets with Action Director, /create-pet, and a checked hatch-pet handoff.",
   "author": {
     "name": "zixuanzhou0-ai",
     "url": "https://github.com/zixuanzhou0-ai"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Codex Pet Director",
     "shortDescription": "Guide custom Codex pet creation.",
-    "longDescription": "A beginner-friendly director flow for creating official Codex desktop pets. It starts from /create-pet, checks the local pet environment, interviews the user in simple blocks, generates visual confirmations, translates references into a checked 192x208 production base, records a pet brief, and hands final production to hatch-pet.",
+    "longDescription": "A beginner-friendly director flow for creating official Codex desktop pets. It starts from /create-pet, checks the local pet environment, interviews the user in simple blocks, generates visual confirmations, translates references into a checked 192x208 production base, uses Action Director to confirm the 9 official actions, records a pet brief, hands final production to hatch-pet, and adds final package QA.",
     "developerName": "zixuanzhou0-ai",
     "category": "Productivity",
     "capabilities": [

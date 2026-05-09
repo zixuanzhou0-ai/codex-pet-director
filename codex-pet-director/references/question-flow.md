@@ -147,23 +147,60 @@ Record the likeness intent in `likeness.user_requested_level`, key traits in `li
 
 After this block, generate or refine the formal character image. Once the user confirms it, lock the character identity. Then generate a simplified `production_base` candidate for 192x208 pet production and run `check_pet_asset_fit.py`. If it fails, regenerate or revise the production base before moving on.
 
-## Block 6: 它怎么动
+## Block 6: 动作导演
 
-Ask about all 9 official actions in simple language:
+Use `action-director.md` and `action-guide.md`.
+
+Do not start by asking 9 technical action questions. First ask for the character moments the user cares about:
 
 ```text
-平时待着时，它在做什么？
-Codex 工作时，它像在做什么？
-等你回复时，它怎么表现？
-Codex 失败或卡住时，它怎么反应？
-有结果要你查看时，它是什么样？
-鼠标放到它身上时，它怎么反应？
-它打招呼时怎么做？
-它向右移动时怎么动？
-它向左移动时怎么动？
+接下来我会设计它的 9 个官方动作。
+你不用从零想完整动画。先告诉我：这个角色有没有哪几个动作你特别想看到？
+比如平时、失败、等待、查看结果、鼠标碰到、打招呼、移动、工作中，它应该表现出什么性格？
 ```
 
-Map answers to the official action names in `action-guide.md`.
+If the user gives specific requests, record them as `actions.<state>.special_request`. Preserve those requests and fill the remaining official actions from the character's form, personality, and style.
+
+If the user cannot describe action ideas, recommend a full 9-action set:
+
+```text
+没关系，我会根据它的形态、性格和风格先推荐一套动作，你再挑不喜欢的地方改。
+```
+
+Then show a complete action card:
+
+```text
+我根据你的想法补齐了一套 9 动作：
+
+idle：
+running-right：
+running-left：
+waving：
+jumping：
+failed：
+waiting：
+running：
+review：
+
+你可以说：
+- 全部确认
+- 改 failed
+- waving 改成点头
+- running-left 不要镜像
+```
+
+For every action, record:
+
+- `special_request`: what the user explicitly asked for
+- `recommended`: what the director recommended
+- `final_direction`: the final user-approved movement direction
+- `beat_sheet`: frame-by-frame simple beats
+- `source`: `user`, `mixed`, or `recommended`
+- `preview_required`: true for key actions selected for preview
+
+Default key previews: `idle`, `running-right`, `failed`, and `review`. Add `jumping` for motion-heavy full-body pets. Add `waiting` or `waving` for half-body, head-only, screen-face, or expression-heavy pets.
+
+Do not hand off until the user confirms the action card. If the user revises one action, update only that action and show the revised card.
 
 ## Block 7: 最终确认
 

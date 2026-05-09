@@ -11,7 +11,9 @@ Confirm:
 - Formal character image is confirmed.
 - `confirmations.production_base` is recorded.
 - `confirmations.production_base_fit.status` is `pass`.
-- The 9 official actions have user-approved descriptions.
+- `confirmations.production_base_preview` and `confirmations.production_base_report` are recorded.
+- The user has confirmed the 192x208 production-base preview.
+- The 9 official actions have user-approved `final_direction` values from Action Director.
 - The user understands this is the official Codex pet format.
 
 Never use a high-resolution confirmation image, selfie, anime screenshot, concept image, or polished illustration as the main `hatch-pet` reference. Those images can explain intent, but only `production_base` may be the production reference.
@@ -45,8 +47,10 @@ Use:
 - `appearance.must_have` as required traits.
 - `appearance.avoid` and `style.avoid_styles` as avoid notes.
 - `confirmations.production_base` as the only key production reference image.
+- `confirmations.production_base_preview` as the user-approved 192x208 readability preview.
+- `confirmations.production_base_report` as the fit review report.
 - `confirmations.formal_character_image` as auxiliary intent only, not the production base.
-- `actions.*.summary` and `actions.*.prompt_notes` as row-specific notes.
+- `actions.*.final_direction`, `actions.*.beat_sheet`, `actions.*.source`, and `actions.*.prompt_notes` as row-specific notes.
 
 If no display name exists, ask for one or propose 3 short names.
 
@@ -76,7 +80,7 @@ Before starting `hatch-pet`, summarize:
 
 ## QA Expectations
 
-After `hatch-pet` finalizes, review:
+After `hatch-pet` finalizes, first review hatch-pet's own output:
 
 - `qa/contact-sheet.png`
 - `qa/review.json`
@@ -84,6 +88,20 @@ After `hatch-pet` finalizes, review:
 - preview videos when available
 - installed `pet.json`
 - installed `spritesheet.webp`
+
+Then run Director output QA:
+
+```bash
+python "${CODEX_HOME:-$HOME/.codex}/skills/codex-pet-director/scripts/check_hatch_output.py" \
+  --pet-dir /absolute/path/to/installed/pet \
+  --output-dir /absolute/path/to/director-qa
+```
+
+Review:
+
+- `output_check.json`
+- `contact-sheet.png`
+- `row-01.gif` through `row-09.gif`
 
 Block completion if the character identity drifts, background is not clean, unused cells are not transparent, or official action rows do not match the expected frame counts.
 
