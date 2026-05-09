@@ -22,6 +22,8 @@
     "bin/install.js",
     ".codex-plugin/plugin.json",
     "assets/**/*",
+    "!assets/social/long-cover-codex-pet-director.png",
+    "!assets/social/x-square-*.png",
     "commands/**/*",
     "codex-pet-director/**/*",
     "!codex-pet-director/**/__pycache__/**",
@@ -36,6 +38,7 @@
     "install.sh",
     "README.md",
     "docs/**/*",
+    "!docs/linuxdo-post-materials.md",
     "scripts/**/*"
   ],
   "keywords": [

@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · 日本語 · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-`codex-pet-director` は、Codex の公式デスクトップペットを作るための skill です。環境を確認し、やさしい質問でキャラクター、形、スタイル、見た目、性格、9 個の公式アクションを決めます。参照画像がある場合は、公式の `192x208` ペット枠の中でできるだけ近づけ、チェック済みの `production_base` を作ってから `hatch-pet` に渡します。
+`codex-pet-director` は、Codex の公式デスクトップペットを作るための skill です。環境を確認し、やさしい質問でキャラクター、形、スタイル、見た目、性格を決めます。参照画像がある場合は、公式の `192x208` ペット枠の中でできるだけ近づけ、チェック済みの `production_base` を作ります。その後 Action Director が特別な動きの希望を聞き、9 個の公式アクションを完成させてから `hatch-pet` に渡します。
 
 画像付きの詳しいショーケースは [简体中文](../README.md#真实案例三个可加载宠物) または [English](README.en.md#real-pet-showcase) を見てください。
 
@@ -46,9 +46,12 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - 途中で言語を切り替えられます。
 - 重要な段階で 2-4 枚の確認画像を生成します。
 - `pet_brief.json` に決定内容を保存し、キャラクターの一貫性を保ちます。
+- Action Director が特別に見せたい動きを先に聞き、足りない公式アクションを補います。
 - きれいな確認画像と本番用の `production_base` を分け、細かすぎるイラストを直接 spritesheet 生成に使いません。
+- 引き渡し前に `cell-preview.png` と `review.md` を出し、192x208 の実寸で読めるか確認します。
 - 公式 `192x208` の範囲内で参照画像にできるだけ近づけ、認識しやすい特徴を残して細部を簡略化します。
 - Codex 公式 pet 形式に従います：9 アクション、8 列、9 行。
+- 生成後は `check_hatch_output.py` で最終確認し、contact sheet、row GIF、`output_check.json` を作れます。
 - 最終生成は `hatch-pet` に任せます。
 
 ## アーキテクチャ
@@ -62,9 +65,13 @@ pet_brief.json：選択内容と 9 アクションを保存
   ↓
 imagegen：確認画像を生成
   ↓
+Action Director：特別な動きの希望を集め、9 アクションを完成
+  ↓
 hatch_pet_handoff.json：production_base とアクション設定を明示的に渡す
   ↓
 hatch-pet：pet.json + spritesheet.webp を生成
+  ↓
+check_hatch_output.py：最終パッケージを確認して検収画像を生成
   ↓
 Codex pets フォルダ：Codex がペットを読み込む
 ```

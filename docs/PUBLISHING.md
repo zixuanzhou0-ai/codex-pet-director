@@ -75,10 +75,11 @@ For a beginner-friendly release:
 ```bash
 python .\codex-pet-director\scripts\check_pet_asset_fit.py --help
 python .\codex-pet-director\scripts\build_hatch_handoff.py --help
+python .\codex-pet-director\scripts\check_hatch_output.py --help
 python .\codex-pet-director\scripts\pet_brief.py --help
 ```
 
-3. Create a tag, such as `v0.5.5`.
+3. Create a tag, such as `v0.5.6`.
 4. Create a GitHub Release from that tag.
 5. Tell Windows users to download the source ZIP and double-click `install.cmd`.
 6. Tell Codex users to run the GitHub project installer so the full local plugin structure is installed.
@@ -86,11 +87,11 @@ python .\codex-pet-director\scripts\pet_brief.py --help
 Release title:
 
 ```text
-Codex Pet Director v0.5.5
+Codex Pet Director v0.5.6
 ```
 
 Short release description:
 
 ```text
-Adds the production-base handoff gate between create-pet and hatch-pet: references are translated into a checked 192x208-ready production_base before final spritesheet generation.
+Adds Action Director and the production QA loop: create-pet now collects special motion requests, completes the 9 official actions, checks a 192x208-ready production_base with preview/report files, hands the locked brief to hatch-pet, and verifies the final spritesheet package.
 ```

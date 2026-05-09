@@ -2,7 +2,7 @@
 
 [简体中文](../README.md#简体中文) · [English](README.en.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · Français · [Deutsch](README.de.md)
 
-`codex-pet-director` est un skill pour créer des pets de bureau officiels pour Codex. Il vérifie d'abord l'environnement, puis guide l'utilisateur avec des questions simples sur le personnage, la forme, le style, l'apparence, la personnalité et les 9 actions officielles. Si l'utilisateur donne une image de référence, il la traduit en `production_base` validée pour la limite officielle `192x208` avant de transmettre le brief à `hatch-pet`.
+`codex-pet-director` est un skill pour créer des pets de bureau officiels pour Codex. Il vérifie d'abord l'environnement, puis guide l'utilisateur avec des questions simples sur le personnage, la forme, le style, l'apparence et la personnalité. Si l'utilisateur donne une image de référence, il la traduit en `production_base` validée pour la limite officielle `192x208`; ensuite Action Director recueille les envies de mouvement, complète les 9 actions officielles et transmet le brief à `hatch-pet`.
 
 Pour voir la présentation visuelle complète, ouvrez [简体中文](../README.md#真实案例三个可加载宠物) ou [English](README.en.md#real-pet-showcase).
 
@@ -46,9 +46,12 @@ curl -fsSL https://raw.githubusercontent.com/zixuanzhou0-ai/codex-pet-director/m
 - Permet de changer de langue pendant le processus.
 - Génère 2-4 images de confirmation aux étapes clés.
 - Enregistre les décisions dans `pet_brief.json` pour garder le personnage cohérent.
+- Action Director demande d'abord les mouvements spéciaux souhaités, puis complète les 9 actions officielles.
 - Sépare les belles images de confirmation de la vraie `production_base`, afin de ne pas envoyer une illustration trop détaillée directement en production.
+- Avant le transfert, crée `cell-preview.png` et `review.md` pour confirmer la lisibilité réelle en 192x208.
 - Cherche la ressemblance maximale dans la limite officielle `192x208`, en gardant les traits reconnaissables et en simplifiant les détails fragiles.
 - Respecte le format officiel Codex pet : 9 actions, 8 colonnes, 9 lignes.
+- Après génération, `check_hatch_output.py` peut vérifier le paquet final et créer contact sheet, row GIFs et `output_check.json`.
 - Confie la génération finale à `hatch-pet`.
 
 ## Architecture
@@ -62,9 +65,13 @@ pet_brief.json : décisions et 9 actions
   ↓
 imagegen : images de confirmation
   ↓
+Action Director : recueille les mouvements spéciaux et complète les 9 actions
+  ↓
 hatch_pet_handoff.json : transmet production_base et règles d'action
   ↓
 hatch-pet : pet.json + spritesheet.webp
+  ↓
+check_hatch_output.py : vérifie le paquet final et génère des vues de QA
   ↓
 Dossier pets de Codex : Codex détecte et charge le pet
 ```
